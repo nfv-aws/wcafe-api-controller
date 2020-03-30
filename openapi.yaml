@@ -1,0 +1,65 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: wcafe
+  description: wcafe store
+paths:
+# pathsオブジェクト
+  /stores:
+    get:
+      summary: 商品リスト
+      tags:
+        - stores
+      parameters: []
+      responses: #レスポンスを定義
+        '200':
+          description: 商品の一覧表示
+          content:
+            application/json: # レスポンスの形式を指定
+              schema:
+                $ref: "#/components/schemas/Stores"  #参照するモデル
+    post:
+      summary: 商品の新規登録
+      tags:
+        - stores
+      parameters: []
+      requestBody: #リクエストボディ
+          description: 商品の新規登録
+          content:
+            application/json:
+              schema: #POSTするオブジェクト
+                type: object
+                properties:
+                  store:
+                    $ref: "#/components/schemas/Stores" 
+      responses:
+        '201':
+          description: 新規登録に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  store:
+                    $ref: "#/components/schemas/Stores"
+components:
+  schemas:
+    id:
+      description: 店の識別子
+      type: string
+      format: UUID
+      readOnly: true
+      
+    Stores:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "#/components/schemas/id"
+        name:
+          type: string
+        tag:
+          type: string
+          
