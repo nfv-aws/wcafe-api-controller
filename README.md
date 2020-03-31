@@ -3,7 +3,7 @@
 1. `go`の作業ディレクトリ で`git clone`する。
 ```
 $ cd /home/ec2-user/environment/go/src/github.com/hogehoge/
-$ git clone git@hoge
+$ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 ```
 2. `main.go`を実行する。
 ```
