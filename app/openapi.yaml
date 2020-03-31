@@ -3,35 +3,43 @@ info:
   version: 1.0.0
   title: wcafe
   description: wcafe store
+servers:
+  - url: http://{host}:{port}}/api/v1
+    description: 開発用
+    variables:
+      host:
+        default: localhost
+      port:
+        default: '8080'
 paths:
 # pathsオブジェクト
   /stores:
     get:
-      summary: 商品リスト
+      summary: 店舗リスト
       tags:
         - stores
       parameters: []
       responses: #レスポンスを定義
         '200':
-          description: 商品の一覧表示
+          description: 店舗の一覧表示
           content:
             application/json: # レスポンスの形式を指定
               schema:
-                $ref: "#/components/schemas/Stores"  #参照するモデル
+                $ref: "#/components/schemas/stores"  #参照するモデル
     post:
-      summary: 商品の新規登録
+      summary: 店舗の新規登録
       tags:
         - stores
       parameters: []
       requestBody: #リクエストボディ
-          description: 商品の新規登録
+          description: 店舗の新規登録
           content:
             application/json:
               schema: #POSTするオブジェクト
                 type: object
                 properties:
                   store:
-                    $ref: "#/components/schemas/Stores" 
+                    $ref: "#/components/schemas/stores" 
       responses:
         '201':
           description: 新規登録に成功
@@ -41,25 +49,64 @@ paths:
                 type: object
                 properties:
                   store:
-                    $ref: "#/components/schemas/Stores"
+                    $ref: "#/components/schemas/stores"
+  /pets:
+    get:
+      summary: 商品リスト
+      tags:
+        - pets
+      parameters: []
+      responses:
+        '200':
+          description: 商品一覧の表示
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pets:
+                    type: array
+                    items:
+                     $ref: "#/components/schemas/pets"
+  
 components:
   schemas:
-    id:
-      description: 店の識別子
-      type: string
-      format: UUID
-      readOnly: true
-      
-    Stores:
+    stores:
       type: object
       required:
         - id
         - name
       properties:
         id:
-          $ref: "#/components/schemas/id"
+          type: string
+          format: UUID
+          readOnly: true
         name:
           type: string
         tag:
           type: string
           
+    pets:
+      type: object
+      properties:
+        id:
+          description: 商品の識別子
+          type: string
+          format: UUID
+          readOnly: true
+        name:
+          description: 商品名
+          type: string
+        store_id:
+          description: 店の識別子
+          type: string
+          format: UUID
+        sotre_name:
+          description: 店名
+          type: string
+      required: 
+        - id
+        - name
+        - store_id
+        - store_name
+
