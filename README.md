@@ -10,7 +10,7 @@ $ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 $ cd wcafe-api-controller/app/server/
 $ go run main.go
 ```
-3. `localhost:8080/stores`にアクセスするとレスポンスが返ってくる。下記コマンドを別ターミナル
+3. `localhost:8080/stores`にアクセスするとレスポンスが返ってくる。下記コマンドを別ターミナルでたたく。
 ```
 $ curl localhost:8080/stores
 {"id":"IDIDIDID","name":"example","tag":"Tag"}
