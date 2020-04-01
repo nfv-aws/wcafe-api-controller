@@ -94,6 +94,52 @@ paths:
                   id: 65f79f22-73b8-11ea-bc55-0242ac130003
                   name: toy poodle
                   store_id: 75a68334-73b8-11ea-bc55-0242ac130003
+  /users:
+    get:
+      tags:
+        - users
+      summary: ユーザ一覧取得
+      description: ユーザ一覧取得
+      parameters: []
+      responses:
+        '200':
+          description: JSON配列の表示
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/users'
+                example:
+                  - id: UUID
+                    number: 1
+                    name: Sano
+                  - id: UUID
+                    number: 2
+                    name: Suzuki
+
+    post:
+      tags:
+       - users
+      summary: ユーザ新規作成
+      description: ユーザ新規作成
+      parameters: []
+      requestBody:
+        description: user to create
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  $ref: "#/components/schemas/users"
+            example:
+              id: UUID
+              number: 3
+              name: Matsuno
+      responses:
+        '201':
+          description: CREATED
   
 components:
   schemas:
@@ -130,6 +176,24 @@ components:
       required: 
         - id
         - name
-        - store_id
-
-
+        - store_i
+        
+    users:
+      type: object
+      properties:
+        id:
+          description: ユーザ識別子
+          type: string
+          format: UUID
+          readOnly: true
+        number:
+          description: ユーザ番号
+          type: integer
+          format: int64
+        name:
+          description: ユーザ名
+          type: string
+      required:
+        - id
+        - number
+        - name
