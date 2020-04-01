@@ -101,12 +101,9 @@ components:
           description: 店の識別子
           type: string
           format: UUID
-        sotre_name:
-          description: 店名
-          type: string
       required: 
         - id
         - name
         - store_id
-        - store_name
+
 
