@@ -103,7 +103,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: JSON配列の表示
+          description: Get users list
           content:
             application/json:
               schema:
@@ -111,19 +111,34 @@ paths:
                 items:
                   $ref: '#/components/schemas/users'
                 example:
-                  - id: UUID
-                    number: 1
+                  - user_id: UUID
                     name: Sano
-                  - id: UUID
-                    number: 2
+                  - user_id: UUID
                     name: Suzuki
-
     post:
       tags:
        - users
       summary: ユーザ新規作成
       description: ユーザ新規作成
-      parameters: []
+      parameters:
+        - name: name
+          description: 氏名
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/users'
+        - name: addressress
+          description: 住所
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/users'
+        - name: email
+          description: メールアドレス
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/users'
       requestBody:
         description: user to create
         content:
@@ -134,13 +149,39 @@ paths:
                 user:
                   $ref: "#/components/schemas/users"
             example:
-              id: UUID
-              number: 3
               name: Matsuno
       responses:
         '201':
-          description: CREATED
-  
+          description: Created a user
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: ID指定によるユーザ詳細情報取得
+      description: ID指定によるユーザ詳細情報取得
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get a user information
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/users'
+                example:
+                  user_id: UUID
+                  number: 0003
+                  name: Sano
+                  address: Shinagawa
+                  email: sano@example.com
+    
 components:
   schemas:
     stores:
@@ -181,19 +222,20 @@ components:
     users:
       type: object
       properties:
-        id:
+        user_ id:
           description: ユーザ識別子
           type: string
           format: UUID
           readOnly: true
         number:
-          description: ユーザ番号
-          type: integer
-          format: int64
-        name:
-          description: ユーザ名
+          description: 会員番号
           type: string
-      required:
-        - id
-        - number
-        - name
+          readOnly: true
+        name:
+          description: 氏名
+          type: string
+        address:
+          description: 住所
+          type: string
+        email:
+          description: メールアドレス
