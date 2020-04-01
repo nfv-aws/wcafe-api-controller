@@ -27,7 +27,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  store:
+                  stores:
                     type: array
                     items:
                       $ref: "#/components/schemas/stores"  #参照するモデル
@@ -76,7 +76,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  stores:
+                  store:
                     $ref: '#/components/schemas/stores'
   /pets:
     get:
