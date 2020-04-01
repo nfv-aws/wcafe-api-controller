@@ -68,7 +68,25 @@ paths:
                     type: array
                     items:
                      $ref: "#/components/schemas/pets"
-  
+    post: 
+      summary: 新規商品登録
+      tags: 
+        - pets
+      description: 新規商品登録
+      parameters: []
+      requestBody: # リクエストボディ
+        description: 商品登録
+        content:
+          application/json:
+            schema: # POSTするオブジェクト
+              $ref: '#/components/schemas/pets'
+            example:
+              name: Shiba lnu
+              store_id: 70483fbc-73be-11ea-bc55-0242ac130003
+      responses:
+        '201':
+          description: CREATED
+
   /pets/{pet_id}:
     get:
       summary: ID指定による商品取得
