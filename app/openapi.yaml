@@ -4,7 +4,7 @@ info:
   title: wcafe
   description: wcafe store
 servers:
-  - url: http://{host}:{port}}/api/v1
+  - url: http://{host}:{port}/api/v1
     description: 開発用
     variables:
       host:
@@ -25,7 +25,12 @@ paths:
           content:
             application/json: # レスポンスの形式を指定
               schema:
-                $ref: "#/components/schemas/stores"  #参照するモデル
+                type: object
+                properties:
+                  store:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/stores"  #参照するモデル
     post:
       summary: 店舗の新規登録
       tags:
@@ -50,6 +55,29 @@ paths:
                 properties:
                   store:
                     $ref: "#/components/schemas/stores"
+  /stores/{store_id}:
+    get:
+      summary: 選択された店舗情報を取得
+      tags:
+        - stores
+      parameters:
+        - name: store_id
+          in: path
+          description: 取得対象の店舗 ID
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: 取得に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stores:
+                    $ref: '#/components/schemas/stores'
   /pets:
     get:
       summary: 商品リスト
@@ -122,10 +150,12 @@ components:
         - name
       properties:
         id:
+          description: 店の識別子
           type: string
           format: UUID
           readOnly: true
         name:
+          description: 店名
           type: string
         tag:
           type: string
