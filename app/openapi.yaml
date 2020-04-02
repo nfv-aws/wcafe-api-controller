@@ -107,52 +107,50 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/users'
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/users'
                 example:
-                  - user_id: UUID
-                    name: Sano
-                  - user_id: UUID
-                    name: Suzuki
+                  users:
+                    - id: UUID
+                      name: "Sano"
+                    - id: UUID
+                      name: "Suzuki"
     post:
       tags:
        - users
       summary: ユーザ新規作成
       description: ユーザ新規作成
-      parameters:
-        - name: name
-          description: 氏名
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/users'
-        - name: addressress
-          description: 住所
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/users'
-        - name: email
-          description: メールアドレス
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/users'
       requestBody:
-        description: user to create
+        description: user create
         content:
           application/json:
             schema:
               type: object
               properties:
-                user:
-                  $ref: "#/components/schemas/users"
+                users:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/users"
             example:
-              name: Matsuno
+              users:
+                name: "Matsuno"
+                address: "Shinagawa"
+                email: "aaa@example.com"
+        required: true
       responses:
         '201':
           description: Created a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    $ref: '#/components/schemas/users'        
   /users/{user_id}:
     get:
       tags:
@@ -162,7 +160,7 @@ paths:
       parameters:
         - name: user_id
           in: path
-          description: ユーザID
+          description: ユーザ識別子
           required: true
           schema:
             type: string
@@ -172,15 +170,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
                 items:
                   $ref: '#/components/schemas/users'
                 example:
-                  user_id: UUID
-                  number: 0003
-                  name: Sano
-                  address: Shinagawa
-                  email: sano@example.com
+                  users:
+                    id: UUID
+                    number: "0003"
+                    name: "Sano"
+                    address: "Shinagawa"
+                    email: "sano@example.com"
     
 components:
   schemas:
@@ -222,20 +221,26 @@ components:
     users:
       type: object
       properties:
-        user_ id:
+        id:
           description: ユーザ識別子
           type: string
           format: UUID
           readOnly: true
         number:
           description: 会員番号
+          example: 1234
           type: string
           readOnly: true
         name:
           description: 氏名
+          example: "Sano"
           type: string
         address:
           description: 住所
+          example: "Shinagawa"
           type: string
         email:
           description: メールアドレス
+          example: "aaa@example.com"
+          type: string
+          format: email
