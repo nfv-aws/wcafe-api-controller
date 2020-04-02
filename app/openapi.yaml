@@ -166,7 +166,92 @@ paths:
                     name: toy poodle
                     age: 1
                     store_id: 75a68334-73b8-11ea-bc55-0242ac130003
-  
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: ユーザ一覧取得
+      description: ユーザ一覧取得
+      parameters: []
+      responses:
+        '200':
+          description: Get users list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/users'
+                example:
+                  users:
+                    - id: UUID
+                      name: "Sano"
+                    - id: UUID
+                      name: "Suzuki"
+    post:
+      tags:
+       - users
+      summary: ユーザ新規作成
+      description: ユーザ新規作成
+      requestBody:
+        description: user create
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  $ref: "#/components/schemas/users"
+            example:
+              user:
+                name: "Matsuno"
+                address: "Shinagawa"
+                email: "aaa@example.com"
+        required: true
+      responses:
+        '201':
+          description: Created a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/users'        
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: ID指定によるユーザ詳細情報取得
+      description: ID指定によるユーザ詳細情報取得
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザ識別子
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get a user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/users'
+                example:
+                  user:
+                    id: UUID
+                    number: "0003"
+                    name: "Sano"
+                    address: "Shinagawa"
+                    email: "sano@example.com"
 components:
   schemas:
     stores:
@@ -213,5 +298,30 @@ components:
         - name
         - age
         - store_id
-
-
+        
+    users:
+      type: object
+      properties:
+        id:
+          description: ユーザ識別子
+          type: string
+          format: UUID
+          readOnly: true
+        number:
+          description: 会員番号
+          example: 1234
+          type: string
+          readOnly: true
+        name:
+          description: 氏名
+          example: "Sano"
+          type: string
+        address:
+          description: 住所
+          example: "Shinagawa"
+          type: string
+        email:
+          description: メールアドレス
+          example: "aaa@example.com"
+          type: string
+          format: email
