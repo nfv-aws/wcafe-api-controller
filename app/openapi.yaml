@@ -22,13 +22,11 @@ paths:
         - name: limit
           in: query
           description: 1ページ当たりの店舗数の表示制限
-          required: true
           schema:
             type: integer
         - name: offset
           in: query
           description: 表示する店舗のページ番号の指定
-          required: true
           schema:
             type: integer
       responses: #レスポンスを定義
@@ -50,6 +48,7 @@ paths:
       parameters: []
       requestBody: #リクエストボディ
           description: 店舗の新規登録
+          required: true
           content:
             application/json:
               schema: #POSTするオブジェクト
