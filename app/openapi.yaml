@@ -18,7 +18,17 @@ paths:
       summary: 店舗リスト
       tags:
         - stores
-      parameters: []
+      parameters: 
+        - name: limit
+          in: query
+          description: 1ページ当たりの店舗数の表示制限
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: 表示する店舗のページ番号の指定
+          schema:
+            type: integer
       responses: #レスポンスを定義
         '200':
           description: 店舗の一覧表示
@@ -38,6 +48,7 @@ paths:
       parameters: []
       requestBody: #リクエストボディ
           description: 店舗の新規登録
+          required: true
           content:
             application/json:
               schema: #POSTするオブジェクト
@@ -256,20 +267,34 @@ components:
   schemas:
     stores:
       type: object
-      required:
-        - id
-        - name
       properties:
         id:
           description: 店の識別子
+          example: 55579f22-73b8-11ea-bc55-0242ac130555
           type: string
           format: UUID
           readOnly: true
         name:
           description: 店名
+          example: "Shinagawa-Pet-Shop"
           type: string
         tag:
+          description: 店の種類
+          example: "Pet shop"
           type: string
+        address:
+          description: 住所
+          example: "Minato-ku"
+          type: string
+        strong_point:
+          description: 店の強み
+          example: "High quality!"
+          type: string
+      required:
+        - id
+        - name  
+        - tag
+        - address
           
     pets:
       type: object
