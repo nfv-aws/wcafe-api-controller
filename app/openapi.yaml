@@ -18,7 +18,19 @@ paths:
       summary: 店舗リスト
       tags:
         - stores
-      parameters: []
+      parameters: 
+        - name: limit
+          in: query
+          description: 1ページ当たりの店舗数の表示制限
+          required: true
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: 表示する店舗のページ番号の指定
+          required: true
+          schema:
+            type: integer
       responses: #レスポンスを定義
         '200':
           description: 店舗の一覧表示
