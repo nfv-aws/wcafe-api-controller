@@ -8,12 +8,12 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
-// Controller is pet controlller
-type PetController struct{}
+// Controller is store controlller
+type StoreController struct{}
 
-// Index action: GET /pets
-func (pc PetController) Index(c *gin.Context) {
-	var s service.PetService
+// Index action: GET /stores
+func (pc StoreController) Index(c *gin.Context) {
+	var s service.StoreService
 	p, err := s.GetAll()
 
 	if err != nil {
@@ -24,9 +24,9 @@ func (pc PetController) Index(c *gin.Context) {
 	}
 }
 
-// Create action: POST /pets
-func (pc PetController) Create(c *gin.Context) {
-	var s service.PetService
+// Create action: POST /stores
+func (pc StoreController) Create(c *gin.Context) {
+	var s service.StoreService
 	p, err := s.CreateModel(c)
 
 	if err != nil {
@@ -37,10 +37,10 @@ func (pc PetController) Create(c *gin.Context) {
 	}
 }
 
-// Show action: GET /pets/:id
-func (pc PetController) Show(c *gin.Context) {
+// Show action: GET /stores/:id
+func (pc StoreController) Show(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var s service.PetService
+	var s service.StoreService
 	p, err := s.GetByID(id)
 
 	if err != nil {

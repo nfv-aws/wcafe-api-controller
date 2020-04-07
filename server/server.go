@@ -17,10 +17,15 @@ func router() *gin.Engine {
 
 	p := r.Group("/api/v1")
 	{
-		ctrl := pet.Controller{}
-		p.GET("/pets", ctrl.Index)
-		p.GET("/pets/:id", ctrl.Show)
-		p.POST("/pets", ctrl.Create)
+		store_ctrl := controller.StoreController{}
+		p.GET("/stores", store_ctrl.Index)
+		p.GET("/stores/:id", store_ctrl.Show)
+		p.POST("/stores", store_ctrl.Create)
+
+		pet_ctrl := controller.PetController{}
+		p.GET("/pets", pet_ctrl.Index)
+		p.GET("/pets/:id", pet_ctrl.Show)
+		p.POST("/pets", pet_ctrl.Create)
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
 	}
