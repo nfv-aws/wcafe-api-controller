@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
@@ -26,16 +25,9 @@ func (pc Controller) Index(c *gin.Context) {
 
 // Create action: POST /pets
 func (pc Controller) Create(c *gin.Context) {
-	//UUID生成
-	u, err := uuid.NewRandom()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 
-	//POST処理
 	var s pet.Service
-	p, err := s.CreateModel(c, u.String())
+	p, err := s.CreateModel(c)
 
 	if err != nil {
 		c.AbortWithStatus(400)
