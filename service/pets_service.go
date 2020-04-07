@@ -2,8 +2,8 @@ package pet
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ysdy/go_rest/db"
-	"github.com/ysdy/go_rest/entity"
+	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
 
 // Service procides pet's behavior

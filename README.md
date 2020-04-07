@@ -4,6 +4,15 @@
 
 ginのRestサーバーお試し版
 
+## リポジトリクローン
+
+```
+cd $GOPATH/src/github.com
+mkdir nfv-aws
+cd nfv-aws
+git clone git@github.com:nfv-aws/wcafe-api-controller.git
+```
+
 ## 使い方
 
 db/db.goにAWSのDB情報書く

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ysdy/go_rest/service"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 // Controller is pet controlller

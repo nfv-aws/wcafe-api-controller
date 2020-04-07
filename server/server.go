@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/ysdy/go_rest/controller"
+	"github.com/nfv-aws/wcafe-api-controller/controller"
 )
 
 // Init is initialize server

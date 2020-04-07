@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ysdy/go_rest/db"
-	"github.com/ysdy/go_rest/server"
+	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/server"
 )
 
 func main() {
