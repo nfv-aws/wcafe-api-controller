@@ -1,4 +1,4 @@
-package pet
+package service
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,7 +7,7 @@ import (
 )
 
 // Service procides pet's behavior
-type Service struct{}
+type PetService struct{}
 
 // User is alias of entity.Pet struct
 type Pet entity.Pet
@@ -16,7 +16,7 @@ type Pet entity.Pet
 type Pets entity.Pets
 
 // GetAll is get all Pet
-func (s Service) GetAll() (Pets, error) {
+func (s PetService) GetAll() (Pets, error) {
 	db := db.GetDB()
 	var l Pets
 	var u []entity.Pet
@@ -28,7 +28,7 @@ func (s Service) GetAll() (Pets, error) {
 }
 
 // CreateModel is create Pet model
-func (s Service) CreateModel(c *gin.Context) (Pet, error) {
+func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
@@ -43,8 +43,8 @@ func (s Service) CreateModel(c *gin.Context) (Pet, error) {
 	return u, nil
 }
 
-// GetByID is get a User
-func (s Service) GetByID(id string) (Pet, error) {
+// GetByID is get a Pets
+func (s PetService) GetByID(id string) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
