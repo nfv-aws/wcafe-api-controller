@@ -1,18 +1,28 @@
-# wcafe-api-controller
-## 動かし方
-1. `go`の作業ディレクトリ で`git clone`する。
+# Golang Rest Sample
+
+## これなに
+
+ginのRestサーバーお試し版
+
+## 使い方
+
+db/db.goにAWSのDB情報書く
+
 ```
-$ cd /home/ec2-user/environment/go/src/github.com/hogehoge/
-$ git clone git@github.com:nfv-aws/wcafe-api-controller.git
+go get github.com/jinzhu/gorm
+go get github.com/jinzhu/gorm/dialects/mysql
 ```
-2. `main.go`を実行する。
+
 ```
-$ cd wcafe-api-controller/app/server/
-$ go run main.go
+go run main.go
 ```
-3. `localhost:8080/stores`にアクセスするとレスポンスが返ってくる。下記コマンドを別ターミナルでたたく。
+
+## 動作確認
+
 ```
-$ curl localhost:8080/stores
-{"id":"IDIDIDID","name":"example","tag":"Tag"}
+curl localhost:8080/pets
 ```
-備考. `wcafe-api-controller/app/server/go/api_stores_service.go`の`GET`と`POST`部分を編集するとレスポンス（value）を変えられる。
+
+## 参考
+
+https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
