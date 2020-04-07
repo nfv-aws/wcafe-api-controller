@@ -39,4 +39,5 @@ func Close() {
 
 func autoMigration() {
 	db.AutoMigrate(&entity.Pet{})
+	db.AutoMigrate(&entity.Store{})
 }
