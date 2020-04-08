@@ -8,13 +8,15 @@ import (
 )
 
 // Controller is pet controlller
-type PetController struct{}
+type PetController struct {
+	Service service.PetService
+}
 
 // Index action: GET /pets
 func (pc PetController) Index(c *gin.Context) {
 	//var s service.PetService
-	s := service.NewPetService()
-	p, err := s.GetAll()
+	//s := service.NewPetService()
+	p, err := pc.Service.GetAll()
 
 	if err != nil {
 		c.AbortWithStatus(404)
