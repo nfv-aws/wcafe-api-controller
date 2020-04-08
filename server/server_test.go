@@ -23,12 +23,12 @@ func TestServer(t *testing.T) {
 	t.Run("TEST GET Method", func(t *testing.T) {
 		testGETMethod(t, "/api/v1/pets")
 		testGETMethod(t, "/api/v1/stores")
-		// testGETMethod(t, "/api/v1/users")
+		testGETMethod(t, "/api/v1/users")
 	})
 	t.Run("TEST POST Method", func(t *testing.T) {
 		testPOSTMethod(t, "/api/v1/pets")
 		testPOSTMethod(t, "/api/v1/stores")
-		// testPOSTMethod(t, "/api/v1/users")
+		testPOSTMethod(t, "/api/v1/users")
 	})
 	tearDown()
 }
