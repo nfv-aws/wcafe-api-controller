@@ -28,6 +28,12 @@ func router() *gin.Engine {
 		p.POST("/pets", pet_ctrl.Create)
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
+
+		user_ctrl := controller.UserController{}
+		p.GET("/users", user_ctrl.Index)
+		p.GET("/users/:id", user_ctrl.Show)
+		p.POST("/users", user_ctrl.Create)
+
 	}
 
 	return r

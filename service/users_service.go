@@ -8,31 +8,31 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
 
-// Service procides pet's behavior
-type PetService struct{}
+// Service procides user's behavior
+type UserService struct{}
 
-// User is alias of entity.Pet struct
-type Pet entity.Pet
+// User is alias of entity.user struct
+type User entity.User
 
-// User is alias of entity.Pets struct
-type Pets entity.Pets
+// User is alias of entity.users struct
+type Users entity.Users
 
-// GetAll is get all Pet
-func (s PetService) GetAll() (Pets, error) {
+// GetAll is get all user
+func (s UserService) GetAll() (Users, error) {
 	db := db.GetDB()
-	var l Pets
-	var u []entity.Pet
+	var l Users
+	var u []entity.User
 
 	db.Find(&u)
 
-	l.Pets = &u
+	l.Users = &u
 	return l, nil
 }
 
-// CreateModel is create Pet model
-func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
+// CreateModel is create user model
+func (s UserService) CreateModel(c *gin.Context) (User, error) {
 	db := db.GetDB()
-	var u Pet
+	var u User
 
 	//UUID生成
 	id, err := uuid.NewRandom()
@@ -44,6 +44,7 @@ func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
 	u.Id = id.String()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
@@ -52,10 +53,10 @@ func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 	return u, nil
 }
 
-// GetByID is get a Pet
-func (s PetService) GetByID(id string) (Pet, error) {
+// GetByID is get a User
+func (s UserService) GetByID(id string) (User, error) {
 	db := db.GetDB()
-	var u Pet
+	var u User
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
 		return u, err
