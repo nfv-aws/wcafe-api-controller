@@ -34,7 +34,6 @@ func Close() {
 	if err := db.Close(); err != nil {
 		panic(err)
 	}
-	// autoMigration()
 }
 
 func autoMigration() {
