@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 
@@ -18,7 +18,7 @@ func (pc StoreController) Index(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(200, p)
 	}
@@ -31,7 +31,7 @@ func (pc StoreController) Create(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(400)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(201, p)
 	}
@@ -45,7 +45,7 @@ func (pc StoreController) Show(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(200, p)
 	}

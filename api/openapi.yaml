@@ -52,20 +52,14 @@ paths:
           content:
             application/json:
               schema: #POSTするオブジェクト
-                type: object
-                properties:
-                  store:
-                    $ref: "#/components/schemas/stores" 
+                $ref: "#/components/schemas/stores" 
       responses:
         '201':
           description: 新規登録に成功
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  store:
-                    $ref: "#/components/schemas/stores"
+               $ref: "#/components/schemas/stores"
   /stores/{store_id}:
     get:
       summary: 選択された店舗情報を取得
