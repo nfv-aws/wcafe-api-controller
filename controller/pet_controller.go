@@ -12,11 +12,9 @@ type PetController struct {
 	Service service.PetService
 }
 
-// Index action: GET /pets
-func (pc PetController) Index(c *gin.Context) {
-	//var s service.PetService
-	//s := service.NewPetService()
-	p, err := pc.Service.GetAll()
+// List action: GET /pets
+func (pc PetController) List(c *gin.Context) {
+	p, err := pc.Service.List()
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -28,8 +26,7 @@ func (pc PetController) Index(c *gin.Context) {
 
 // Create action: POST /pets
 func (pc PetController) Create(c *gin.Context) {
-	var s service.PetService
-	p, err := s.CreateModel(c)
+	p, err := pc.Service.Create(c)
 
 	if err != nil {
 		c.AbortWithStatus(400)
@@ -39,11 +36,11 @@ func (pc PetController) Create(c *gin.Context) {
 	}
 }
 
-// Show action: GET /pets/:id
-func (pc PetController) Show(c *gin.Context) {
+// Get action: GET /pets/:id
+func (pc PetController) Get(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var s service.PetService
-	p, err := s.GetByID(id)
+
+	p, err := pc.Service.Get(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)

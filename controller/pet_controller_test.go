@@ -6,53 +6,48 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
 	"github.com/nfv-aws/wcafe-api-controller/service"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 	"net/http/httptest"
 	"testing"
 )
 
-/*
-type MockServiceInterface struct {
-}
-
-func (_m *MockServiceInterface) GetAll() (service.Pets, error) {
-	return service.Pets{}, nil
-}
-
-func (_m *MockServiceInterface) CreateModel(c *gin.Context) (service.Pet, error) {
-	return service.Pet{
-		Id:   "id",
-		Name: "Name",
-	}, nil
-}
-
-func (_m *MockServiceInterface) GetByID(id string) (service.Pet, error) {
-	return service.Pet{Name: "test"}, nil
-}
-*/
-type ControllerSuite struct {
-	suite.Suite
-	controller PetController
-	service    service.PetService
-}
-
-func (s *ControllerSuite) SetupTest() {
-
-}
-
-func TestControllerSuite(t *testing.T) {
-	suite.Run(t, new(ControllerSuite))
-}
-
-func (s *ControllerSuite) TestIndex() {
-	ctrl := gomock.NewController(s.T())
+func TestList(t *testing.T) {
+	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().GetAll().Return(service.Pets{}, nil)
-	s.controller = PetController{Service: serviceMock}
+	serviceMock.EXPECT().List().Return(service.Pets{}, nil)
+	controller := PetController{Service: serviceMock}
+
+	controller.List(c)
+	assert.Equal(t, 200, c.Writer.Status())
+}
+
+func TestGet(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
-	s.controller.Index(c)
-	assert.Equal(s.T(), 200, c.Writer.Status())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, nil)
+	controller := PetController{Service: serviceMock}
+
+	controller.Get(c)
+	assert.Equal(t, 200, c.Writer.Status())
+}
+
+func TestCreate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(service.Pet{}, nil)
+	controller := PetController{Service: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 201, c.Writer.Status())
 }

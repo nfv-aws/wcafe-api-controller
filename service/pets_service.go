@@ -17,9 +17,9 @@ type Pets entity.Pets
 // Service procides pet's behavior
 //type PetService struct{}
 type PetService interface {
-	GetAll() (Pets, error)
-	CreateModel(c *gin.Context) (Pet, error)
-	GetByID(id string) (Pet, error)
+	List() (Pets, error)
+	Create(c *gin.Context) (Pet, error)
+	Get(id string) (Pet, error)
 }
 
 func NewPetService() PetService {
@@ -29,8 +29,8 @@ func NewPetService() PetService {
 type petService struct {
 }
 
-// GetAll is get all Pet
-func (s petService) GetAll() (Pets, error) {
+// List is get all Pet
+func (s petService) List() (Pets, error) {
 	db := db.GetDB()
 	var l Pets
 	var u []entity.Pet
@@ -41,8 +41,8 @@ func (s petService) GetAll() (Pets, error) {
 	return l, nil
 }
 
-// CreateModel is create Pet model
-func (s petService) CreateModel(c *gin.Context) (Pet, error) {
+// Create is create Pet model
+func (s petService) Create(c *gin.Context) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
@@ -65,7 +65,7 @@ func (s petService) CreateModel(c *gin.Context) (Pet, error) {
 }
 
 // GetByID is get a Pet
-func (s petService) GetByID(id string) (Pet, error) {
+func (s petService) Get(id string) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 

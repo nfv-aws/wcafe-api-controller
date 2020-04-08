@@ -34,47 +34,47 @@ func (m *MockPetService) EXPECT() *MockPetServiceMockRecorder {
 	return m.recorder
 }
 
-// GetAll mocks base method.
-func (m *MockPetService) GetAll() (service.Pets, error) {
+// List mocks base method.
+func (m *MockPetService) List() (service.Pets, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "List")
 	ret0, _ := ret[0].(service.Pets)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll.
-func (mr *MockPetServiceMockRecorder) GetAll() *gomock.Call {
+// List indicates an expected call of List.
+func (mr *MockPetServiceMockRecorder) List() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockPetService)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockPetService)(nil).List))
 }
 
-// CreateModel mocks base method.
-func (m *MockPetService) CreateModel(c *gin.Context) (service.Pet, error) {
+// Create mocks base method.
+func (m *MockPetService) Create(c *gin.Context) (service.Pet, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateModel", c)
+	ret := m.ctrl.Call(m, "Create", c)
 	ret0, _ := ret[0].(service.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateModel indicates an expected call of CreateModel.
-func (mr *MockPetServiceMockRecorder) CreateModel(c interface{}) *gomock.Call {
+// Create indicates an expected call of Create.
+func (mr *MockPetServiceMockRecorder) Create(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateModel", reflect.TypeOf((*MockPetService)(nil).CreateModel), c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPetService)(nil).Create), c)
 }
 
-// GetByID mocks base method.
-func (m *MockPetService) GetByID(id string) (service.Pet, error) {
+// Get mocks base method.
+func (m *MockPetService) Get(id string) (service.Pet, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", id)
+	ret := m.ctrl.Call(m, "Get", id)
 	ret0, _ := ret[0].(service.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByID indicates an expected call of GetByID.
-func (mr *MockPetServiceMockRecorder) GetByID(id interface{}) *gomock.Call {
+// Get indicates an expected call of Get.
+func (mr *MockPetServiceMockRecorder) Get(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockPetService)(nil).GetByID), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPetService)(nil).Get), id)
 }

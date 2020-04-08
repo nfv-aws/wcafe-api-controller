@@ -23,8 +23,8 @@ func router() *gin.Engine {
 		p.POST("/stores", store_ctrl.Create)
 
 		pet_ctrl := controller.PetController{Service: service.NewPetService()}
-		p.GET("/pets", pet_ctrl.Index)
-		p.GET("/pets/:id", pet_ctrl.Show)
+		p.GET("/pets", pet_ctrl.List)
+		p.GET("/pets/:id", pet_ctrl.Get)
 		p.POST("/pets", pet_ctrl.Create)
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
