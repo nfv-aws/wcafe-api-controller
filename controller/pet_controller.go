@@ -12,7 +12,8 @@ type PetController struct{}
 
 // Index action: GET /pets
 func (pc PetController) Index(c *gin.Context) {
-	var s service.PetService
+	//var s service.PetService
+	s := service.NewPetService()
 	p, err := s.GetAll()
 
 	if err != nil {
