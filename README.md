@@ -33,6 +33,16 @@ go run main.go
 curl localhost:8080/pets
 ```
 
+## UnitTest
+
+```
+cd server
+go test
+
+PASS
+ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
+```
+
 ## 参考
 
 https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
