@@ -254,12 +254,11 @@ paths:
                   user:
                     $ref: '#/components/schemas/users'
                 example:
-                  user:
-                    id: UUID
-                    number: "0003"
-                    name: "Sano"
-                    address: "Shinagawa"
-                    email: "sano@example.com"
+                  id: UUID
+                  number: "0003"
+                  name: "Sano"
+                  address: "Shinagawa"
+                  email: "sano@example.com"
 components:
   schemas:
     stores:
