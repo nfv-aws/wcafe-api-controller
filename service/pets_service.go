@@ -1,7 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
@@ -32,10 +34,17 @@ func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
-	if err := c.BindJSON(&u); err != nil {
+	//UUID生成
+	id, err := uuid.NewRandom()
+	if err != nil {
+		fmt.Println(err)
 		return u, err
 	}
 
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+	u.Id = id.String()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}

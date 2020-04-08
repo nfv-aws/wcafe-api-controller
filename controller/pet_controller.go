@@ -1,10 +1,9 @@
 package controller
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
@@ -18,7 +17,7 @@ func (pc PetController) Index(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(200, p)
 	}
@@ -31,7 +30,7 @@ func (pc PetController) Create(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(400)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(201, p)
 	}
@@ -45,7 +44,7 @@ func (pc PetController) Show(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		c.JSON(200, p)
 	}
