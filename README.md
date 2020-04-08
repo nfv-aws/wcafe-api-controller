@@ -15,7 +15,7 @@ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 
 ## 使い方
 
-db/db.goにAWSのDB情報書く
+### パッケージインストール
 
 ```
 go get github.com/jinzhu/gorm
@@ -23,13 +23,31 @@ go get github.com/jinzhu/gorm/dialects/mysql
 go get github.com/google/uuid
 ```
 
+### DB初期設定
+
+bashrcとかに以下を追記
+
 ```
-go run main.go
+vi ~/.bashrc
+
+export WCAFE_DATABASE_PASSWORD=password
+export WCAFE_DATABASE_ENDPOINT=endpoint
+
+source ~/.bashrc
+```
+
+
+ユーザーやDB名は以下でも編集可能
+
+```
+vi config/config.toml
 ```
 
 ## 動作確認
 
 ```
+go run main.go
+
 curl localhost:8080/pets
 ```
 
