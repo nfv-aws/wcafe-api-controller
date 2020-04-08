@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	config "github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
 
@@ -13,11 +14,8 @@ var (
 
 // Init is initialize db from main function
 func Init() {
-	user := ""
-	pass := ""
-	endpoint := ""
-	dbname := ""
-	db, err = gorm.Open("mysql", user+":"+pass+"@("+endpoint+")/"+dbname+"?charset=utf8&parseTime=True&loc=Local")
+	conf := config.ReadDbConfig()
+	db, err = gorm.Open("mysql", conf.User+":"+conf.Pass+"@("+conf.Endpoint+")/"+conf.Dbname+"?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)
 	}
