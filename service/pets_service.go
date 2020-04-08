@@ -1,11 +1,11 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"log"
 )
 
 // Service procides pet's behavior
@@ -37,7 +37,7 @@ func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return u, err
 	}
 

@@ -2,8 +2,10 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"log"
 )
 
 // Service procides store's behavior
@@ -32,10 +34,17 @@ func (s StoreService) CreateModel(c *gin.Context) (Store, error) {
 	db := db.GetDB()
 	var u Store
 
-	if err := c.BindJSON(&u); err != nil {
+	//UUID生成
+	id, err := uuid.NewRandom()
+	if err != nil {
+		log.Println(err)
 		return u, err
 	}
 
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+	u.Id = id.String()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
