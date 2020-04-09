@@ -83,6 +83,26 @@ paths:
                 properties:
                   store:
                     $ref: '#/components/schemas/stores'
+    patch:
+      summary: 店舗情報更新
+      tags:
+      - stores
+      parameters: []
+      requestBody:
+        description: 店舗情報更新
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/stores"
+      responses:
+        '200':
+          description: 更新情報表示
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/stores"
+
   /pets:
     get:
       summary: 商品リスト

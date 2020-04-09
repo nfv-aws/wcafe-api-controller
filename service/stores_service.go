@@ -19,6 +19,7 @@ type StoreService interface {
 	List() (Stores, error)
 	Create(c *gin.Context) (Store, error)
 	Get(id string) (Store, error)
+	Update(id string, c *gin.Context) (Store, error)
 }
 
 func NewStoreService() StoreService {
@@ -65,6 +66,7 @@ func (s storeService) Create(c *gin.Context) (Store, error) {
 
 // Get is get a Store
 func (s storeService) Get(id string) (Store, error) {
+
 	db := db.GetDB()
 	var u Store
 
@@ -72,5 +74,16 @@ func (s storeService) Get(id string) (Store, error) {
 		return u, err
 	}
 
+	return u, nil
+}
+
+func (s storeService) Update(id string, c *gin.Context) (Store, error) {
+	db := db.GetDB()
+	tmp := Store{} //id格納用のStore
+	tmp.Id = id
+	u := tmp
+	db.First(&u)
+	c.BindJSON(&u)
+	db.Model(&tmp).Update(&u)
 	return u, nil
 }

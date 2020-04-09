@@ -48,3 +48,16 @@ func (sc StoreController) Get(c *gin.Context) {
 		c.JSON(200, p)
 	}
 }
+
+// Update action: PATCH /stores/:id
+func (sc StoreController) Update(c *gin.Context) {
+	id := c.Params.ByName("id")
+	p, err := sc.Service.Update(id, c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+	} else {
+		c.JSON(200, p)
+	}
+}

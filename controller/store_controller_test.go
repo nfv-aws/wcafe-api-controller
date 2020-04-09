@@ -51,3 +51,17 @@ func TestCreate(t *testing.T) {
 	controller.Create(c)
 	assert.Equal(t, 201, c.Writer.Status())
 }
+
+func TestUpdate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(service.Store{}, nil)
+	controller := StoreController{Service: serviceMock}
+
+	controller.Update(c)
+	assert.Equal(t, 200, c.Writer.Status())
+}
