@@ -52,7 +52,6 @@ func (sc StoreController) Get(c *gin.Context) {
 // Update action: PATCH /stores/:id
 func (sc StoreController) Update(c *gin.Context) {
 	id := c.Params.ByName("id")
-	//var s service.
 	p, err := sc.Service.Update(id, c)
 
 	if err != nil {

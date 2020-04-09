@@ -96,7 +96,7 @@ paths:
             schema:
               $ref: "#/components/schemas/stores"
       responses:
-        '204':
+        '200':
           description: 更新情報表示
           content:
             application/json:

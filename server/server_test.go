@@ -30,6 +30,13 @@ func TestServer(t *testing.T) {
 		testPOSTMethod(t, "/api/v1/stores")
 		testPOSTMethod(t, "/api/v1/users")
 	})
+	/*
+		t.Run("TEST PATCH Method", func(t *testing.T) {
+			//testPATCHMethod(t, "/api/v1/pets/:id")
+			//testPATCHMethod(t, "/api/v1/stores/:id")
+			//testPATCHMethod(t, "/api/v1/users/:id")
+		})
+	*/
 	tearDown()
 }
 
@@ -53,4 +60,8 @@ func testPOSTMethod(t *testing.T, endpoint string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 201, w.Code)
+}
+
+func testPATCHMethod(t *testing.T, endpoint string) {
+	//test
 }
