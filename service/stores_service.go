@@ -79,17 +79,11 @@ func (s storeService) Get(id string) (Store, error) {
 
 func (s storeService) Update(id string, c *gin.Context) (Store, error) {
 	db := db.GetDB()
-	var u Store
-
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
-		return u, err
-	}
-	if err := c.BindJSON(&u); err != nil {
-		return u, err
-	}
-	if err := db.Save(&u).Error; err != nil {
-		return u, err
-	}
-
+	tmp := Store{} //id格納用のStore
+	tmp.Id = id
+	u := tmp
+	db.First(&u)
+	c.BindJSON(&u)
+	db.Model(&tmp).Update(&u)
 	return u, nil
 }
