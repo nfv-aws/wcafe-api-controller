@@ -8,17 +8,28 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
 
-// Service procides user's behavior
-type UserService struct{}
-
 // User is alias of entity.user struct
 type User entity.User
 
 // User is alias of entity.users struct
 type Users entity.Users
 
-// GetAll is get all user
-func (s UserService) GetAll() (Users, error) {
+// Service procides user's behavior
+type UserService interface {
+	List() (Users, error)
+	Create(c *gin.Context) (User, error)
+	Get(id string) (User, error)
+}
+
+func NewUserService() UserService {
+	return &userService{}
+}
+
+type userService struct {
+}
+
+// List is get all user
+func (s userService) List() (Users, error) {
 	db := db.GetDB()
 	var l Users
 	var u []entity.User
@@ -29,8 +40,8 @@ func (s UserService) GetAll() (Users, error) {
 	return l, nil
 }
 
-// CreateModel is create user model
-func (s UserService) CreateModel(c *gin.Context) (User, error) {
+// Create is create user model
+func (s userService) Create(c *gin.Context) (User, error) {
 	db := db.GetDB()
 	var u User
 
@@ -53,8 +64,8 @@ func (s UserService) CreateModel(c *gin.Context) (User, error) {
 	return u, nil
 }
 
-// GetByID is get a User
-func (s UserService) GetByID(id string) (User, error) {
+// Get is get a User
+func (s userService) Get(id string) (User, error) {
 	db := db.GetDB()
 	var u User
 

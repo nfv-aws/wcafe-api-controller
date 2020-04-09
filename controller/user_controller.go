@@ -1,18 +1,20 @@
 package controller
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nfv-aws/wcafe-api-controller/service"
-	"log"
 )
 
 // Controller is user controlller
-type UserController struct{}
+type UserController struct {
+	Service service.UserService
+}
 
-// Index action: GET /users
-func (uc UserController) Index(c *gin.Context) {
-	var s service.UserService
-	u, err := s.GetAll()
+// List action: GET /users
+func (uc UserController) List(c *gin.Context) {
+	u, err := uc.Service.List()
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -24,8 +26,7 @@ func (uc UserController) Index(c *gin.Context) {
 
 // Create action: POST /users
 func (uc UserController) Create(c *gin.Context) {
-	var s service.UserService
-	u, err := s.CreateModel(c)
+	u, err := uc.Service.Create(c)
 
 	if err != nil {
 		c.AbortWithStatus(400)
@@ -35,11 +36,11 @@ func (uc UserController) Create(c *gin.Context) {
 	}
 }
 
-// Show action: GET /users/:id
-func (uc UserController) Show(c *gin.Context) {
+// Get action: GET /users/:id
+func (uc UserController) Get(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var s service.UserService
-	u, err := s.GetByID(id)
+
+	u, err := uc.Service.Get(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)

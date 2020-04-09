@@ -17,9 +17,9 @@ func router() *gin.Engine {
 
 	p := r.Group("/api/v1")
 	{
-		store_ctrl := controller.StoreController{}
-		p.GET("/stores", store_ctrl.Index)
-		p.GET("/stores/:id", store_ctrl.Show)
+		store_ctrl := controller.StoreController{Service: service.NewStoreService()}
+		p.GET("/stores", store_ctrl.List)
+		p.GET("/stores/:id", store_ctrl.Get)
 		p.POST("/stores", store_ctrl.Create)
 
 		pet_ctrl := controller.PetController{Service: service.NewPetService()}
@@ -29,9 +29,9 @@ func router() *gin.Engine {
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
 
-		user_ctrl := controller.UserController{}
-		p.GET("/users", user_ctrl.Index)
-		p.GET("/users/:id", user_ctrl.Show)
+		user_ctrl := controller.UserController{Service: service.NewUserService()}
+		p.GET("/users", user_ctrl.List)
+		p.GET("/users/:id", user_ctrl.Get)
 		p.POST("/users", user_ctrl.Create)
 
 	}
