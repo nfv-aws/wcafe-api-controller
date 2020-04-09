@@ -53,9 +53,21 @@ curl localhost:8080/pets
 
 ## UnitTest
 
+### Controller層(DBはMock利用)
+
 ```
-cd server
-go test
+cd controller
+go test -v
+
+PASS
+ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
+```
+
+### Service層(DBないとうごきません)
+
+```
+cd service
+go test -v
 
 PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
@@ -64,3 +76,4 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ## 参考
 
 https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
+https://qiita.com/hiroyky/items/4a9be463e752d5c0c41c

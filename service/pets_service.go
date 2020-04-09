@@ -8,17 +8,29 @@ import (
 	"log"
 )
 
-// Service procides pet's behavior
-type PetService struct{}
-
 // User is alias of entity.Pet struct
 type Pet entity.Pet
 
 // User is alias of entity.Pets struct
 type Pets entity.Pets
 
-// GetAll is get all Pet
-func (s PetService) GetAll() (Pets, error) {
+// Service procides pet's behavior
+//type PetService struct{}
+type PetService interface {
+	List() (Pets, error)
+	Create(c *gin.Context) (Pet, error)
+	Get(id string) (Pet, error)
+}
+
+func NewPetService() PetService {
+	return &petService{}
+}
+
+type petService struct {
+}
+
+// List is get all Pet
+func (s petService) List() (Pets, error) {
 	db := db.GetDB()
 	var l Pets
 	var u []entity.Pet
@@ -29,8 +41,8 @@ func (s PetService) GetAll() (Pets, error) {
 	return l, nil
 }
 
-// CreateModel is create Pet model
-func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
+// Create is create Pet model
+func (s petService) Create(c *gin.Context) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
@@ -53,7 +65,7 @@ func (s PetService) CreateModel(c *gin.Context) (Pet, error) {
 }
 
 // GetByID is get a Pet
-func (s PetService) GetByID(id string) (Pet, error) {
+func (s petService) Get(id string) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 

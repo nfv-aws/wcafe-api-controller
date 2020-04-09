@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-
 	"github.com/nfv-aws/wcafe-api-controller/controller"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 // Init is initialize server
@@ -22,9 +22,9 @@ func router() *gin.Engine {
 		p.GET("/stores/:id", store_ctrl.Show)
 		p.POST("/stores", store_ctrl.Create)
 
-		pet_ctrl := controller.PetController{}
-		p.GET("/pets", pet_ctrl.Index)
-		p.GET("/pets/:id", pet_ctrl.Show)
+		pet_ctrl := controller.PetController{Service: service.NewPetService()}
+		p.GET("/pets", pet_ctrl.List)
+		p.GET("/pets/:id", pet_ctrl.Get)
 		p.POST("/pets", pet_ctrl.Create)
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
