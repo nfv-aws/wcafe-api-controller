@@ -56,8 +56,7 @@ curl localhost:8080/pets
 ### Controller層(DBはMock利用)
 
 ```
-cd controller
-go test -v
+go test -v ./controller/...
 
 PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
@@ -66,8 +65,7 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ### Service層(DBないとうごきません)
 
 ```
-cd service
-go test -v
+go test -v ./server/...
 
 PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
