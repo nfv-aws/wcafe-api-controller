@@ -37,6 +37,20 @@ func (pc StoreController) Create(c *gin.Context) {
 	}
 }
 
+// Update action: PATCH /stores/:id
+func (pc StoreController) Update(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var s service.StoreService
+	p, err := s.UpdateByID(id, c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+	} else {
+		c.JSON(200, p)
+	}
+}
+
 // Show action: GET /stores/:id
 func (pc StoreController) Show(c *gin.Context) {
 	id := c.Params.ByName("id")

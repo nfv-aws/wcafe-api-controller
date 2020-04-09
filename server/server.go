@@ -21,6 +21,7 @@ func router() *gin.Engine {
 		p.GET("/stores", store_ctrl.Index)
 		p.GET("/stores/:id", store_ctrl.Show)
 		p.POST("/stores", store_ctrl.Create)
+		p.PATCH("/stores/:id", store_ctrl.Update)
 
 		pet_ctrl := controller.PetController{}
 		p.GET("/pets", pet_ctrl.Index)

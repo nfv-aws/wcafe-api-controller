@@ -52,6 +52,24 @@ func (s StoreService) CreateModel(c *gin.Context) (Store, error) {
 	return u, nil
 }
 
+//Update is update a Store
+func (s StoreService) UpdateByID(id string, c *gin.Context) (Store, error) {
+	db := db.GetDB()
+	var u Store
+
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return u, err
+	}
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+	if err := db.Save(&u).Error; err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
 // GetByID is get a Store
 func (s StoreService) GetByID(id string) (Store, error) {
 	db := db.GetDB()
