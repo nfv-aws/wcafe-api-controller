@@ -30,6 +30,11 @@ func TestServer(t *testing.T) {
 		testPOSTMethod(t, "/api/v1/stores")
 		testPOSTMethod(t, "/api/v1/users")
 	})
+	t.Run("TEST PATCH Method", func(t *testing.T) {
+		testPATCHMethod(t, "/api/v1/pets/:id")
+		//		testPATCHMethod(t, "/api/v1/stores/:id")
+		//		testPATCHMethod(t, "/api/v1/users/:id")
+	})
 	tearDown()
 }
 
@@ -53,4 +58,17 @@ func testPOSTMethod(t *testing.T, endpoint string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 201, w.Code)
+}
+
+func testPATCHMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	bodyReader := strings.NewReader(`{"body": "test"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 200, w.Code)
 }

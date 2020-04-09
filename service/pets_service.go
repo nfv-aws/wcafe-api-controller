@@ -20,6 +20,7 @@ type PetService interface {
 	List() (Pets, error)
 	Create(c *gin.Context) (Pet, error)
 	Get(id string) (Pet, error)
+	Update(id string, c *gin.Context) (Pet, error)
 }
 
 func NewPetService() PetService {
@@ -70,6 +71,22 @@ func (s petService) Get(id string) (Pet, error) {
 	var u Pet
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
+// Update is modify pet
+func (s petService) Update(id string, c *gin.Context) (Pet, error) {
+	db := db.GetDB()
+	var u Pet
+
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+
+	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err
 	}
 

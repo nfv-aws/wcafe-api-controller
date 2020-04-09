@@ -168,6 +168,47 @@ paths:
                   name: toy poodle
                   age: 1
                   store_id: 75a68334-73b8-11ea-bc55-0242ac130003
+    patch:
+      summary: ID指定した商品の更新
+      tags:
+        - pets
+      description: 該当する商品情報を更新
+      parameters:
+       - name: pet_id
+         in: path
+         description: 商品ID
+         required: true
+         schema:
+            type: string
+            format: UUID
+      requestBody: # リクエストボディ
+        description: 商品登録
+        content:
+          application/json:
+            schema: # POSTするオブジェクト
+              type: object
+              properties:
+                pet:
+                  $ref: '#/components/schemas/pets'
+            example:
+              age: 5
+      responses:
+        '200':
+          description: 商品情報更新
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pet:
+                    $ref: '#/components/schemas/pets'
+                example:
+                  id: 65f79f22-73b8-11ea-bc55-0242ac130003
+                  species: Canine
+                  name: toy poodle
+                  age: 5
+                  store_id: 75a68334-73b8-11ea-bc55-0242ac130003
+            
 
   /users:
     get:
@@ -190,9 +231,9 @@ paths:
                       $ref: '#/components/schemas/users'
                 example:
                   users:
-                    - id: UUID
+                    - id: "89043cdf-0c06-4c74-99e6-6ae920"
                       name: "Sano"
-                    - id: UUID
+                    - id: "919dfefd-0b0a-4665-b7d9-a189e2"
                       name: "Suzuki"
     post:
       tags:
@@ -209,10 +250,9 @@ paths:
                 user:
                   $ref: "#/components/schemas/users"
             example:
-              user:
-                name: "Matsuno"
-                address: "Shinagawa"
-                email: "aaa@example.com"
+              name: "Matsuno"
+              address: "Shinagawa"
+              email: "aaa@example.com"
         required: true
       responses:
         '201':
@@ -223,7 +263,13 @@ paths:
                 type: object
                 properties:
                   user:
-                    $ref: '#/components/schemas/users'        
+                    $ref: '#/components/schemas/users'   
+              example:
+                id: "89043cdf-0c06-4c74-99e6-6ae920"
+                number: "0001"
+                name: "Matsuno"
+                address: "Shinagawa"
+                email: "aaa@example.com"
   /users/{user_id}:
     get:
       tags:
@@ -248,7 +294,7 @@ paths:
                   user:
                     $ref: '#/components/schemas/users'
                 example:
-                  id: UUID
+                  id: "89043cdf-0c06-4c74-99e6-6ae920"
                   number: "0003"
                   name: "Sano"
                   address: "Shinagawa"
@@ -319,6 +365,7 @@ components:
       properties:
         id:
           description: ユーザ識別子
+          example: "89043cdf-0c06-4c74-99e6-6ae920"
           type: string
           format: UUID
           readOnly: true
