@@ -79,10 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  store:
-                    $ref: '#/components/schemas/stores'
+                $ref: '#/components/schemas/stores'
   /pets:
     get:
       summary: 商品リスト
@@ -253,6 +250,50 @@ paths:
                   name: "Sano"
                   address: "Shinagawa"
                   email: "sano@example.com"
+    patch:
+      tags: 
+        - users
+      summary: ID指定によるユーザ詳細情報の更新
+      description: ID指定によるユーザ詳細情報の更新
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザ識別子
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: user update
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                number: 1111
+                name: "Abe"
+                address: "Makuhari"
+                email: "aaa@example.com"
+      responses:
+        '202':
+          description: Update a user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    example: 55f79f22-73b8-11ea-bc55-0242ac130003
+                  number: 
+                    example: 1111
+                  name: 
+                    example: "Abe"
+                  address: 
+                    example: "Makuhari"
+                  email: 
+                    example: "aaa@example.com"
+                required: 
+                  - id
+        
 components:
   schemas:
     stores:
@@ -340,3 +381,10 @@ components:
           example: "aaa@example.com"
           type: string
           format: email
+      required: 
+        - id
+        - number
+        - name
+        - address
+        - email
+        
