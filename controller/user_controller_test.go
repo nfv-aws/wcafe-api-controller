@@ -10,43 +10,43 @@ import (
 	"testing"
 )
 
-func TestPetList(t *testing.T) {
+func TestUserList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().List().Return(service.Pets{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock := mocks.NewMockUserService(ctrl)
+	serviceMock.EXPECT().List().Return(service.Users{}, nil)
+	controller := UserController{Service: serviceMock}
 
 	controller.List(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetGet(t *testing.T) {
+func TestUserGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock := mocks.NewMockUserService(ctrl)
+	serviceMock.EXPECT().Get(gomock.Any()).Return(service.User{}, nil)
+	controller := UserController{Service: serviceMock}
 
 	controller.Get(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetCreate(t *testing.T) {
+func TestUserCreate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(c).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock := mocks.NewMockUserService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(service.User{}, nil)
+	controller := UserController{Service: serviceMock}
 
 	controller.Create(c)
 	assert.Equal(t, 201, c.Writer.Status())

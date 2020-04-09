@@ -77,3 +77,13 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 
 https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
 https://qiita.com/hiroyky/items/4a9be463e752d5c0c41c
+
+## Tips
+
+### Mockの作り方
+
+```
+mockgen -source service/pets_service.go -destination mocks/pets_service.go -package mocks
+mockgen -source service/stores_service.go -destination mocks/stores_service.go -package mocks
+mockgen -source service/users_service.go -destination mocks/users_service.go -package mocks
+```
