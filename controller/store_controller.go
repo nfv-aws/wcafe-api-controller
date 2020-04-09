@@ -4,17 +4,17 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 // Controller is store controlller
-type StoreController struct{}
+type StoreController struct {
+	Service service.StoreService
+}
 
-// Index action: GET /stores
-func (pc StoreController) Index(c *gin.Context) {
-	var s service.StoreService
-	p, err := s.GetAll()
+// List action: GET /stores
+func (sc StoreController) List(c *gin.Context) {
+	p, err := sc.Service.List()
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -25,9 +25,8 @@ func (pc StoreController) Index(c *gin.Context) {
 }
 
 // Create action: POST /stores
-func (pc StoreController) Create(c *gin.Context) {
-	var s service.StoreService
-	p, err := s.CreateModel(c)
+func (sc StoreController) Create(c *gin.Context) {
+	p, err := sc.Service.Create(c)
 
 	if err != nil {
 		c.AbortWithStatus(400)
@@ -37,11 +36,10 @@ func (pc StoreController) Create(c *gin.Context) {
 	}
 }
 
-// Show action: GET /stores/:id
-func (pc StoreController) Show(c *gin.Context) {
+// Get action: GET /stores/:id
+func (sc StoreController) Get(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var s service.StoreService
-	p, err := s.GetByID(id)
+	p, err := sc.Service.Get(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)

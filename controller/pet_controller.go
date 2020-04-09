@@ -12,17 +12,9 @@ type PetController struct {
 	Service service.PetService
 }
 
-<<<<<<< HEAD
 // List action: GET /pets
 func (pc PetController) List(c *gin.Context) {
 	p, err := pc.Service.List()
-=======
-// Index action: GET /pets
-func (pc PetController) Index(c *gin.Context) {
-	//var s service.PetService
-	//s := service.NewPetService()
-	p, err := pc.Service.GetAll()
->>>>>>> Add Mock Test Sample
 
 	if err != nil {
 		c.AbortWithStatus(404)

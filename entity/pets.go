@@ -19,5 +19,5 @@ type Pet struct {
 }
 
 type Pets struct {
-	Pets *[]Pet
+	Pets *[]Pet `json:"pets"`
 }

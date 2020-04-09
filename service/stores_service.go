@@ -8,17 +8,28 @@ import (
 	"log"
 )
 
-// Service procides store's behavior
-type StoreService struct{}
-
 // User is alias of entity.Store struct
 type Store entity.Store
 
 // User is alias of entity.stores struct
 type Stores entity.Stores
 
-// GetAll is get all Store
-func (s StoreService) GetAll() (Stores, error) {
+// Service procides store's behavior
+type StoreService interface {
+	List() (Stores, error)
+	Create(c *gin.Context) (Store, error)
+	Get(id string) (Store, error)
+}
+
+func NewStoreService() StoreService {
+	return &storeService{}
+}
+
+type storeService struct {
+}
+
+// List is get all Store
+func (s storeService) List() (Stores, error) {
 	db := db.GetDB()
 	var l Stores
 	var u []entity.Store
@@ -29,8 +40,8 @@ func (s StoreService) GetAll() (Stores, error) {
 	return l, nil
 }
 
-// CreateModel is create Store model
-func (s StoreService) CreateModel(c *gin.Context) (Store, error) {
+// Create is create Store model
+func (s storeService) Create(c *gin.Context) (Store, error) {
 	db := db.GetDB()
 	var u Store
 
@@ -52,8 +63,8 @@ func (s StoreService) CreateModel(c *gin.Context) (Store, error) {
 	return u, nil
 }
 
-// GetByID is get a Store
-func (s StoreService) GetByID(id string) (Store, error) {
+// Get is get a Store
+func (s storeService) Get(id string) (Store, error) {
 	db := db.GetDB()
 	var u Store
 
