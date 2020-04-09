@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-
 	"github.com/nfv-aws/wcafe-api-controller/controller"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 // Init is initialize server
@@ -17,22 +17,22 @@ func router() *gin.Engine {
 
 	p := r.Group("/api/v1")
 	{
-		store_ctrl := controller.StoreController{}
-		p.GET("/stores", store_ctrl.Index)
-		p.GET("/stores/:id", store_ctrl.Show)
+		store_ctrl := controller.StoreController{Service: service.NewStoreService()}
+		p.GET("/stores", store_ctrl.List)
+		p.GET("/stores/:id", store_ctrl.Get)
 		p.POST("/stores", store_ctrl.Create)
 		p.PATCH("/stores/:id", store_ctrl.Update)
 
-		pet_ctrl := controller.PetController{}
-		p.GET("/pets", pet_ctrl.Index)
-		p.GET("/pets/:id", pet_ctrl.Show)
+		pet_ctrl := controller.PetController{Service: service.NewPetService()}
+		p.GET("/pets", pet_ctrl.List)
+		p.GET("/pets/:id", pet_ctrl.Get)
 		p.POST("/pets", pet_ctrl.Create)
 		// p.PUT("/:id", ctrl.Update)
 		// p.DELETE("/:id", ctrl.Delete)
 
-		user_ctrl := controller.UserController{}
-		p.GET("/users", user_ctrl.Index)
-		p.GET("/users/:id", user_ctrl.Show)
+		user_ctrl := controller.UserController{Service: service.NewUserService()}
+		p.GET("/users", user_ctrl.List)
+		p.GET("/users/:id", user_ctrl.Get)
 		p.POST("/users", user_ctrl.Create)
 
 	}
