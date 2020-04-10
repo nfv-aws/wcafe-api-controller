@@ -56,8 +56,7 @@ curl localhost:8080/pets
 ### Controller層(DBはMock利用)
 
 ```
-cd controller
-go test -v
+go test -v ./controller/...
 
 PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
@@ -66,8 +65,7 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ### Service層(DBないとうごきません)
 
 ```
-cd service
-go test -v
+go test -v ./server/...
 
 PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
@@ -77,3 +75,13 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 
 https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
 https://qiita.com/hiroyky/items/4a9be463e752d5c0c41c
+
+## Tips
+
+### Mockの作り方
+
+```
+mockgen -source service/pets_service.go -destination mocks/pets_service.go -package mocks
+mockgen -source service/stores_service.go -destination mocks/stores_service.go -package mocks
+mockgen -source service/users_service.go -destination mocks/users_service.go -package mocks
+```
