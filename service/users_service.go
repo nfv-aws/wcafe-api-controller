@@ -1,11 +1,11 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"log"
 )
 
 // User is alias of entity.user struct
@@ -19,6 +19,7 @@ type UserService interface {
 	List() (Users, error)
 	Create(c *gin.Context) (User, error)
 	Get(id string) (User, error)
+	Update(id string, c *gin.Context) (User, error)
 }
 
 func NewUserService() UserService {
@@ -48,7 +49,7 @@ func (s userService) Create(c *gin.Context) (User, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return u, err
 	}
 
@@ -73,5 +74,17 @@ func (s userService) Get(id string) (User, error) {
 		return u, err
 	}
 
+	return u, nil
+}
+
+// Update is update a User
+func (s userService) Update(id string, c *gin.Context) (User, error) {
+	db := db.GetDB()
+	tmp := User{} //id格納用のUser
+	tmp.Id = id
+	u := tmp
+	db.First(&u)
+	c.BindJSON(&u)
+	db.Model(&tmp).Update(&u)
 	return u, nil
 }

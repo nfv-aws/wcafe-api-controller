@@ -315,6 +315,49 @@ paths:
                   name: "Sano"
                   address: "Shinagawa"
                   email: "sano@example.com"
+    patch:
+      tags: 
+        - users
+      summary: ID指定によるユーザ詳細情報の更新
+      description: ID指定によるユーザ詳細情報の更新
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザ識別子
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: user update
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  $ref: '#/components/schemas/users'
+              example:
+                number: 1111
+                name: "Abe"
+                address: "Makuhari"
+      responses:
+        '202':
+          description: Update a user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    $ref: '#/components/schemas/users'
+                example:
+                  id: 55f79f22-73b8-11ea-bc55-0242ac130003
+                  number: 1111
+                  name: "Abe"
+                  address: "Makuhari"
+                  email: "aaa@example.com"
+                required: 
+                  - id
 components:
   schemas:
     stores:
