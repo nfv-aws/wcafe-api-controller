@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestList(t *testing.T) {
+func TestStoreList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -24,7 +24,7 @@ func TestList(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestGet(t *testing.T) {
+func TestStoreGet(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -38,7 +38,7 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestCreate(t *testing.T) {
+func TestStoreCreate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -52,7 +52,7 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
-func TestUpdate(t *testing.T) {
+func TestStoreUpdate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
