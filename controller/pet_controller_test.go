@@ -51,3 +51,17 @@ func TestPetCreate(t *testing.T) {
 	controller.Create(c)
 	assert.Equal(t, 201, c.Writer.Status())
 }
+
+func TestPetUpdate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(service.Pet{}, nil)
+	controller := PetController{Service: serviceMock}
+
+	controller.Update(c)
+	assert.Equal(t, 200, c.Writer.Status())
+}

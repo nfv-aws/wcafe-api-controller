@@ -49,3 +49,16 @@ func (pc PetController) Get(c *gin.Context) {
 		c.JSON(200, p)
 	}
 }
+
+// Update aciton: PATCH /pets/:id
+func (pc PetController) Update(c *gin.Context) {
+	id := c.Params.ByName("id")
+	p, err := pc.Service.Update(id, c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Println(err)
+	} else {
+		c.JSON(200, p)
+	}
+}
