@@ -32,8 +32,8 @@ func TestServer(t *testing.T) {
 	})
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/:id")
-		//		testPATCHMethod(t, "/api/v1/stores/:id")
-		//		testPATCHMethod(t, "/api/v1/users/:id")
+		testPATCHMethod(t, "/api/v1/stores/:id")
+		testPATCHMethod(t, "/api/v1/users/:id")
 	})
 	tearDown()
 }

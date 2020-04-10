@@ -7,7 +7,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
-// Controller is user controlller
+// Controller is user controller
 type UserController struct {
 	Service service.UserService
 }
@@ -44,6 +44,19 @@ func (uc UserController) Get(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(404)
+		log.Println(err)
+	} else {
+		c.JSON(200, u)
+	}
+}
+
+// Update action: PATCH /users/:id
+func (uc UserController) Update(c *gin.Context) {
+	id := c.Params.ByName("id")
+	u, err := uc.Service.Update(id, c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
 		log.Println(err)
 	} else {
 		c.JSON(200, u)
