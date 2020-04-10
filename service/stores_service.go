@@ -77,13 +77,17 @@ func (s storeService) Get(id string) (Store, error) {
 	return u, nil
 }
 
+// Update is update Store
 func (s storeService) Update(id string, c *gin.Context) (Store, error) {
 	db := db.GetDB()
-	tmp := Store{} //id格納用のStore
-	tmp.Id = id
-	u := tmp
-	db.First(&u)
-	c.BindJSON(&u)
-	db.Model(&tmp).Update(&u)
+	var u Store
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+
+	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
+		return u, err
+	}
+
 	return u, nil
 }

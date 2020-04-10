@@ -235,7 +235,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Get users list
+          description: ユーザ一覧の表示
           content:
             application/json:
               schema:
@@ -257,7 +257,7 @@ paths:
       summary: ユーザ新規作成
       description: ユーザ新規作成
       requestBody:
-        description: user create
+        description: ユーザの新規登録
         content:
           application/json:
             schema:
@@ -272,7 +272,7 @@ paths:
         required: true
       responses:
         '201':
-          description: Created a user
+          description: ユーザの新規登録
           content:
             application/json:
               schema:
@@ -301,7 +301,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Get a user information
+          description: ユーザ情報
           content:
             application/json:
               schema:
@@ -328,7 +328,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description: user update
+        description: ユーザの更新情報
         content:
           application/json:
             schema:
@@ -342,7 +342,7 @@ paths:
                 address: "Makuhari"
       responses:
         '202':
-          description: Update a user information
+          description: ユーザ情報更新
           content:
             application/json:
               schema:
@@ -446,3 +446,4 @@ components:
           example: "aaa@example.com"
           type: string
           format: email
+          

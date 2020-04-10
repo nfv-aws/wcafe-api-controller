@@ -6,7 +6,7 @@ type User struct {
 	Id string `json:"id"`
 
 	// 商品種
-	Number string `json:"number"`
+	Number int `json:"number"`
 
 	// 商品名
 	Name string `json:"name"`

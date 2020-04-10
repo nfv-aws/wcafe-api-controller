@@ -80,11 +80,15 @@ func (s userService) Get(id string) (User, error) {
 // Update is update a User
 func (s userService) Update(id string, c *gin.Context) (User, error) {
 	db := db.GetDB()
-	tmp := User{} //id格納用のUser
-	tmp.Id = id
-	u := tmp
-	db.First(&u)
-	c.BindJSON(&u)
-	db.Model(&tmp).Update(&u)
+	var u User
+
+	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+
+	if err := db.Table("users").Where("id = ?", id).Updates(&u).Error; err != nil {
+		return u, err
+	}
+
 	return u, nil
 }
