@@ -84,13 +84,18 @@ paths:
                   store:
                     $ref: '#/components/schemas/stores'
     patch:
-      summary: 店舗情報更新
+      summary: ID指定による店舗情報の更新
       tags:
-      - stores
-      parameters: []
+        - stores
+      parameters: 
+        - name: store_id
+          in: path
+          description: store識別子
+          required: true
+          schema: 
+            type: string
       requestBody:
-        description: 店舗情報更新
-        required: true
+        description: 店舗の更新情報
         content:
           application/json:
             schema:
@@ -132,10 +137,7 @@ paths:
         content:
           application/json:
             schema: # POSTするオブジェクト
-              type: object
-              properties:
-                pet:
-                  $ref: '#/components/schemas/pets'
+              $ref: '#/components/schemas/pets'
             example:
               species: Canine
               name: Shiba lnu
@@ -147,10 +149,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pet:
-                    $ref: '#/components/schemas/pets'
+                $ref: '#/components/schemas/pets'
               example:
                 id: 7527c67c-bff5-4b62-92cd-0253a417ca7f
                 species: Canine
@@ -178,16 +177,13 @@ paths:
           content:
             application/json:
               schema: 
-                type: object
-                properties:
-                  pet:
-                    $ref: '#/components/schemas/pets'
-                example:
-                  id: 65f79f22-73b8-11ea-bc55-0242ac130003
-                  species: Canine
-                  name: toy poodle
-                  age: 1
-                  store_id: 75a68334-73b8-11ea-bc55-0242ac130003
+                $ref: '#/components/schemas/pets'
+              example:
+                id: 65f79f22-73b8-11ea-bc55-0242ac130003
+                species: Canine
+                name: toy poodle
+                age: 1
+                store_id: 75a68334-73b8-11ea-bc55-0242ac130003
 
   /users:
     get:
