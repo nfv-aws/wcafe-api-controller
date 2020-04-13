@@ -16,7 +16,7 @@ func Init() {
 func router() *gin.Engine {
 	r := gin.Default()
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://http://d2gbl9prtiuivl.cloudfront.net/"}
+	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
 
 	p := r.Group("/api/v1")
