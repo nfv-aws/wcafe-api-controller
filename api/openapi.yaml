@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   version: 1.0.0
   title: wcafe
-  description: wcafe store
+  description: wcafe projectのREST APIだよ
 servers:
   - url: http://{host}:{port}/api/v1
     description: 開発用
