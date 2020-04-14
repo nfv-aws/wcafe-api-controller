@@ -27,4 +27,4 @@ jobs:
     - name: openapi test by swagger
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: echo ${GITHUB_REF**/}
+      run: echo ${GITHUB_REF##*/}
