@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
 
     # Runs a single command using the runners shell
-    - name: openapi.yaml test by swagger
+    - name: openapi test by swagger
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: >
