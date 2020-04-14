@@ -23,7 +23,7 @@ jobs:
     - name: test
       run: |
         echo ${GITHUB_REF}
-        echo ${github.event.repository.branch}
+        echo ${github.head_ref}
   
     # Runs a single command using the runners shell
     - name: openapi test by swagger
