@@ -19,12 +19,7 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-      
-    - name: test
-      run: |
-        echo ${GITHUB_REF}
-        echo ${{github.head_ref}}
-  
+
     # Runs a single command using the runners shell
     - name: openapi test by swagger
       env:
