@@ -29,5 +29,5 @@ jobs:
         -X POST
         -H "Authorization: token $GITHUB_TOKEN"
         -H "Accept: application/vnd.github.v3+json"
-        --data '{"body":"http://d2gbl9prtiuivl.cloudfront.net/swagger/index.html?url=https://raw.githubusercontent.com/nfv-aws/wcafe-api-controller/${{ github.event.branch.name }}/api/openapi.yaml"}'         
+        --data '{"body":"http://d2gbl9prtiuivl.cloudfront.net/swagger/index.html?url=https://raw.githubusercontent.com/nfv-aws/wcafe-api-controller/${{ GITHUB_REF##*/ }}/api/openapi.yaml"}'         
         ${{ github.event.pull_request.comments_url }}
