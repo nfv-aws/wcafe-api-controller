@@ -20,11 +20,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
-    - name: test1
+    - name: test
       run: echo ${GITHUB_REF}
-    
-    - name: test2
-      run: echo ${{GITHUB_REF}}
       
     # Runs a single command using the runners shell
     - name: openapi test by swagger
