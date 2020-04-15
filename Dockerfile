@@ -5,14 +5,14 @@ FROM golang:latest
 WORKDIR /go/src/
 
 #環境変数設定
-# ENV 
-# ENV 
+# ENV [WCAFE_DATABASE_PASSWORD]
+# ENV [WCAFE_DATABASE_ENDPOINT]
 
 #ローカルのデータをコンテナのディレクトリにコピー
 COPY . /go/src/
 
 #buildの実行
-Run go build
+RUN go build
 
 #コンテナ実行時のデフォルトを設定
 CMD ./wcafe-api-controller
