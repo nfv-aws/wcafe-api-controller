@@ -4,9 +4,13 @@ FROM golang:latest
 #ディレクトリ作成
 WORKDIR /go/src/
 
+## 引数設定
+ARG DB_ENDPOINT
+ARG DB_PASS
+
 #環境変数設定
-# ENV [WCAFE_DATABASE_PASSWORD]
-# ENV [WCAFE_DATABASE_ENDPOINT]
+ENV WCAFE_DATABASE_PASSWORD=$DB_PASS
+ENV WCAFE_DATABASE_ENDPOINT=$DB_ENDPOINT
 
 #ローカルのデータをコンテナのディレクトリにコピー
 COPY . /go/src/
