@@ -17,8 +17,8 @@
        {
         "logDriver": "awslogs", 
         "options": {
-          "awslogs-region": "us-west-2", 
-          "awslogs-stream-prefix": "fargate-task-1", 
+          "awslogs-region": "ap-northeast-1", 
+          "awslogs-stream-prefix": "/ecs/wcafe", 
           "awslogs-group": "ecs-log-streaming"
        }
       } 
