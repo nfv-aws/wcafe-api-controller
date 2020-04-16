@@ -16,7 +16,7 @@
     }
   ],
   "requiresCompatibilities": [
-    "E"
+    "EC2"
   ],
   "executionRoleArn": "ecsTaskExecutionRole",
   "cpu": "256",
