@@ -12,16 +12,7 @@
           "protocol": "tcp"
         }
       ],
-      "essential": true,
-      "logConfiguration": 
-       {
-        "logDriver": "awslogs", 
-        "options": {
-          "awslogs-region": "ap-northeast-1", 
-          "awslogs-stream-prefix": "/ecs/wcafe", 
-          "awslogs-group": "ecs-log-streaming"
-       }
-      } 
+      "essential": true
     }
   ],
   "requiresCompatibilities": [
