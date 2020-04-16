@@ -12,7 +12,16 @@
           "protocol": "tcp"
         }
       ],
-      "essential": true
+      "essential": true,
+      "logConfiguration": 
+       {
+        "logDriver": "awslogs", 
+        "options": {
+          "awslogs-region": "us-west-2", 
+          "awslogs-stream-prefix": "fargate-task-1", 
+          "awslogs-group": "ecs-log-streaming"
+       }
+      } 
     }
   ],
   "requiresCompatibilities": [
