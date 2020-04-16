@@ -16,7 +16,7 @@
     }
   ],
   "requiresCompatibilities": [
-    "FARGATE"
+    "E"
   ],
   "executionRoleArn": "ecsTaskExecutionRole",
   "cpu": "256",
