@@ -71,6 +71,21 @@ PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ```
 
+## コンテナ上で動作確認
+イメージ作成
+```
+docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
+```
+
+コンテナの生成と実行
+```
+docker run -d -p 8080:8080 wcafe
+```
+確認
+```
+curl localhost:8080/api/v1/pets
+```
+
 ## 参考
 
 https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
