@@ -3,8 +3,8 @@ name: Golang_Unit_Test
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
 
 jobs:
 
@@ -46,4 +46,4 @@ jobs:
         WCAFE_DATABASE_PASSWORD: ${{ secrets.WCAFE_DATABASE_PASSWORD }}
         WCAFE_DATABASE_ENDPOINT: ${{ secrets.WCAFE_DATABASE_ENDPOINT }}
       run: docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
-    
+      run: docker images
