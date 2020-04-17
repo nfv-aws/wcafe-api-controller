@@ -80,6 +80,8 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: wcafe-service
-        cluster: wcafe-cluster
+       # service: wcafe-service
+       # cluster: wcafe-cluster
+        service: wcafe-ec2-service 
+        cluster: ec2-cluster
         wait-for-service-stability: true
