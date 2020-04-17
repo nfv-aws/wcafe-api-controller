@@ -1,5 +1,5 @@
-[database]
-endpoint = "amazon rds endpoint"
+[db]
+endpoint = "AMAZON_RDS_ENDPOINT"
 user = "admin"
-password = "db password"
+password = "DB_PASSWORD"
 name = "test"
