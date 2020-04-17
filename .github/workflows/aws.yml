@@ -24,10 +24,12 @@
 #    and best practices on handling the access key credentials.
 
 on:
-  push:
-    branches:
-      - master
-
+#  push:
+#    branches:
+#      - master
+  pull_request:
+    types: [opened, synchronize]
+    
 name: Deploy to Amazon ECS
 
 jobs:
