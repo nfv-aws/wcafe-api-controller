@@ -36,14 +36,14 @@ jobs:
   build:
     name: docker build 
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout
-      - uses: actions/checkout@v2
+    
+    - name: checkout
+      uses: actions/checkout@v2
       
-      - name: Build the Docker image
-        env:
-          WCAFE_DATABASE_PASSWORD: ${{ secrets.WCAFE_DATABASE_PASSWORD }}
-          WCAFE_DATABASE_ENDPOINT: ${{ secrets.WCAFE_DATABASE_ENDPOINT }}
-        run: docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
+    - name: Build the Docker image
+      env:
+        WCAFE_DATABASE_PASSWORD: ${{ secrets.WCAFE_DATABASE_PASSWORD }}
+        WCAFE_DATABASE_ENDPOINT: ${{ secrets.WCAFE_DATABASE_ENDPOINT }}
+      run: docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
     
