@@ -25,7 +25,7 @@ func Configure() {
 	viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
 
 	// 環境変数 export WCAFE_XXXで設定値を上書きできるように設定
-	// ex) Database.Password ->  export WCAFE_DATABASE_PASSWORD
+	// ex) Database.Password ->  export WCAFE_DB_PASSWORD
 	viper.SetEnvPrefix("wcafe")
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))

@@ -30,8 +30,8 @@ bashrcとかに以下を追記
 ```
 vi ~/.bashrc
 
-export WCAFE_DATABASE_PASSWORD=password
-export WCAFE_DATABASE_ENDPOINT=endpoint
+export WCAFE_DB_PASSWORD=password
+export WCAFE_DB_ENDPOINT=endpoint
 
 source ~/.bashrc
 ```
@@ -48,7 +48,7 @@ vi config/config.toml
 ```
 go run main.go
 
-curl localhost:8080/pets
+curl localhost:8080/api/v1/pets
 ```
 
 ## UnitTest
@@ -74,7 +74,7 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ## コンテナ上で動作確認
 イメージ作成
 ```
-docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
+docker build --build-arg DB_PASS=$(echo $WCAFE_DB_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DB_ENDPOINT) -t wcafe .
 ```
 
 コンテナの生成と実行
