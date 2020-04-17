@@ -1,4 +1,4 @@
-[database]
+[db]
 endpoint = "AMAZON_RDS_ENDPOINT"
 user = "admin"
 password = "DB_PASSWORD"

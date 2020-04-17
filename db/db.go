@@ -16,10 +16,10 @@ var (
 func Init() {
 	config.Configure()
 
-	user := config.C.Database.User
-	pass := config.C.Database.Password
-	endpoint := config.C.Database.Endpoint
-	dbname := config.C.Database.Name
+	user := config.C.DB.User
+	pass := config.C.DB.Password
+	endpoint := config.C.DB.Endpoint
+	dbname := config.C.DB.Name
 	db, err = gorm.Open("mysql", user+":"+pass+"@("+endpoint+")/"+dbname+"?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)

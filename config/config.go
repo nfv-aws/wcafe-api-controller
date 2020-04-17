@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	Database struct {
+	DB struct {
 		Endpoint string
 		User     string
 		Password string
