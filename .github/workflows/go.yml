@@ -43,6 +43,6 @@ jobs:
       
     - name: Build the Docker image
       env:
-        WCAFE_DATABASE_PASSWORD: ${{ secrets.WCAFE_DATABASE_PASSWORD }}
-        WCAFE_DATABASE_ENDPOINT: ${{ secrets.WCAFE_DATABASE_ENDPOINT }}
-      run: docker build --build-arg DB_PASS=$(echo $WCAFE_DATABASE_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DATABASE_ENDPOINT) -t wcafe .
+        WCAFE_DB_PASSWORD: ${{ secrets.WCAFE_DB_PASSWORD }}
+        WCAFE_DB_ENDPOINT: ${{ secrets.WCAFE_DB_ENDPOINT }}
+      run: docker build --build-arg DB_PASS=$(echo $WCAFE_DB_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DB_ENDPOINT) -t wcafe .
