@@ -1,4 +1,4 @@
-# Golang Rest Sample
+# wcafe Rest Sample
 
 ## これなに
 
