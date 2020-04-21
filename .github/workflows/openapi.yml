@@ -40,7 +40,7 @@ jobs:
       env:
         SLACK_CHANNEL: github-actions-result
         SLACK_ICON: https://github.com/rtCamp.png?size=48
-        SLACK_MESSAGE: '${{github.repository}}: ${{job.status}}'
-        SLACK_TITLE: Action Failure
+        SLACK_MESSAGE: '${{github.repository}}: ${{github.head_ref}}: ${{job.status}}'
+        SLACK_TITLE: Action Result
         SLACK_USERNAME: rtBot
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
