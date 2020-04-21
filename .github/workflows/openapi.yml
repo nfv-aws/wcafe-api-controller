@@ -31,3 +31,16 @@ jobs:
         -H "Accept: application/vnd.github.v3+json"
         --data '{"body":"http://d2gbl9prtiuivl.cloudfront.net/swagger/index.html?url=https://raw.githubusercontent.com/nfv-aws/wcafe-api-controller/${{github.head_ref}}/api/openapi.yaml"}'         
         ${{ github.event.pull_request.comments_url }}
+
+    - name: Slack Notification
+      # 前Stepの実行結果を判定
+      # success() or failure() or always()
+      if: always()
+      uses: rtCamp/action-slack-notify@master
+      env:
+        SLACK_CHANNEL: github-actions-result
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: ':fire::fire::fire:${{github.repository}}: Action failed..:fire::fire::fire:'
+        SLACK_TITLE: Action Failure
+        SLACK_USERNAME: rtBot
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
