@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/RaMin0/gin-health-check"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/nfv-aws/wcafe-api-controller/controller"
@@ -18,6 +19,9 @@ func router() *gin.Engine {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
+
+	// health check
+	r.Use(healthcheck.Default())
 
 	p := r.Group("/api/v1")
 	{
