@@ -32,25 +32,15 @@ jobs:
         --data '{"body":"http://d2gbl9prtiuivl.cloudfront.net/swagger/index.html?url=https://raw.githubusercontent.com/nfv-aws/wcafe-api-controller/${{github.head_ref}}/api/openapi.yaml"}'         
         ${{ github.event.pull_request.comments_url }}
 
-    - name: Get Status Success
+    - name: Slack Notification
       # 前Stepの実行結果を判定
       # success() or failure() or always()
-      if: success()
-      env:
-        STATUS: ':tada::tada::tada:${{ job.status }}:tada::tada::tada:'
-        
-    - name: Get Status Failur
-      if: failure()
-      env:
-        STATUS: ':fire::fire:${{ job.status }}:fire::fire:'
-
-    - name: Slack Notification
       if: always()
       uses: rtCamp/action-slack-notify@master
       env:
         SLACK_CHANNEL: github-actions-result
         SLACK_ICON: https://github.com/rtCamp.png?size=48
-        SLACK_MESSAGE: '${{github.repository}}: ${{github.head_ref}}: $STATUS'
+        SLACK_MESSAGE: '${{github.head_ref}}: ${{ job.status }}'
         SLACK_TITLE: Action Result：　${{github.repository}}
         SLACK_USERNAME: rtBot
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
