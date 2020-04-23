@@ -3,19 +3,19 @@ package entity
 type Store struct {
 
 	// 店の識別子
-	Id string `json:"id"; not null; primary key; type:varchar(255)`
+	Id string `gorm:"NOT NULL;primary_key;type:varchar(255)" json:"id"`
 
 	// 店名
-	Name string `json:"name"; not null; type:varchar(255)`
+	Name string `gorm:"NOT NULL;type:varchar(255)" json:"name"`
 
 	// 店の種類
-	Tag string `json:"tag"; not null; type:varchar(255)`
+	Tag string `gorm:"NOT NULL;type:varchar(255)" json:"tag"`
 
 	// 住所
-	Address string `json:"address"; not null; type:varchar(255)`
+	Address string `gorm:"NOT NULL;type:varchar(255)" json:"address"`
 
 	// 店の強み
-	StrongPoint string `json:"strong_point,omitempty"; type:varchar(255)`
+	StrongPoint string `gorm:"type:varchar(255)" json:"strong_point"`
 }
 
 type Stores struct {

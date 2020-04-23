@@ -3,19 +3,19 @@ package entity
 type User struct {
 
 	// 商品の識別子
-	Id string `json:"id";gorm:"not null;primary_key;type:varchar(255)"`
+	Id string `gorm:"NOT NULL;primary_key;type:varchar(255)" json:"id"`
 
 	// 商品種
-	Number int32 `json:"number";gorm:"type:int(32)"`
+	Number int32 `gorm:"type:int(32)" json:"number"`
 
 	// 商品名
-	Name string `json:"name";gorm:"type:varchar(255)"`
+	Name string `gorm:"type:varchar(255)" json:"name"`
 
 	// 商品の年齢
-	Address string `json:"address";gorm:"type:varchar(255)"`
+	Address string `gorm:"type:varchar(255)" json:"address"`
 
 	// 店の識別子
-	Email string `json:"email";gorm:"type:varchar(255)"`
+	Email string `gorm:"type:varchar(255)" json:"email"`
 }
 
 type Users struct {

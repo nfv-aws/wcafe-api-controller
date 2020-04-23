@@ -3,19 +3,19 @@ package entity
 type Pet struct {
 
 	// 商品の識別子
-	Id string `json:"id"; unique; not null; primary key; read only; type:varchar(255)`
+	Id string `gorm:"unique;NOT NULL;primary_key;type:varchar(255)" json:"id"`
 
 	// 商品種
-	Species string `json:"species"; not null; type:varchar(255)`
+	Species string `gorm:"NOT NULL;type:varchar(255)" json:"species"`
 
 	// 商品名
-	Name string `json:"name"; not null; type:varchar(255)`
+	Name string `gorm:"NOT NULL;type:varchar(255)" json:"name"`
 
 	// 商品の年齢
-	Age int32 `json:"age"; not null; type:int(11)`
+	Age int32 `gorm:"NOT NULL;type:int(11)" json:"age"`
 
 	// 店の識別子
-	StoreId string `json:"store_id"; not null; type:varchar(255)`
+	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id"`
 }
 
 type Pets struct {
