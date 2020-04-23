@@ -1,6 +1,9 @@
 package service
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
@@ -57,10 +60,28 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
 	u.Id = id.String()
+	u.Status = "PENDING_CREATE"
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
+
+	AWS_REGION := "ap-northeast-1"
+	sess := session.Must(session.NewSession(&aws.Config{Region: &AWS_REGION}))
+
+	svc := sqs.New(sess)
+	QUEUE_URL := "https://sqs.ap-northeast-1.amazonaws.com/292364111734/REST-petstest"
+
+	result, err := svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     &QUEUE_URL,
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("SendMessage Error", err)
+	}
+	log.Println("Success", *result.MessageId)
 
 	return u, nil
 }
