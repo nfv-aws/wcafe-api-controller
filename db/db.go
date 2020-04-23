@@ -40,7 +40,7 @@ func Close() {
 }
 
 func autoMigration() {
-	db.AutoMigrate(&entity.Pet{})
 	db.AutoMigrate(&entity.Store{})
+	db.AutoMigrate(&entity.Pet{}).AddForeignKey("store_id", "stores(id)", "RESTRICT", "RESTRICT")
 	db.AutoMigrate(&entity.User{})
 }
