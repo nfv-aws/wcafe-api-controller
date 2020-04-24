@@ -3,10 +3,10 @@ package entity
 type User struct {
 
 	// 商品の識別子
-	Id string `gorm:"NOT NULL;primary_key;type:varchar(255)" json:"id"`
+	Id string `gorm:"type:varchar(255)" json:"id"`
 
 	// 商品種
-	Number int32 `gorm:"type:int(32)" json:"number"`
+	Number int32 `gorm:"type:int(32) AUTO_INCREMENT;NOT NULL;unique" json:"number"`
 
 	// 商品名
 	Name string `gorm:"type:varchar(255)" json:"name"`
