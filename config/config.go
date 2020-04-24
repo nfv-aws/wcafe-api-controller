@@ -14,6 +14,10 @@ type Config struct {
 		Password string
 		Name     string
 	}
+	SQS struct {
+		Region    string
+		Queue_Url string
+	}
 }
 
 var C Config
