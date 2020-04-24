@@ -1,8 +1,6 @@
 package controller
 
 import (
-
-	//	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gin-gonic/gin"
 	"github.com/nfv-aws/wcafe-api-controller/service"
 	"log"
