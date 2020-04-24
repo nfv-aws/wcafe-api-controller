@@ -73,6 +73,7 @@ paths:
           required: true
           schema:
             type: string
+            format: UUID
       responses:
         '200':
           description: 取得に成功
@@ -94,6 +95,7 @@ paths:
           required: true
           schema: 
             type: string
+            format: UUID
       requestBody:
         description: 店舗の更新情報
         content:
@@ -159,6 +161,7 @@ paths:
           required: true
           schema:
             type: string
+            format: UUID
       responses:
         '200':
           description: 商品情報
@@ -179,6 +182,7 @@ paths:
          required: true
          schema:
             type: string
+            format: UUID
       requestBody: # リクエストボディ
         description: 商品登録
         content:
@@ -229,10 +233,10 @@ paths:
                 example:
                   users:
                     - id: "89043cdf-0c06-4c74-99e6-6ae920"
-                      number: 0001
+                      number: 1
                       name: "Sano"
                     - id: "919dfefd-0b0a-4665-b7d9-a189e2"
-                      number: 0002
+                      number: 2
                       name: "Suzuki"
     post:
       tags:
@@ -261,7 +265,7 @@ paths:
                     $ref: '#/components/schemas/users'   
               example:
                 id: "89043cdf-0c06-4c74-99e6-6ae920"
-                number: 0001
+                number: 1
                 name: "Matsuno"
                 address: "Shinagawa"
                 email: "aaa@example.com"
@@ -279,6 +283,7 @@ paths:
           required: true
           schema:
             type: string
+            format: UUID
       responses:
         '200':
           description: ユーザ情報
@@ -302,6 +307,7 @@ paths:
           required: true
           schema:
             type: string
+            format: UUID
       requestBody:
         description: ユーザの更新情報
         content:
