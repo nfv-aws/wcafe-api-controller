@@ -16,6 +16,9 @@ type Pet struct {
 
 	// 店の識別子
 	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id"`
+
+	// ステータス
+	Status string `json:"status"`
 }
 
 type Pets struct {

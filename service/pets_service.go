@@ -1,12 +1,31 @@
 package service
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"log"
 )
+
+var (
+	svc        *sqs.SQS
+	aws_region string
+	queue_url  string
+)
+
+func Init() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	queue_url = config.C.SQS.Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	svc := sqs.New(sess)
+	return svc
+}
 
 // User is alias of entity.Pet struct
 type Pet entity.Pet
@@ -57,10 +76,23 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
 	u.Id = id.String()
+	u.Status = "PENDING_CREATE"
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
+
+	svc := Init()
+	result, err := svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     aws.String(queue_url),
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("SendMessage Error", err)
+	}
+	log.Println("Success", *result.MessageId)
 
 	return u, nil
 }

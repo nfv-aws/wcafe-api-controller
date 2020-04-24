@@ -1,10 +1,9 @@
 package controller
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/nfv-aws/wcafe-api-controller/service"
+	"log"
 )
 
 // Controller is pet controlller
