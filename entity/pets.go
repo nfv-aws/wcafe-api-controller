@@ -3,7 +3,7 @@ package entity
 type Pet struct {
 
 	// 商品の識別子
-	Id string `gorm:"unique;NOT NULL;primary_key;type:varchar(255)" json:"id"`
+	Id string `gorm:"type:varchar(255)" json:"id"`
 
 	// 商品種
 	Species string `gorm:"NOT NULL;type:varchar(255)" json:"species"`
