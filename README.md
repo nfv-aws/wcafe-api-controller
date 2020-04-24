@@ -1,4 +1,4 @@
-# Golang Rest Sample
+# wcafe Rest Sample
 
 ## これなに
 
@@ -23,7 +23,7 @@ go get github.com/jinzhu/gorm/dialects/mysql
 go get github.com/google/uuid
 ```
 
-### DB初期設定
+### DBとSQSの初期設定
 
 bashrcとかに以下を追記
 
@@ -32,6 +32,8 @@ vi ~/.bashrc
 
 export WCAFE_DB_PASSWORD=password
 export WCAFE_DB_ENDPOINT=endpoint
+export WCAFE_SQS_REGION=region
+export WCAFE_SQS_QUEUE_URL=queue_url
 
 source ~/.bashrc
 ```

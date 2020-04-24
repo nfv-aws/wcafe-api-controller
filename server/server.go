@@ -19,6 +19,11 @@ func router() *gin.Engine {
 	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
 
+	// health check
+	r.GET("/health", func(c *gin.Context) {
+		c.String(200, "%s", "ok")
+	})
+
 	p := r.Group("/api/v1")
 	{
 		store_ctrl := controller.StoreController{Service: service.NewStoreService()}
