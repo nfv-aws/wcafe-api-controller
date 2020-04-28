@@ -60,6 +60,22 @@ paths:
             application/json:
               schema:
                $ref: "#/components/schemas/stores"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+        '503':
+          description: サーバエラー
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 503
+                  message: Service Unavailable
 
   /stores/{store_id}:
     get:
