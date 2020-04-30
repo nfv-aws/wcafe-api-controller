@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/RaMin0/gin-health-check v0.0.0-20180807004848-a677317b3f01
+	github.com/aws/aws-sdk-go v1.30.17
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.2
 	github.com/golang/mock v1.4.3

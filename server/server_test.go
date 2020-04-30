@@ -1,10 +1,14 @@
 package server
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -26,9 +30,9 @@ func TestServer(t *testing.T) {
 		testGETMethod(t, "/api/v1/users")
 	})
 	t.Run("TEST POST Method", func(t *testing.T) {
-		testPOSTMethod(t, "/api/v1/pets")
-		testPOSTMethod(t, "/api/v1/stores")
-		testPOSTMethod(t, "/api/v1/users")
+		testPOSTPetMethod(t, "/api/v1/pets")
+		testPOSTStoreMethod(t, "/api/v1/stores")
+		testPOSTUserMethod(t, "/api/v1/users")
 	})
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/:id")
@@ -47,9 +51,44 @@ func testGETMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
-func testPOSTMethod(t *testing.T, endpoint string) {
+func testPOSTPetMethod(t *testing.T, endpoint string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"body": "test"}`)
+	var store []entity.Store
+	db := db.GetDB()
+	db.Find(&store)
+	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 0, "store_id":"` + store[0].Id + `"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 201, w.Code)
+}
+
+func testPOSTStoreMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	bodyReader := strings.NewReader(`{"name": "` + random() + `","tag":"abc","address":"Tokyo"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 201, w.Code)
+}
+
+func random() string {
+	var n uint64
+	binary.Read(rand.Reader, binary.LittleEndian, &n)
+	return strconv.FormatUint(n, 36)
+}
+
+func testPOSTUserMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	bodyReader := strings.NewReader(`{"name": "test man"}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
