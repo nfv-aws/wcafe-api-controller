@@ -15,29 +15,38 @@ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 
 ## 使い方
 
+## 事前準備
+* RDSでMysql5.7.22のDBを作成してエンドポイントが分かる状態にしておく
+* SQSで標準キューのQueueを作成してエンドポイントが分かる状態にしておく
+
 ### パッケージインストール
 
 ```
 go get github.com/jinzhu/gorm
 go get github.com/jinzhu/gorm/dialects/mysql
 go get github.com/google/uuid
+github.com/aws/aws-sdk-go/aws
+github.com/aws/aws-sdk-go/aws/session
+github.com/aws/aws-sdk-go/service/sqs
 ```
 
-### DB初期設定
+### 環境設定
 
-bashrcとかに以下を追記
+DB設定とAWSのSQS操作用の設定を追加
 
 ```
 vi ~/.bashrc
 
 export WCAFE_DB_PASSWORD=password
 export WCAFE_DB_ENDPOINT=endpoint
+export WCAFE_SQS_REGION=region
+export WCAFE_SQS_QUEUE_URL=queue_url
 
 source ~/.bashrc
 ```
 
 
-ユーザーやDB名は以下でも編集可能
+ユーザーやDB名、キューのURLは以下でも編集可能
 
 ```
 vi config/config.toml
