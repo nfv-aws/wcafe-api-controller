@@ -10,13 +10,13 @@ type Store struct {
 	Id string `gorm:"type:varchar(255)" json:"id"`
 
 	// 店名
-	Name string `gorm:"type:varchar(255);NOT NULL;unique" json:"name"`
+	Name string `gorm:"type:varchar(255);NOT NULL;unique" json:"name" binding:"required"`
 
 	// 店の種類
-	Tag string `gorm:"type:varchar(255);NOT NULL" json:"tag"`
+	Tag string `gorm:"type:varchar(255);NOT NULL" json:"tag" binding:"required"`
 
 	// 住所
-	Address string `gorm:"type:varchar(255);NOT NULL" json:"address"`
+	Address string `gorm:"type:varchar(255);NOT NULL" json:"address" binding:"required"`
 
 	// 店の強み
 	StrongPoint string `gorm:"type:varchar(255)" json:"strong_point"`
