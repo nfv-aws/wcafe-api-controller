@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"time"
+)
+
 type User struct {
 
 	// 商品の識別子
@@ -16,6 +20,12 @@ type User struct {
 
 	// 店の識別子
 	Email string `gorm:"type:varchar(255)" json:"email"`
+
+	//作成日時
+	CreatedAt time.Time `json:"created_time"`
+
+	//更新日時
+	UpdatedAt time.Time `json:"updated_time"`
 }
 
 type Users struct {

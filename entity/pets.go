@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"time"
+)
+
 type Pet struct {
 
 	// 商品の識別子
@@ -16,6 +20,12 @@ type Pet struct {
 
 	// 店の識別子
 	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id"`
+
+	//作成日時
+	CreatedAt time.Time `json:"created_time"`
+
+	//更新日時
+	UpdatedAt time.Time `json:"updated_time"`
 
 	// ステータス
 	Status string `json:"status"`
