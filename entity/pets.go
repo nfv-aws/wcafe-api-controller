@@ -10,16 +10,16 @@ type Pet struct {
 	Id string `gorm:"type:varchar(255)" json:"id"`
 
 	// 商品種
-	Species string `gorm:"NOT NULL;type:varchar(255)" json:"species"`
+	Species string `gorm:"NOT NULL;type:varchar(255)" json:"species" binding:"required"`
 
 	// 商品名
-	Name string `gorm:"NOT NULL;type:varchar(255)" json:"name"`
+	Name string `gorm:"NOT NULL;type:varchar(255)" json:"name" binding:"required"`
 
 	// 商品の年齢
-	Age int32 `gorm:"NOT NULL;type:int(11)" json:"age"`
+	Age int32 `gorm:"NOT NULL;type:int(11)" json:"age" binding:"required"`
 
 	// 店の識別子
-	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id"`
+	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id" binding:"required"`
 
 	//作成日時
 	CreatedAt time.Time `json:"created_time"`

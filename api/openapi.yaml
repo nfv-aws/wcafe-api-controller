@@ -348,12 +348,9 @@ components:
           type: string
           readOnly: true
       required:
-        - id
         - name  
         - tag
         - address
-        - created_at
-        - updated_at
           
     pets:
       type: object
@@ -392,13 +389,10 @@ components:
           type: string
           readOnly: true
       required: 
-        - id
         - species
         - name
         - age
         - store_id
-        - created_at
-        - updated_at
         
     users:
       type: object
@@ -438,7 +432,4 @@ components:
           type: string
           readOnly: true
       required: 
-        - id
         - number
-        - created_at
-        - updated_at

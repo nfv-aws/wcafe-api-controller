@@ -7,7 +7,7 @@ import (
 type Store struct {
 
 	// 店の識別子
-	Id string `gorm:"type:varchar(255)" json:"id"`
+	Id string `gorm:"type:varchar(255)" json:"id" `
 
 	// 店名
 	Name string `gorm:"type:varchar(255);NOT NULL;unique" json:"name" binding:"required"`
