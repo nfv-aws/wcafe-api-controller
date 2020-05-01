@@ -6,6 +6,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"log"
+	"time"
 )
 
 // User is alias of entity.Store struct
@@ -80,10 +81,18 @@ func (s storeService) Get(id string) (Store, error) {
 // Update is update Store
 func (s storeService) Update(id string, c *gin.Context) (Store, error) {
 	db := db.GetDB()
-	var u Store
+	var u, st Store
+
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
+	//作成日・更新日を取得
+	if err := db.Where("id = ?", id).First(&st).Error; err != nil {
+		return u, err
+	}
+	u.CreatedAt = st.CreatedAt
+	u.UpdatedAt = time.Now()
 
 	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err

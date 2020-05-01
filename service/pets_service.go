@@ -10,6 +10,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"log"
+	"time"
 )
 
 var (
@@ -112,11 +113,18 @@ func (s petService) Get(id string) (Pet, error) {
 // Update is modify pet
 func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	db := db.GetDB()
-	var u Pet
+	var u, pt Pet
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
+	//作成日・更新日を取得
+	if err := db.Where("id = ?", id).First(&pt).Error; err != nil {
+		return u, err
+	}
+	u.CreatedAt = pt.CreatedAt
+	u.UpdatedAt = time.Now()
 
 	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err
