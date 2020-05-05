@@ -6,11 +6,13 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/stretchr/testify/assert"
+	math_rand "math/rand"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func setup() {
@@ -34,10 +36,19 @@ func TestServer(t *testing.T) {
 		testPOSTStoreMethod(t, "/api/v1/stores")
 		testPOSTUserMethod(t, "/api/v1/users")
 	})
+
+	var pet []entity.Pet
+	var store []entity.Store
+	var user []entity.User
+	db := db.GetDB()
+	db.Find(&pet)
+	db.Find(&store)
+	db.Find(&user)
+
 	t.Run("TEST PATCH Method", func(t *testing.T) {
-		testPATCHMethod(t, "/api/v1/pets/:id")
-		testPATCHMethod(t, "/api/v1/stores/:id")
-		testPATCHMethod(t, "/api/v1/users/:id")
+		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
+		testPATCHMethod(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
+		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":111}`)
 	})
 	tearDown()
 }
@@ -56,7 +67,7 @@ func testPOSTPetMethod(t *testing.T, endpoint string) {
 	var store []entity.Store
 	db := db.GetDB()
 	db.Find(&store)
-	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 0, "store_id":"` + store[0].Id + `"}`)
+	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 1, "store_id":"` + store[0].Id + `"}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -88,7 +99,9 @@ func random() string {
 
 func testPOSTUserMethod(t *testing.T, endpoint string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"name": "test man"}`)
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+	bodyReader := strings.NewReader(`{"number":` + strconv.Itoa(random_num) + `}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -99,9 +112,9 @@ func testPOSTUserMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, 201, w.Code)
 }
 
-func testPATCHMethod(t *testing.T, endpoint string) {
+func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"body": "test"}`)
+	bodyReader := strings.NewReader(body)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
