@@ -6,11 +6,13 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/stretchr/testify/assert"
+	math_rand "math/rand"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func setup() {
@@ -97,7 +99,10 @@ func random() string {
 
 func testPOSTUserMethod(t *testing.T, endpoint string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"number":100}`)
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+	s := strconv.Itoa(random_num)
+	bodyReader := strings.NewReader(`{"number":` + s + `}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -110,7 +115,6 @@ func testPOSTUserMethod(t *testing.T, endpoint string) {
 
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
-	// bodyReader := strings.NewReader(`{"body": "test"}`)
 	bodyReader := strings.NewReader(body)
 	router := router()
 	w := httptest.NewRecorder()
