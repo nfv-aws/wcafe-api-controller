@@ -339,12 +339,12 @@ components:
           type: string
         created_at:
           description: 作成日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
         updated_at:
           description: 更新日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
       required:
@@ -380,12 +380,12 @@ components:
           format: UUID
         created_at:
           description: 作成日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
         updated_at:
           description: 更新日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
       required: 
@@ -423,12 +423,12 @@ components:
           format: email
         created_at:
           description: 作成日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
         updated_at:
           description: 更新日時
-          example: 2020-05-01 00:49:07
+          example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
       required: 

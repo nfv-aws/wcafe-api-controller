@@ -59,6 +59,6 @@ func (uc UserController) Update(c *gin.Context) {
 		c.AbortWithStatus(400)
 		log.Println(err)
 	} else {
-		c.JSON(200, u)
+		c.JSON(202, u)
 	}
 }
