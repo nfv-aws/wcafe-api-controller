@@ -114,6 +114,7 @@ func testPOSTUserMethod(t *testing.T, endpoint string) {
 
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
+
 	bodyReader := strings.NewReader(body)
 	router := router()
 	w := httptest.NewRecorder()

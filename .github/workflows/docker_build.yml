@@ -1,0 +1,36 @@
+name: Docker_Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    name: docker build 
+    runs-on: ubuntu-latest
+    steps:
+        
+    - name: checkout
+      uses: actions/checkout@v2
+      
+    - name: Build the Docker image
+      env:
+        WCAFE_DB_PASSWORD: ${{ secrets.WCAFE_DB_PASSWORD }}
+        WCAFE_DB_ENDPOINT: ${{ secrets.WCAFE_DB_ENDPOINT }}
+      run: docker build --build-arg DB_PASS=$(echo $WCAFE_DB_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DB_ENDPOINT) -t wcafe .
+    
+    - name: Slack Notification
+      # 前Stepの実行結果を判定
+      # success() or failure() or always()
+      if: failure()
+      uses: rtCamp/action-slack-notify@master
+      env:
+        SLACK_CHANNEL: github-actions-result
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: ':fire::fire::fire:${{github.head_ref}}: ${{ job.status }}:fire::fire::fire:'
+        SLACK_TITLE: Action Result （${{github.repository}}）
+        SLACK_USERNAME: rtBot
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
