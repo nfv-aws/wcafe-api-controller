@@ -1,6 +1,8 @@
 package service
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
@@ -61,6 +63,17 @@ func (s storeService) Create(c *gin.Context) (Store, error) {
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
+
+	svc := Init()
+	result, err := svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     aws.String(queue_url),
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("Store SendMessage Error", err)
+	}
+	log.Println("Store Success", *result.MessageId)
 
 	return u, nil
 }
