@@ -37,7 +37,7 @@ func router() *gin.Engine {
 		p.GET("/pets/:id", pet_ctrl.Get)
 		p.POST("/pets", pet_ctrl.Create)
 		p.PATCH("/pets/:id", pet_ctrl.Update)
-		// p.DELETE("/:id", ctrl.Delete)
+		p.DELETE("/pets/:id", pet_ctrl.Delete)
 
 		user_ctrl := controller.UserController{Service: service.NewUserService()}
 		p.GET("/users", user_ctrl.List)

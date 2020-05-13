@@ -63,7 +63,7 @@ paths:
 
   /stores/{store_id}:
     get:
-      summary: 選択された店舗情報を取得
+      summary: ID指定による店舗情報を取得
       tags:
         - stores
       parameters:
@@ -168,7 +168,7 @@ paths:
                 $ref: '#/components/schemas/pets'
 
     patch:
-      summary: ID指定した商品の更新
+      summary: ID指定による商品の更新
       tags:
         - pets
       description: 該当する商品情報を更新
@@ -204,6 +204,22 @@ paths:
                   name: "toy poodle"
                   age: 5
                   store_id: "75a68334-73b8-11ea-bc55-0242ac130003"
+                  
+    delete:
+      summary: ID指定による商品情報の削除
+      tags:
+        - pets
+      parameters: 
+        - name: pet_id
+          in: path
+          description: 商品ID
+          required: true
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '204':
+          description: 商品情報削除
             
   /users:
     get:
