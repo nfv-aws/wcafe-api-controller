@@ -43,7 +43,6 @@ export WCAFE_SQS_REGION=region
 export WCAFE_SQS_PETS_QUEUE_URL=queue_url_1
 export WCAFE_SQS_Stores_QUEUE_URL=queue_url_2
 
-
 source ~/.bashrc
 ```
 
