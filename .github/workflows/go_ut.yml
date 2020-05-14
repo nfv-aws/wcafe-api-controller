@@ -2,7 +2,7 @@ name: Golang_Unit_Test
 
 on:
   push:
-    branches[add_git_hub_action]
+    branches: [add_git_hub_actions]
   #   branches: [ master ]
   # pull_request:
   #   branches: [ master ]
