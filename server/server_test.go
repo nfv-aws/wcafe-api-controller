@@ -48,8 +48,15 @@ func TestServer(t *testing.T) {
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
 		testPATCHMethod(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
-		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":111}`)
+		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":334}`)
 	})
+
+	t.Run("TEST DELETE Method", func(t *testing.T) {
+		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
+		// testDELETEMethod(t, "/api/v1/stores/"+store[0].Id)
+		// testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
+	})
+
 	tearDown()
 }
 
@@ -124,4 +131,13 @@ func testPATCHMethod(t *testing.T, endpoint string, body string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
+}
+
+func testDELETEMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", endpoint, nil)
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 204, w.Code)
 }

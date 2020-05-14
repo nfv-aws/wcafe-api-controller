@@ -41,6 +41,7 @@ type PetService interface {
 	Create(c *gin.Context) (Pet, error)
 	Get(id string) (Pet, error)
 	Update(id string, c *gin.Context) (Pet, error)
+	Delete(id string) (Pet, error)
 }
 
 func NewPetService() PetService {
@@ -127,6 +128,18 @@ func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	u.UpdatedAt = time.Now()
 
 	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
+//  Delete is delete a pet
+func (s petService) Delete(id string) (Pet, error) {
+	db := db.GetDB()
+	var u Pet
+
+	if err := db.Table("pets").Where("id = ?", id).Delete(&u).Error; err != nil {
 		return u, err
 	}
 

@@ -63,5 +63,5 @@ func TestUserUpdate(t *testing.T) {
 	controller := UserController{Service: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 202, c.Writer.Status())
+	assert.Equal(t, 200, c.Writer.Status())
 }
