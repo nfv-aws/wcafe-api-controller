@@ -15,8 +15,9 @@ type Config struct {
 		Name     string
 	}
 	SQS struct {
-		Region    string
-		Queue_Url string
+		Region           string
+		Pets_Queue_Url   string
+		Stores_Queue_Url string
 	}
 }
 

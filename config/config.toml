@@ -6,4 +6,5 @@ name = "wcafe"
 
 [sqs]
 region = "AWS_REGION"
-queue_url  = "SQS_QUEUE_URL"
+pets_queue_url  = "PETS_SQS_QUEUE_URL"
+stores_queue_url  = "STORES_SQS_QUEUE_URL"

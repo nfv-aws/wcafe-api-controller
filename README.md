@@ -17,7 +17,7 @@ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 
 ## 事前準備
 * RDSでMysql5.7.22のDBを作成してエンドポイントが分かる状態にしておく
-* SQSで標準キューのQueueを作成してエンドポイントが分かる状態にしておく
+* SQSで標準キューのQueueを2つ作成してエンドポイントが分かる状態にしておく
 
 ### パッケージインストール
 
@@ -40,7 +40,8 @@ vi ~/.bashrc
 export WCAFE_DB_PASSWORD=password
 export WCAFE_DB_ENDPOINT=endpoint
 export WCAFE_SQS_REGION=region
-export WCAFE_SQS_QUEUE_URL=queue_url
+export WCAFE_SQS_PETS_QUEUE_URL=queue_url_1
+export WCAFE_SQS_Stores_QUEUE_URL=queue_url_2
 
 source ~/.bashrc
 ```
