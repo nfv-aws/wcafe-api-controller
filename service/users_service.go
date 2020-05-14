@@ -17,35 +17,30 @@ type Users entity.Users
 
 // Service procides user's behavior
 type UserService interface {
-	List() (Users, error)
-	Create(c *gin.Context) (User, error)
-	Get(id string) (User, error)
-	Update(id string, c *gin.Context) (User, error)
+	List() ([]entity.User, error)
+	Create(c *gin.Context) (entity.User, error)
+	Get(id string) (entity.User, error)
+	Update(id string, c *gin.Context) (entity.User, error)
 }
+
+type userService struct{}
 
 func NewUserService() UserService {
 	return &userService{}
 }
 
-type userService struct {
-}
-
 // List is get all user
-func (s userService) List() (Users, error) {
+func (s userService) List() ([]entity.User, error) {
 	db := db.GetDB()
-	var l Users
 	var u []entity.User
-
 	db.Find(&u)
-
-	l.Users = &u
-	return l, nil
+	return u, nil
 }
 
 // Create is create user model
-func (s userService) Create(c *gin.Context) (User, error) {
+func (s userService) Create(c *gin.Context) (entity.User, error) {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	//UUID生成
 	id, err := uuid.NewRandom()
@@ -67,9 +62,9 @@ func (s userService) Create(c *gin.Context) (User, error) {
 }
 
 // Get is get a User
-func (s userService) Get(id string) (User, error) {
+func (s userService) Get(id string) (entity.User, error) {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
 		return u, err
@@ -79,9 +74,9 @@ func (s userService) Get(id string) (User, error) {
 }
 
 // Update is update a User
-func (s userService) Update(id string, c *gin.Context) (User, error) {
+func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 	db := db.GetDB()
-	var u, ut User
+	var u, ut entity.User
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
@@ -91,6 +86,7 @@ func (s userService) Update(id string, c *gin.Context) (User, error) {
 	if err := db.Where("id = ?", id).First(&ut).Error; err != nil {
 		return u, err
 	}
+
 	u.CreatedAt = ut.CreatedAt
 	u.UpdatedAt = time.Now()
 

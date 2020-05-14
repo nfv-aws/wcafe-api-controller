@@ -1,20 +1,20 @@
 package controller
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/nfv-aws/wcafe-api-controller/service"
+	"log"
 )
 
 // Controller is user controller
 type UserController struct {
-	Service service.UserService
+	Userservice service.UserService
 }
 
 // List action: GET /users
 func (uc UserController) List(c *gin.Context) {
-	u, err := uc.Service.List()
+	u, err := uc.Userservice.List()
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -26,7 +26,7 @@ func (uc UserController) List(c *gin.Context) {
 
 // Create action: POST /users
 func (uc UserController) Create(c *gin.Context) {
-	u, err := uc.Service.Create(c)
+	u, err := uc.Userservice.Create(c)
 
 	if err != nil {
 		c.AbortWithStatus(400)
@@ -40,7 +40,7 @@ func (uc UserController) Create(c *gin.Context) {
 func (uc UserController) Get(c *gin.Context) {
 	id := c.Params.ByName("id")
 
-	u, err := uc.Service.Get(id)
+	u, err := uc.Userservice.Get(id)
 
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -52,12 +52,18 @@ func (uc UserController) Get(c *gin.Context) {
 
 // Update action: PATCH /users/:id
 func (uc UserController) Update(c *gin.Context) {
+
 	id := c.Params.ByName("id")
-	u, err := uc.Service.Update(id, c)
+	u, err := uc.Userservice.Update(id, c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
+		if gorm.IsRecordNotFoundError(err) {
+			c.AbortWithStatus(404)
+			log.Println(err)
+		} else {
+			c.AbortWithStatus(400)
+			log.Println(err)
+		}
 	} else {
 		c.JSON(200, u)
 	}
