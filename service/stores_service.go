@@ -1,13 +1,31 @@
 package service
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"log"
 	"time"
 )
+
+var (
+	stores_svc       *sqs.SQS
+	stores_queue_url string
+)
+
+func StoresInit() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	stores_queue_url = config.C.SQS.Stores_Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	stores_svc := sqs.New(sess)
+	return stores_svc
+}
 
 // User is alias of entity.Store struct
 type Store entity.Store
@@ -61,6 +79,17 @@ func (s storeService) Create(c *gin.Context) (Store, error) {
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
+
+	stores_svc := StoresInit()
+	result, err := stores_svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     aws.String(stores_queue_url),
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("Store SendMessage Error", err)
+	}
+	log.Println("Store Success", *result.MessageId)
 
 	return u, nil
 }

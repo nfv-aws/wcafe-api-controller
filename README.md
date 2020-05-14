@@ -17,7 +17,7 @@ git clone git@github.com:nfv-aws/wcafe-api-controller.git
 
 ## 事前準備
 * RDSでMysql5.7.22のDBを作成してエンドポイントが分かる状態にしておく
-* SQSで標準キューのQueueを作成してエンドポイントが分かる状態にしておく
+* SQSで標準キューのQueueを2つ作成してエンドポイントが分かる状態にしておく
 
 ### パッケージインストール
 

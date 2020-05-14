@@ -14,18 +14,18 @@ import (
 )
 
 var (
-	svc        *sqs.SQS
-	aws_region string
-	queue_url  string
+	pets_svc       *sqs.SQS
+	aws_region     string
+	pets_queue_url string
 )
 
-func Init() *sqs.SQS {
+func Pets_Init() *sqs.SQS {
 	config.Configure()
 	aws_region = config.C.SQS.Region
-	queue_url = config.C.SQS.Queue_Url
+	pets_queue_url = config.C.SQS.Pets_Queue_Url
 	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
-	svc := sqs.New(sess)
-	return svc
+	pets_svc := sqs.New(sess)
+	return pets_svc
 }
 
 // User is alias of entity.Pet struct
@@ -85,16 +85,16 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 		return u, err
 	}
 
-	svc := Init()
-	result, err := svc.SendMessage(&sqs.SendMessageInput{
+	pets_svc := Pets_Init()
+	result, err := pets_svc.SendMessage(&sqs.SendMessageInput{
 		MessageBody:  aws.String(u.Id),
-		QueueUrl:     aws.String(queue_url),
+		QueueUrl:     aws.String(pets_queue_url),
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("SendMessage Error", err)
+		log.Println("Pet SendMessage Error", err)
 	}
-	log.Println("Success", *result.MessageId)
+	log.Println("Pet Success", *result.MessageId)
 
 	return u, nil
 }
