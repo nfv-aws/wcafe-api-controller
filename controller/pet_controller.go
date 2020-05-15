@@ -61,3 +61,16 @@ func (pc PetController) Update(c *gin.Context) {
 		c.JSON(200, p)
 	}
 }
+
+// Delete action: DELETE /pets/:id
+func (pc PetController) Delete(c *gin.Context) {
+	id := c.Params.ByName("id")
+	p, err := pc.Service.Delete(id)
+
+	if err != nil {
+		c.AbortWithStatus(404)
+		log.Println(err)
+	} else {
+		c.JSON(204, p)
+	}
+}

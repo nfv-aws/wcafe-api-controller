@@ -1,12 +1,31 @@
 package service
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"log"
+	"time"
 )
+
+var (
+	stores_svc       *sqs.SQS
+	stores_queue_url string
+)
+
+func StoresInit() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	stores_queue_url = config.C.SQS.Stores_Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	stores_svc := sqs.New(sess)
+	return stores_svc
+}
 
 // User is alias of entity.Store struct
 type Store entity.Store
@@ -61,6 +80,17 @@ func (s storeService) Create(c *gin.Context) (Store, error) {
 		return u, err
 	}
 
+	stores_svc := StoresInit()
+	result, err := stores_svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     aws.String(stores_queue_url),
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("Store SendMessage Error", err)
+	}
+	log.Println("Store Success", *result.MessageId)
+
 	return u, nil
 }
 
@@ -80,10 +110,18 @@ func (s storeService) Get(id string) (Store, error) {
 // Update is update Store
 func (s storeService) Update(id string, c *gin.Context) (Store, error) {
 	db := db.GetDB()
-	var u Store
+	var u, st Store
+
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
+
+	//作成日・更新日を取得
+	if err := db.Where("id = ?", id).First(&st).Error; err != nil {
+		return u, err
+	}
+	u.CreatedAt = st.CreatedAt
+	u.UpdatedAt = time.Now()
 
 	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err

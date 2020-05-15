@@ -79,7 +79,7 @@ paths:
 
   /stores/{store_id}:
     get:
-      summary: 選択された店舗情報を取得
+      summary: ID指定による店舗情報を取得
       tags:
         - stores
       parameters:
@@ -184,7 +184,7 @@ paths:
                 $ref: '#/components/schemas/pets'
 
     patch:
-      summary: ID指定した商品の更新
+      summary: ID指定による商品の更新
       tags:
         - pets
       description: 該当する商品情報を更新
@@ -220,6 +220,22 @@ paths:
                   name: "toy poodle"
                   age: 5
                   store_id: "75a68334-73b8-11ea-bc55-0242ac130003"
+                  
+    delete:
+      summary: ID指定による商品情報の削除
+      tags:
+        - pets
+      parameters: 
+        - name: pet_id
+          in: path
+          description: 商品ID
+          required: true
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '204':
+          description: 商品情報削除
             
   /users:
     get:
@@ -353,8 +369,17 @@ components:
           description: 店の強み
           example: "High quality!"
           type: string
+        created_at:
+          description: 作成日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
+        updated_at:
+          description: 更新日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
       required:
-        - id
         - name  
         - tag
         - address
@@ -385,8 +410,17 @@ components:
           example: "5579f22-73b8-11ea-bc55-0242ac130555"
           type: string
           format: UUID
+        created_at:
+          description: 作成日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
+        updated_at:
+          description: 更新日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
       required: 
-        - id
         - species
         - name
         - age
@@ -419,6 +453,15 @@ components:
           example: "aaa@example.com"
           type: string
           format: email
+        created_at:
+          description: 作成日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
+        updated_at:
+          description: 更新日時
+          example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
       required: 
-        - id
         - number
