@@ -26,7 +26,7 @@ func router() *gin.Engine {
 
 	p := r.Group("/api/v1")
 	{
-		store_ctrl := controller.StoreController{Service: service.NewStoreService()}
+		store_ctrl := controller.StoreController{Storeservice: service.NewStoreService()}
 		p.GET("/stores", store_ctrl.List)
 		p.GET("/stores/:id", store_ctrl.Get)
 		p.POST("/stores", store_ctrl.Create)
