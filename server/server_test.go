@@ -53,8 +53,8 @@ func TestServer(t *testing.T) {
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
-		// testDELETEMethod(t, "/api/v1/stores/"+store[0].Id)
 		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
+		testDELETEMethod(t, "/api/v1/stores/"+store[0].Id)
 	})
 
 	tearDown()

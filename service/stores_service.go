@@ -39,6 +39,7 @@ type StoreService interface {
 	Create(c *gin.Context) (Store, error)
 	Get(id string) (Store, error)
 	Update(id string, c *gin.Context) (Store, error)
+	Delete(id string) (Store, error)
 }
 
 func NewStoreService() StoreService {
@@ -124,6 +125,23 @@ func (s storeService) Update(id string, c *gin.Context) (Store, error) {
 	u.UpdatedAt = time.Now()
 
 	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
+// Delete is delete a Store
+func (s storeService) Delete(id string) (Store, error) {
+
+	db := db.GetDB()
+	var u Store
+
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return u, err
+	}
+
+	if err := db.Where("id = ?", id).Delete(&u).Error; err != nil {
 		return u, err
 	}
 
