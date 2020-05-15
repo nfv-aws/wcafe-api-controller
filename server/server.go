@@ -44,6 +44,7 @@ func router() *gin.Engine {
 		p.GET("/users/:id", user_ctrl.Get)
 		p.POST("/users", user_ctrl.Create)
 		p.PATCH("/users/:id", user_ctrl.Update)
+		p.DELETE("/users/:id", user_ctrl.Delete)
 
 	}
 

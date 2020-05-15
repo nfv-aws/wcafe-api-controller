@@ -68,3 +68,16 @@ func (uc UserController) Update(c *gin.Context) {
 		c.JSON(200, u)
 	}
 }
+
+// Delete action: DELETE /pets/:id
+func (uc UserController) Delete(c *gin.Context) {
+	id := c.Params.ByName("id")
+	u, err := uc.Userservice.Delete(id)
+
+	if err != nil {
+		c.AbortWithStatus(404)
+		log.Println(err)
+	} else {
+		c.JSON(204, u)
+	}
+}

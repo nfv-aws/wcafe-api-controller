@@ -21,6 +21,7 @@ type UserService interface {
 	Create(c *gin.Context) (entity.User, error)
 	Get(id string) (entity.User, error)
 	Update(id string, c *gin.Context) (entity.User, error)
+	Delete(id string) (User, error)
 }
 
 type userService struct{}
@@ -91,6 +92,18 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 	u.UpdatedAt = time.Now()
 
 	if err := db.Table("users").Where("id = ?", id).Updates(&u).Error; err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
+//  Delete is delete a pet
+func (s userService) Delete(id string) (User, error) {
+	db := db.GetDB()
+	var u User
+
+	if err := db.Table("users").Where("id = ?", id).Delete(&u).Error; err != nil {
 		return u, err
 	}
 

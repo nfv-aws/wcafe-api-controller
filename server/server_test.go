@@ -48,13 +48,13 @@ func TestServer(t *testing.T) {
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
 		testPATCHMethod(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
-		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":334}`)
+		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":3345}`)
 	})
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
 		// testDELETEMethod(t, "/api/v1/stores/"+store[0].Id)
-		// testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
+		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
 	})
 
 	tearDown()
@@ -69,12 +69,9 @@ func testGETMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
-func testPOSTPetMethod(t *testing.T, endpoint string) {
+func testPOSTStoreMethod(t *testing.T, endpoint string) {
 	t.Helper()
-	var store []entity.Store
-	db := db.GetDB()
-	db.Find(&store)
-	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 1, "store_id":"` + store[0].Id + `"}`)
+	bodyReader := strings.NewReader(`{"name": "` + random() + `","tag":"abc","address":"Tokyo"}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -85,9 +82,12 @@ func testPOSTPetMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, 201, w.Code)
 }
 
-func testPOSTStoreMethod(t *testing.T, endpoint string) {
+func testPOSTPetMethod(t *testing.T, endpoint string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"name": "` + random() + `","tag":"abc","address":"Tokyo"}`)
+	var store []entity.Store
+	db := db.GetDB()
+	db.Find(&store)
+	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 1, "store_id":"` + store[0].Id + `"}`)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
