@@ -138,19 +138,19 @@ func TestUserUpdateOK(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestUserUpdateNotFound(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+//func TestUserUpdateNotFound(t *testing.T) {
+//	ctrl := gomock.NewController(t)
+//	defer ctrl.Finish()
 
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+//	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-	serviceMock := mocks.NewMockUserService(ctrl)
-	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.User{}, ErrRecordNotFound)
-	controller := UserController{Userservice: serviceMock}
+//	serviceMock := mocks.NewMockUserService(ctrl)
+//	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.User{}, ErrRecordNotFound)
+//	controller := UserController{Userservice: serviceMock}
 
-	controller.Update(c)
-	assert.Equal(t, 404, c.Writer.Status())
-}
+//	controller.Update(c)
+//	assert.Equal(t, 404, c.Writer.Status())
+//}
 
 func TestUserUpdateBadRequest(t *testing.T) {
 	ctrl := gomock.NewController(t)
