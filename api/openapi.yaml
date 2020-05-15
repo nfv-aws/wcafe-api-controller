@@ -248,6 +248,15 @@ paths:
                     - id: "919dfefd-0b0a-4665-b7d9-a189e2"
                       number: 2
                       name: "Suzuki"
+        '503':
+          description: サーバエラー
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 503
+                  message: Service Unavailable
+                  
     post:
       tags:
        - users
@@ -266,7 +275,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/users'   
+                $ref: '#/components/schemas/users'
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+        '503':
+          description: サーバエラー
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 503
+                  message: Service Unavailable
 
   /users/{user_id}:
     get:
@@ -289,6 +314,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/users'
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+        '503':
+          description: サーバエラー
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 503
+                  message: Service Unavailable
 
     patch:
       tags: 
@@ -313,7 +354,7 @@ paths:
               name: "Abe"
               address: "Makuhari"
       responses:
-        '202':
+        '200':
           description: ユーザ情報更新
           content:
             application/json:
@@ -325,6 +366,30 @@ paths:
                 name: "Abe"
                 address: "Makuhari"
                 email: "aaa@example.com"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+        '503':
+          description: サーバエラー
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 503
+                  message: Service Unavailable
 
 components:
   schemas:
@@ -449,3 +514,4 @@ components:
           readOnly: true
       required: 
         - number
+        - name

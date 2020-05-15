@@ -16,4 +16,5 @@ require (
 	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
+	gopkg.in/go-playground/validator.v9 v9.31.0
 )
