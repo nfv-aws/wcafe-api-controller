@@ -138,6 +138,7 @@ func TestUserUpdateOK(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
+// ToDo WCAF-118
 //func TestUserUpdateNotFound(t *testing.T) {
 //	ctrl := gomock.NewController(t)
 //	defer ctrl.Finish()
