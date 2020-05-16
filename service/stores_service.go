@@ -35,35 +35,32 @@ type Stores entity.Stores
 
 // Service procides store's behavior
 type StoreService interface {
-	List() (Stores, error)
-	Create(c *gin.Context) (Store, error)
-	Get(id string) (Store, error)
-	Update(id string, c *gin.Context) (Store, error)
+	List() ([]entity.Store, error)
+	Create(c *gin.Context) (entity.Store, error)
+	Get(id string) (entity.Store, error)
+	Update(id string, c *gin.Context) (entity.Store, error)
 }
 
 func NewStoreService() StoreService {
 	return &storeService{}
 }
 
-type storeService struct {
-}
+type storeService struct{}
 
 // List is get all Store
-func (s storeService) List() (Stores, error) {
+func (s storeService) List() ([]entity.Store, error) {
 	db := db.GetDB()
-	var l Stores
 	var u []entity.Store
 
 	db.Find(&u)
 
-	l.Stores = &u
-	return l, nil
+	return u, nil
 }
 
 // Create is create Store model
-func (s storeService) Create(c *gin.Context) (Store, error) {
+func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 	db := db.GetDB()
-	var u Store
+	var u entity.Store
 
 	//UUID生成
 	id, err := uuid.NewRandom()
@@ -95,10 +92,10 @@ func (s storeService) Create(c *gin.Context) (Store, error) {
 }
 
 // Get is get a Store
-func (s storeService) Get(id string) (Store, error) {
+func (s storeService) Get(id string) (entity.Store, error) {
 
 	db := db.GetDB()
-	var u Store
+	var u entity.Store
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
 		return u, err
@@ -108,9 +105,9 @@ func (s storeService) Get(id string) (Store, error) {
 }
 
 // Update is update Store
-func (s storeService) Update(id string, c *gin.Context) (Store, error) {
+func (s storeService) Update(id string, c *gin.Context) (entity.Store, error) {
 	db := db.GetDB()
-	var u, st Store
+	var u, st entity.Store
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err

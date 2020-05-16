@@ -122,7 +122,7 @@ func TestStoreUpdateOK(t *testing.T) {
 
 // 	serviceMock := mocks.NewMockStoreService(ctrl)
 
-// 	serviceMock.EXPECT().Get(gomock.Any()).Return(entity.Store{}, ErrRecordNotFound)
+// 	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Store{}, ErrRecordNotFound)
 // 	controller := StoreController{Storeservice: serviceMock}
 
 // 	controller.Update(c)
