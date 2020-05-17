@@ -102,7 +102,11 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 func (s userService) Delete(id string) (User, error) {
 	db := db.GetDB()
 	var u User
-
+	//該当データの有無を確認
+	if err := db.Where("id = ?", id).Find(&u).Error; err != nil {
+		return u, err
+	}
+	//該当データを削除
 	if err := db.Table("users").Where("id = ?", id).Delete(&u).Error; err != nil {
 		return u, err
 	}
