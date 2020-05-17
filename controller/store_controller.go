@@ -66,3 +66,21 @@ func (sc StoreController) Update(c *gin.Context) {
 		c.JSON(200, p)
 	}
 }
+
+// Delete action: DELETE /stores/:id
+func (sc StoreController) Delete(c *gin.Context) {
+	id := c.Params.ByName("id")
+	p, err := sc.Storeservice.Delete(id)
+
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			c.AbortWithStatus(404)
+			log.Println(err)
+		} else {
+			c.AbortWithStatus(409)
+			log.Println(err)
+		}
+	} else {
+		c.JSON(204, p)
+	}
+}
