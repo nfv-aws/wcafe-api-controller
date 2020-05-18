@@ -139,6 +139,10 @@ func (s petService) Delete(id string) (Pet, error) {
 	db := db.GetDB()
 	var u Pet
 
+	if err := db.Where("id = ?", id).Find(&u).Error; err != nil {
+		return u, err
+	}
+
 	if err := db.Table("pets").Where("id = ?", id).Delete(&u).Error; err != nil {
 		return u, err
 	}
