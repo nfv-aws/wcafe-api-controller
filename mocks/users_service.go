@@ -8,6 +8,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/nfv-aws/wcafe-api-controller/entity"
+	service "github.com/nfv-aws/wcafe-api-controller/service"
 	reflect "reflect"
 )
 
@@ -92,4 +93,19 @@ func (m *MockUserService) Update(id string, c *gin.Context) (entity.User, error)
 func (mr *MockUserServiceMockRecorder) Update(id, c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUserService)(nil).Update), id, c)
+}
+
+// Delete mocks base method.
+func (m *MockUserService) Delete(id string) (service.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", id)
+	ret0, _ := ret[0].(service.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockUserServiceMockRecorder) Delete(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserService)(nil).Delete), id)
 }
