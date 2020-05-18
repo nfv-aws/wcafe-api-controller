@@ -22,7 +22,6 @@ var (
 		CreatedAt:   ct,
 		UpdatedAt:   ut,
 	}
-	// ErrRecordNotFound = errors.New("record not found")
 	ErrConflict = errors.New("Error 1451: Cannot delete or update a parent row: a foreign key constraint fails (`wcafe`.`pets`, CONSTRAINT `pets_store_id_stores_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)")
 )
 
@@ -117,6 +116,7 @@ func TestStoreUpdateOK(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
+// *** ToDo wcafe-118 ***
 // func TestStoreUpdataNotFound(t *testing.T) {
 // 	ctrl := gomock.NewController(t)
 // 	defer ctrl.Finish()
