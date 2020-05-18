@@ -181,7 +181,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/pets'
-                    
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+
   /pets/{pet_id}:
     get:
       summary: ID指定による商品取得
