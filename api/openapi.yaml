@@ -428,6 +428,22 @@ paths:
                   code: 503
                   message: Service Unavailable
 
+   delete:
+      summary: ID指定によるユーザー情報の削除
+      tags:
+        - users
+      parameters: 
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '204':
+          description: ユーザー情報削除
+
 components:
   schemas:
     stores:

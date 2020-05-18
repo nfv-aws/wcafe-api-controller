@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
 	"testing"
@@ -165,4 +166,18 @@ func TestUserUpdateBadRequest(t *testing.T) {
 
 	controller.Update(c)
 	assert.Equal(t, 400, c.Writer.Status())
+}
+
+func TestUserDelete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockUserService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(service.User{}, nil)
+	controller := UserController{Userservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, 204, c.Writer.Status())
 }
