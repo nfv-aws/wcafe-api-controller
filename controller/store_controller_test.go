@@ -160,7 +160,7 @@ func TestStoreDeleteOK(t *testing.T) {
 	assert.Equal(t, 204, c.Writer.Status())
 }
 
-// *** ToDo wcafe-103 or wcafe-118 ***
+// *** ToDo wcafe-118 ***
 // func TestStoreDeleteNotFound(t *testing.T) {
 // 	ctrl := gomock.NewController(t)
 // 	defer ctrl.Finish()
