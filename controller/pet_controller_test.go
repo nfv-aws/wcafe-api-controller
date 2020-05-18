@@ -52,6 +52,20 @@ func TestPetCreate(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
+func TestPetCreateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Create(gomock.Any()).Return(service.Pet{}, ErrBadRequest)
+	controller := PetController{Service: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}
+
 func TestPetUpdate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
