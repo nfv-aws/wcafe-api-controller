@@ -35,6 +35,8 @@ func TestServer(t *testing.T) {
 		testPOSTPetMethod(t, "/api/v1/pets")
 		testPOSTStoreMethod(t, "/api/v1/stores")
 		testPOSTUserMethod(t, "/api/v1/users")
+		testPOSTUserEmail(t, "/api/v1/users")
+		testPOSTUserBadRequestEmail(t, "/api/v1/users")
 	})
 
 	var pet []entity.Pet
@@ -48,7 +50,8 @@ func TestServer(t *testing.T) {
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
 		testPATCHMethod(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
-		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":3345}`)
+		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test@test.com"}`)
+		testPATCHBadRequestEmail(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
 	})
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
@@ -119,6 +122,36 @@ func testPOSTUserMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, 201, w.Code)
 }
 
+func testPOSTUserEmail(t *testing.T, endpoint string) {
+	t.Helper()
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+	bodyReader := strings.NewReader(`{"number":` + strconv.Itoa(random_num) + `,"email":"test@test.com"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 201, w.Code)
+}
+
+func testPOSTUserBadRequestEmail(t *testing.T, endpoint string) {
+	t.Helper()
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+	bodyReader := strings.NewReader(`{"number":` + strconv.Itoa(random_num) + `,"email":"test"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 400, w.Code)
+}
+
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
 
@@ -131,6 +164,20 @@ func testPATCHMethod(t *testing.T, endpoint string, body string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
+}
+
+func testPATCHBadRequestEmail(t *testing.T, endpoint string, body string) {
+	t.Helper()
+
+	bodyReader := strings.NewReader(body)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 400, w.Code)
 }
 
 func testDELETEMethod(t *testing.T, endpoint string) {

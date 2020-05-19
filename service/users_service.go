@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"time"
 )
@@ -54,6 +55,12 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 		return u, err
 	}
 
+	//Email validation check
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
+		return u, err
+	}
+
 	u.Id = id.String()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
@@ -85,6 +92,12 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 
 	//作成日・更新日を取得
 	if err := db.Where("id = ?", id).First(&ut).Error; err != nil {
+		return u, err
+	}
+
+	//Email validation check
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
 		return u, err
 	}
 
