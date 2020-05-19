@@ -19,7 +19,7 @@ type User struct {
 	Address string `gorm:"type:varchar(255)" json:"address"`
 
 	// メールアドレス
-	Email string `gorm:"type:varchar(255)" json:"email"`
+	Email string `gorm:"type:varchar(255)" json:"email" validate:"omitempty,email"`
 
 	//作成日時
 	CreatedAt time.Time `json:"created_time"`
