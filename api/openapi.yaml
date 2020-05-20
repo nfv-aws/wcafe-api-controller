@@ -69,6 +69,14 @@ paths:
                 example: 
                   code: 400
                   message: Bad Request
+        '404':
+          description: 存在しないSQSエンドポイントの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
 
   /stores/{store_id}:
     get:
@@ -223,6 +231,14 @@ paths:
                 example: 
                   code: 400
                   message: Bad Request
+        '404':
+          description: 存在しないSQSエンドポイントの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
 
   /pets/{pet_id}:
     get:

@@ -88,7 +88,35 @@ func TestStoreCreateOK(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
+func TestStoreCreateInvalidAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Store{}, ErrInvalidAddress)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
 func TestStoreCreateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Store{}, ErrBadRequest)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}
+
+func TestStoreUpdate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
@@ -8,6 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
 	"testing"
+)
+
+var (
+	ErrInvalidAddress = errors.New("InvalidAddress: The address https://sqs.ap-northeast-1.amazonaws.com/ is not valid for this endpoint.")
 )
 
 func TestPetList(t *testing.T) {
@@ -38,7 +43,7 @@ func TestPetGet(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetCreate(t *testing.T) {
+func TestPetCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -52,6 +57,20 @@ func TestPetCreate(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
+func TestPetCreateInvalidAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrInvalidAddress)
+	controller := PetController{Service: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
 func TestPetCreateBadRequest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -59,7 +78,7 @@ func TestPetCreateBadRequest(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(gomock.Any()).Return(service.Pet{}, ErrBadRequest)
+	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrBadRequest)
 	controller := PetController{Service: serviceMock}
 
 	controller.Create(c)
