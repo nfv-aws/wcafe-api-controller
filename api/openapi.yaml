@@ -245,6 +245,14 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/pets'
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
 
     patch:
       summary: ID指定による商品の更新
