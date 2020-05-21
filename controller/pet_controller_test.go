@@ -38,6 +38,21 @@ func TestPetGet(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
+func TestPetGetNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+
+	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, ErrRecordNotFound)
+	controller := PetController{Service: serviceMock}
+
+	controller.Get(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
 func TestPetCreate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
