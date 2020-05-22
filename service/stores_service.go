@@ -69,15 +69,13 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		log.Println(err)
 		return u, err
 	}
+	u.Id = id.String()
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
-	u.Id = id.String()
-	if err := db.Create(&u).Error; err != nil {
-		return u, err
-	}
 
+	// SQSに接続
 	stores_svc := StoresInit()
 	result, err := stores_svc.SendMessage(&sqs.SendMessageInput{
 		MessageBody:  aws.String(u.Id),
@@ -85,9 +83,15 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("Store SendMessage Error", err)
+		log.Println("Store SendMessage Error")
+		return u, err
+	} else {
+		log.Println("Store Success", *result.MessageId)
 	}
-	log.Println("Store Success", *result.MessageId)
+
+	if err := db.Create(&u).Error; err != nil {
+		return u, err
+	}
 
 	return u, nil
 }
