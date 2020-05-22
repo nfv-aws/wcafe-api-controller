@@ -16,7 +16,7 @@ type Pet struct {
 	Name string `gorm:"NOT NULL;type:varchar(255)" json:"name" binding:"required"`
 
 	// 商品の年齢
-	Age int32 `gorm:"NOT NULL;type:int(11)" json:"age" binding:"required"`
+	Age int32 `gorm:"NOT NULL;type:int(11)" json:"age" binding:"gte=0,lt=200"`
 
 	// 店の識別子
 	StoreId string `gorm:"NOT NULL;type:varchar(255)" json:"store_id" binding:"required"`

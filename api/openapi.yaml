@@ -261,6 +261,14 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/pets'
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
 
     patch:
       summary: ID指定による商品の更新
@@ -549,6 +557,8 @@ components:
           description: 商品の年齢
           example: 2
           type: integer
+          minimum: 0
+          maximum: 200
         store_id:
           description: 店の識別子
           example: "5579f22-73b8-11ea-bc55-0242ac130555"
