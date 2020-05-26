@@ -1,10 +1,13 @@
 package controller
 
 import (
+	"log"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
 	"github.com/nfv-aws/wcafe-api-controller/service"
-	"log"
 )
 
 // Controller is store controlller
@@ -29,8 +32,13 @@ func (sc StoreController) Create(c *gin.Context) {
 	p, err := sc.Storeservice.Create(c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
+		if strings.Contains(err.Error(), "InvalidAddress") {
+			c.AbortWithStatus(404)
+			log.Println(err)
+		} else {
+			c.AbortWithStatus(400)
+			log.Println(err)
+		}
 	} else {
 		c.JSON(201, p)
 	}

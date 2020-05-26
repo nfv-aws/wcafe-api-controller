@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -19,6 +20,9 @@ type Config struct {
 		Pets_Queue_Url   string
 		Stores_Queue_Url string
 		Users_Queue_Url  string
+	}
+	LOG struct {
+		File_path string
 	}
 }
 

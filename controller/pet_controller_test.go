@@ -1,13 +1,21 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/golang/mock/gomock"
-	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/nfv-aws/wcafe-api-controller/service"
-	"github.com/stretchr/testify/assert"
+	"errors"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/nfv-aws/wcafe-api-controller/mocks"
+	"github.com/nfv-aws/wcafe-api-controller/service"
+)
+
+var (
+	ErrInvalidAddress = errors.New("InvalidAddress: The address https://sqs.ap-northeast-1.amazonaws.com/ is not valid for this endpoint.")
 )
 
 func TestPetList(t *testing.T) {
@@ -38,7 +46,22 @@ func TestPetGet(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetCreate(t *testing.T) {
+func TestPetGetNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+
+	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, gorm.ErrRecordNotFound)
+	controller := PetController{Service: serviceMock}
+
+	controller.Get(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
+func TestPetCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -52,6 +75,20 @@ func TestPetCreate(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
+func TestPetCreateInvalidAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrInvalidAddress)
+	controller := PetController{Service: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
 func TestPetCreateBadRequest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -59,7 +96,7 @@ func TestPetCreateBadRequest(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(gomock.Any()).Return(service.Pet{}, ErrBadRequest)
+	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrBadRequest)
 	controller := PetController{Service: serviceMock}
 
 	controller.Create(c)

@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"log"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nfv-aws/wcafe-api-controller/service"
-	"log"
 )
 
 // Controller is pet controlller
@@ -28,8 +30,13 @@ func (pc PetController) Create(c *gin.Context) {
 	p, err := pc.Service.Create(c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
-		log.Println(err)
+		if strings.Contains(err.Error(), "InvalidAddress") {
+			c.AbortWithStatus(404)
+			log.Println(err)
+		} else {
+			c.AbortWithStatus(400)
+			log.Println(err)
+		}
 	} else {
 		c.JSON(201, p)
 	}

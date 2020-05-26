@@ -74,17 +74,13 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 		log.Println(err)
 		return u, err
 	}
+	u.Id = id.String()
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
 
-	u.Id = id.String()
-	u.Status = "PENDING_CREATE"
-	if err := db.Create(&u).Error; err != nil {
-		return u, err
-	}
-
+	// SQSに接続
 	pets_svc := Pets_Init()
 	result, err := pets_svc.SendMessage(&sqs.SendMessageInput{
 		MessageBody:  aws.String(u.Id),
@@ -92,9 +88,17 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("Pet SendMessage Error", err)
+		log.Println("Pet SendMessage Error")
+		return u, err
+	} else {
+		log.Println("Pet SendMessage Success", *result.MessageId)
 	}
-	log.Println("Pet Success", *result.MessageId)
+
+	// DBに登録
+	u.Status = "PENDING_CREATE"
+	if err := db.Create(&u).Error; err != nil {
+		return u, err
+	}
 
 	return u, nil
 }

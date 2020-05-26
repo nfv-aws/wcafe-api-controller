@@ -2,14 +2,15 @@ package controller
 
 import (
 	"errors"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/jinzhu/gorm"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
 	"github.com/stretchr/testify/assert"
-	// "log"
-	"net/http/httptest"
-	"testing"
 )
 
 var (
@@ -66,7 +67,7 @@ func TestStoreGetNotFound(t *testing.T) {
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 
-	serviceMock.EXPECT().Get(gomock.Any()).Return(entity.Store{}, ErrRecordNotFound)
+	serviceMock.EXPECT().Get(gomock.Any()).Return(entity.Store{}, gorm.ErrRecordNotFound)
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Get(c)
@@ -88,7 +89,35 @@ func TestStoreCreateOK(t *testing.T) {
 	assert.Equal(t, 201, c.Writer.Status())
 }
 
+func TestStoreCreateInvalidAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Store{}, ErrInvalidAddress)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
 func TestStoreCreateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Store{}, ErrBadRequest)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}
+
+func TestStoreUpdate(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -116,21 +145,20 @@ func TestStoreUpdateOK(t *testing.T) {
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-// *** ToDo wcafe-118 ***
-// func TestStoreUpdataNotFound(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
+func TestStoreUpdataNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-// 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-// 	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock := mocks.NewMockStoreService(ctrl)
 
-// 	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Store{}, ErrRecordNotFound)
-// 	controller := StoreController{Storeservice: serviceMock}
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Store{}, gorm.ErrRecordNotFound)
+	controller := StoreController{Storeservice: serviceMock}
 
-// 	controller.Update(c)
-// 	assert.Equal(t, 404, c.Writer.Status())
-// }
+	controller.Update(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
 
 func TestStoreUpdateBadRequest(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -160,21 +188,19 @@ func TestStoreDeleteOK(t *testing.T) {
 	assert.Equal(t, 204, c.Writer.Status())
 }
 
-// *** ToDo wcafe-118 ***
-// func TestStoreDeleteNotFound(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
+func TestStoreDeleteNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-// 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
-// 	log.Println(ErrRecordNotFound)
-// 	serviceMock := mocks.NewMockStoreService(ctrl)
-// 	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Store{}, ErrRecordNotFound)
-// 	controller := StoreController{Storeservice: serviceMock}
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Store{}, gorm.ErrRecordNotFound)
+	controller := StoreController{Storeservice: serviceMock}
 
-// 	controller.Delete(c)
-// 	assert.Equal(t, 404, c.Writer.Status())
-// }
+	controller.Delete(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
 
 func TestStoreDeleteConflict(t *testing.T) {
 	ctrl := gomock.NewController(t)
