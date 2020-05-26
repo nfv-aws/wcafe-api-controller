@@ -2,13 +2,16 @@ package controller
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/golang/mock/gomock"
-	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/nfv-aws/wcafe-api-controller/service"
-	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/nfv-aws/wcafe-api-controller/mocks"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 var (
@@ -51,7 +54,7 @@ func TestPetGetNotFound(t *testing.T) {
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 
-	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, ErrRecordNotFound)
+	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, gorm.ErrRecordNotFound)
 	controller := PetController{Service: serviceMock}
 
 	controller.Get(c)
