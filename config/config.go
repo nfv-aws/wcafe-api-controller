@@ -19,6 +19,7 @@ type Config struct {
 		Region           string
 		Pets_Queue_Url   string
 		Stores_Queue_Url string
+		Users_Queue_Url  string
 	}
 	LOG struct {
 		File_path string

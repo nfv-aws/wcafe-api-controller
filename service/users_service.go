@@ -1,14 +1,36 @@
 package service
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/nfv-aws/wcafe-api-controller/db"
-	"github.com/nfv-aws/wcafe-api-controller/entity"
-	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"gopkg.in/go-playground/validator.v9"
+
+	"github.com/nfv-aws/wcafe-api-controller/config"
+	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
+
+//SQS用グローバル変数
+var (
+	users_svc       *sqs.SQS
+	users_queue_url string
+)
+
+//SQS処理
+func Users_Init() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	users_queue_url = config.C.SQS.Users_Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	users_svc := sqs.New(sess)
+	return users_svc
+}
 
 // User is alias of entity.user struct
 type User entity.User
@@ -65,6 +87,20 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
+
+	//SQS処理呼び出し
+	log.Println(u.Id)
+	log.Println(users_queue_url)
+	users_svc := Users_Init()
+	result, err := users_svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(u.Id),
+		QueueUrl:     aws.String(users_queue_url),
+		DelaySeconds: aws.Int64(10),
+	})
+	if err != nil {
+		log.Println("User SendMessage Error", err)
+	}
+	log.Println("User Success", *result.MessageId)
 
 	return u, nil
 }
