@@ -1,17 +1,19 @@
 package service
 
 import (
+	"log"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gopkg.in/go-playground/validator.v9"
+
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
-	"gopkg.in/go-playground/validator.v9"
-	"log"
-	"time"
 )
 
 //SQS用グローバル変数
