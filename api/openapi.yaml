@@ -493,6 +493,53 @@ paths:
                 example: 
                   code: 404
                   message: Not Found
+  /clerks:
+    get:
+      tags:
+        - clerks
+      summary: 店員一覧取得
+      description: 店員一覧取得
+      parameters: []
+      responses:
+        '200':
+          description: 店員一覧取得
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clerks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/clerks'
+    post:
+      summary: 店員の新規登録
+      tags:
+        - clerks
+      parameters: []
+      requestBody: 
+          description: 店員の新規登録
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/clerks" 
+      responses:
+        '201':
+          description: 新規登録に成功
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/clerks"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+                      
 
 components:
   schemas:
@@ -619,4 +666,24 @@ components:
           readOnly: true
       required: 
         - number
+        - name
+    clerks:
+      type: object
+      properties:
+        id:
+          description: 店員識別子
+          example: "11043cdf-0c06-4c74-99e6-6ae920"
+          type: string
+          format: UUID
+          readOnly: true
+        name:
+          description: 氏名
+          example: "Kato"
+          type: string
+        size:
+          description: 制服のサイズ
+          example: "M"
+          type: string
+          pattern: '[SML]'
+      required: 
         - name
