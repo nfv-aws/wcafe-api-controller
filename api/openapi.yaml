@@ -512,6 +512,12 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/clerks'
+                example:
+                  clerks:
+                    - name_id: 55043cdf-0c06-4c74-99e6-6ae920
+                      name: "kato"
+                    - name_id: 22243azf-9p12-1s68-11e1-9as037
+                      name: "kosaka"
     post:
       summary: 店員の新規登録
       tags:
@@ -670,7 +676,7 @@ components:
     clerks:
       type: object
       properties:
-        id:
+        name_id:
           description: 店員識別子
           example: "11043cdf-0c06-4c74-99e6-6ae920"
           type: string
@@ -680,10 +686,5 @@ components:
           description: 氏名
           example: "Kato"
           type: string
-        size:
-          description: 制服のサイズ
-          example: "M"
-          type: string
-          pattern: '[SML]'
       required: 
         - name
