@@ -185,6 +185,41 @@ paths:
                 example: 
                   code: 409
                   message: Conflict
+                  
+  /stores/{store_id}/pets:
+    get:
+      summary: IDで指定した店舗に含まれる商品リスト
+      tags:
+        - stores
+      parameters:
+        - name: store_id
+          in: path
+          description: 取得対象の店舗 ID
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: 取得に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pets:
+                    type: array
+                    items:
+                     $ref: '#/components/schemas/pets'
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+
 
   /pets:
     get:

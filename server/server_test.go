@@ -3,9 +3,6 @@ package server
 import (
 	"crypto/rand"
 	"encoding/binary"
-	"github.com/nfv-aws/wcafe-api-controller/db"
-	"github.com/nfv-aws/wcafe-api-controller/entity"
-	"github.com/stretchr/testify/assert"
 	math_rand "math/rand"
 	"net/http"
 	"net/http/httptest"
@@ -13,6 +10,11 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/entity"
 )
 
 func setup() {
@@ -26,18 +28,6 @@ func tearDown() {
 
 func TestServer(t *testing.T) {
 	setup()
-	t.Run("TEST GET Method", func(t *testing.T) {
-		testGETMethod(t, "/api/v1/pets")
-		testGETMethod(t, "/api/v1/stores")
-		testGETMethod(t, "/api/v1/users")
-	})
-	t.Run("TEST POST Method", func(t *testing.T) {
-		testPOSTPetMethod(t, "/api/v1/pets")
-		testPOSTStoreMethod(t, "/api/v1/stores")
-		testPOSTUserMethod(t, "/api/v1/users")
-		testPOSTUserEmail(t, "/api/v1/users")
-		testPOSTUserBadRequestEmail(t, "/api/v1/users")
-	})
 
 	var pet []entity.Pet
 	var store []entity.Store
@@ -46,6 +36,21 @@ func TestServer(t *testing.T) {
 	db.Find(&pet)
 	db.Find(&store)
 	db.Find(&user)
+
+	t.Run("TEST GET Method", func(t *testing.T) {
+		testGETMethod(t, "/api/v1/pets")
+		testGETMethod(t, "/api/v1/stores")
+		testGETMethod(t, "/api/v1/users")
+		testGETStorePetsMethod(t, "/api/v1/stores/"+store[0].Id+"/pets")
+	})
+
+	t.Run("TEST POST Method", func(t *testing.T) {
+		testPOSTPetMethod(t, "/api/v1/pets")
+		testPOSTStoreMethod(t, "/api/v1/stores")
+		testPOSTUserMethod(t, "/api/v1/users")
+		testPOSTUserEmail(t, "/api/v1/users")
+		testPOSTUserBadRequestEmail(t, "/api/v1/users")
+	})
 
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
@@ -56,7 +61,8 @@ func TestServer(t *testing.T) {
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
-		testDELETEMethod(t, "/api/v1/stores/"+store[0].Id)
+		// **ToDo WCAF-162**
+		// testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
 		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
 	})
 
@@ -64,6 +70,15 @@ func TestServer(t *testing.T) {
 }
 
 func testGETMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", endpoint, nil)
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func testGETStorePetsMethod(t *testing.T, endpoint string) {
 	t.Helper()
 	router := router()
 	w := httptest.NewRecorder()
