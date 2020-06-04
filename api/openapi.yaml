@@ -493,6 +493,59 @@ paths:
                 example: 
                   code: 404
                   message: Not Found
+  /clerks:
+    get:
+      tags:
+        - clerks
+      summary: 店員一覧取得
+      description: 店員一覧取得
+      parameters: []
+      responses:
+        '200':
+          description: 店員一覧取得
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clerks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/clerks'
+                example:
+                  clerks:
+                    - name_id: 55043cdf-0c06-4c74-99e6-6ae920
+                      name: "kato"
+                    - name_id: 22243azf-9p12-1s68-11e1-9as037
+                      name: "kosaka"
+    post:
+      summary: 店員の新規登録
+      tags:
+        - clerks
+      parameters: []
+      requestBody: 
+          description: 店員の新規登録
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/clerks" 
+      responses:
+        '201':
+          description: 新規登録に成功
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/clerks"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+                      
 
 components:
   schemas:
@@ -619,4 +672,19 @@ components:
           readOnly: true
       required: 
         - number
+        - name
+    clerks:
+      type: object
+      properties:
+        name_id:
+          description: 店員識別子
+          example: "11043cdf-0c06-4c74-99e6-6ae920"
+          type: string
+          format: UUID
+          readOnly: true
+        name:
+          description: 氏名
+          example: "Kato"
+          type: string
+      required: 
         - name
