@@ -91,6 +91,7 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		log.Println("Store Success", *result.MessageId)
 	}
 
+	u.CreatedAt = internal.JstTime()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}

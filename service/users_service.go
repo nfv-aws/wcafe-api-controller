@@ -84,6 +84,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	}
 
 	u.Id = id.String()
+	u.CreatedAt = internal.JstTime()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}

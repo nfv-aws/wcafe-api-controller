@@ -98,6 +98,7 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 
 	// DBに登録
 	u.Status = "PENDING_CREATE"
+	u.CreatedAt = internal.JstTime()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
