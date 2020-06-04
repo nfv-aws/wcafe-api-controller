@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 

@@ -8,9 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/stretchr/testify/assert"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 var (
@@ -214,4 +216,34 @@ func TestStoreDeleteConflict(t *testing.T) {
 
 	controller.Delete(c)
 	assert.Equal(t, 409, c.Writer.Status())
+}
+
+func TestStorePetsList(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().PetsList(gomock.Any()).Return(service.Pets{}, nil)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.PetsList(c)
+	assert.Equal(t, 200, c.Writer.Status())
+
+}
+
+func TestStorePetsListNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+
+	serviceMock.EXPECT().PetsList(gomock.Any()).Return(service.Pets{}, gorm.ErrRecordNotFound)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.PetsList(c)
+	assert.Equal(t, 404, c.Writer.Status())
 }

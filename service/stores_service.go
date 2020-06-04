@@ -42,6 +42,7 @@ type StoreService interface {
 	Get(id string) (entity.Store, error)
 	Update(id string, c *gin.Context) (entity.Store, error)
 	Delete(id string) (entity.Store, error)
+	PetsList(id string) (Pets, error)
 }
 
 func NewStoreService() StoreService {
@@ -149,4 +150,20 @@ func (s storeService) Delete(id string) (entity.Store, error) {
 	}
 
 	return u, nil
+}
+
+// Get is get a Store & List is get all Pets
+func (s storeService) PetsList(id string) (Pets, error) {
+	db := db.GetDB()
+	var u entity.Store
+	var e []entity.Pet
+	var p Pets
+
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return p, err
+	}
+
+	db.Table("pets").Where("store_id=?", id).Find(&e)
+	p.Pets = &e
+	return p, nil
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/controller"
 	"github.com/nfv-aws/wcafe-api-controller/service"
@@ -75,6 +76,7 @@ func router() *gin.Engine {
 		p.POST("/stores", store_ctrl.Create)
 		p.PATCH("/stores/:id", store_ctrl.Update)
 		p.DELETE("stores/:id", store_ctrl.Delete)
+		p.GET("/stores/:id/pets", store_ctrl.PetsList)
 
 		pet_ctrl := controller.PetController{Service: service.NewPetService()}
 		p.GET("/pets", pet_ctrl.List)

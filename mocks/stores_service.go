@@ -8,6 +8,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/nfv-aws/wcafe-api-controller/entity"
+	service "github.com/nfv-aws/wcafe-api-controller/service"
 	reflect "reflect"
 )
 
@@ -107,4 +108,19 @@ func (m *MockStoreService) Delete(id string) (entity.Store, error) {
 func (mr *MockStoreServiceMockRecorder) Delete(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockStoreService)(nil).Delete), id)
+}
+
+// PetsList mocks base method.
+func (m *MockStoreService) PetsList(id string) (service.Pets, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PetsList", id)
+	ret0, _ := ret[0].(service.Pets)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PetsList indicates an expected call of PetsList.
+func (mr *MockStoreServiceMockRecorder) PetsList(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PetsList", reflect.TypeOf((*MockStoreService)(nil).PetsList), id)
 }

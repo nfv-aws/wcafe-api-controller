@@ -92,3 +92,16 @@ func (sc StoreController) Delete(c *gin.Context) {
 		c.JSON(204, p)
 	}
 }
+
+// List action: GET /stores/:id/pets
+func (sc StoreController) PetsList(c *gin.Context) {
+	id := c.Params.ByName("id")
+	p, err := sc.Storeservice.PetsList(id)
+
+	if err != nil {
+		c.AbortWithStatus(404)
+		log.Println(err)
+	} else {
+		c.JSON(200, p)
+	}
+}
