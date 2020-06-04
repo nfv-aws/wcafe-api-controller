@@ -12,7 +12,6 @@ import (
 
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 var (
@@ -224,13 +223,31 @@ func TestStorePetsList(t *testing.T) {
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
+	p := []entity.Pet{
+		{Id: "pa5bafac-b35c-4852-82ca-b272cd79f2f3", Species: "Dog"},
+		{Id: "pa5bafac-b35c-4852-82ca-b272cd79f2f5", Species: "Cat"},
+	}
+
 	serviceMock := mocks.NewMockStoreService(ctrl)
-	serviceMock.EXPECT().PetsList(gomock.Any()).Return(service.Pets{}, nil)
+	serviceMock.EXPECT().PetsList(gomock.Any()).Return(p, nil)
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.PetsList(c)
 	assert.Equal(t, 200, c.Writer.Status())
+}
 
+func TestStorePetsListEmpty(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockStoreService(ctrl)
+	serviceMock.EXPECT().PetsList(gomock.Any()).Return([]entity.Pet{}, nil)
+	controller := StoreController{Storeservice: serviceMock}
+
+	controller.PetsList(c)
+	assert.Equal(t, 200, c.Writer.Status())
 }
 
 func TestStorePetsListNotFound(t *testing.T) {
@@ -241,7 +258,7 @@ func TestStorePetsListNotFound(t *testing.T) {
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 
-	serviceMock.EXPECT().PetsList(gomock.Any()).Return(service.Pets{}, gorm.ErrRecordNotFound)
+	serviceMock.EXPECT().PetsList(gomock.Any()).Return([]entity.Pet{}, gorm.ErrRecordNotFound)
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.PetsList(c)

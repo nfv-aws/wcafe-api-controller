@@ -8,7 +8,6 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/nfv-aws/wcafe-api-controller/entity"
-	service "github.com/nfv-aws/wcafe-api-controller/service"
 	reflect "reflect"
 )
 
@@ -111,10 +110,10 @@ func (mr *MockStoreServiceMockRecorder) Delete(id interface{}) *gomock.Call {
 }
 
 // PetsList mocks base method.
-func (m *MockStoreService) PetsList(id string) (service.Pets, error) {
+func (m *MockStoreService) PetsList(id string) ([]entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PetsList", id)
-	ret0, _ := ret[0].(service.Pets)
+	ret0, _ := ret[0].([]entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
