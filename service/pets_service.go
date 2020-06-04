@@ -1,16 +1,18 @@
 package service
 
 import (
+	"log"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
-	"log"
-	"time"
+	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
 
 var (
@@ -128,8 +130,9 @@ func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	if err := db.Where("id = ?", id).First(&pt).Error; err != nil {
 		return u, err
 	}
+
 	u.CreatedAt = pt.CreatedAt
-	u.UpdatedAt = time.Now()
+	u.UpdatedAt = internal.JstTime()
 
 	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err

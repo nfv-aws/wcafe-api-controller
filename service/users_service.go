@@ -2,7 +2,6 @@ package service
 
 import (
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -14,6 +13,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
 
 //SQS用グローバル変数
@@ -138,7 +138,7 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 	}
 
 	u.CreatedAt = ut.CreatedAt
-	u.UpdatedAt = time.Now()
+	u.UpdatedAt = internal.JstTime()
 
 	if err := db.Table("users").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err
