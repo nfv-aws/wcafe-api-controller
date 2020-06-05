@@ -2,7 +2,6 @@ package service
 
 import (
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -13,6 +12,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
 
 var (
@@ -98,6 +98,7 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 
 	// DBに登録
 	u.Status = "PENDING_CREATE"
+	u.CreatedAt = internal.JstTime()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
@@ -130,8 +131,9 @@ func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	if err := db.Where("id = ?", id).First(&pt).Error; err != nil {
 		return u, err
 	}
+
 	u.CreatedAt = pt.CreatedAt
-	u.UpdatedAt = time.Now()
+	u.UpdatedAt = internal.JstTime()
 
 	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err
