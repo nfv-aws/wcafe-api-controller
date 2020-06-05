@@ -16,7 +16,7 @@ func Init() {
 }
 
 func router() *gin.Engine {
-	r := logger.ServerLog()
+	r := logger.GinLog()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
@@ -34,6 +34,7 @@ func router() *gin.Engine {
 		p.POST("/stores", store_ctrl.Create)
 		p.PATCH("/stores/:id", store_ctrl.Update)
 		p.DELETE("stores/:id", store_ctrl.Delete)
+		p.GET("/stores/:id/pets", store_ctrl.PetsList)
 
 		pet_ctrl := controller.PetController{Service: service.NewPetService()}
 		p.GET("/pets", pet_ctrl.List)

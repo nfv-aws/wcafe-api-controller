@@ -2,7 +2,6 @@ package service
 
 import (
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -13,6 +12,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
 
 var (
@@ -42,6 +42,7 @@ type StoreService interface {
 	Get(id string) (entity.Store, error)
 	Update(id string, c *gin.Context) (entity.Store, error)
 	Delete(id string) (entity.Store, error)
+	PetsList(id string) ([]entity.Pet, error)
 }
 
 func NewStoreService() StoreService {
@@ -91,6 +92,7 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		log.Println("Store Success", *result.MessageId)
 	}
 
+	u.CreatedAt = internal.JstTime()
 	if err := db.Create(&u).Error; err != nil {
 		return u, err
 	}
@@ -125,7 +127,7 @@ func (s storeService) Update(id string, c *gin.Context) (entity.Store, error) {
 		return u, err
 	}
 	u.CreatedAt = st.CreatedAt
-	u.UpdatedAt = time.Now()
+	u.UpdatedAt = internal.JstTime()
 
 	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
 		return u, err
@@ -149,4 +151,18 @@ func (s storeService) Delete(id string) (entity.Store, error) {
 	}
 
 	return u, nil
+}
+
+// Get is get a Store & List is get all Pets
+func (s storeService) PetsList(id string) ([]entity.Pet, error) {
+	db := db.GetDB()
+	var u entity.Store
+	var e []entity.Pet
+
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return e, err
+	}
+
+	db.Table("pets").Where("store_id=?", id).Find(&e)
+	return e, nil
 }

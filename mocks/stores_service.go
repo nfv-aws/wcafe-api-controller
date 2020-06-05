@@ -108,3 +108,18 @@ func (mr *MockStoreServiceMockRecorder) Delete(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockStoreService)(nil).Delete), id)
 }
+
+// PetsList mocks base method.
+func (m *MockStoreService) PetsList(id string) ([]entity.Pet, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PetsList", id)
+	ret0, _ := ret[0].([]entity.Pet)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PetsList indicates an expected call of PetsList.
+func (mr *MockStoreServiceMockRecorder) PetsList(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PetsList", reflect.TypeOf((*MockStoreService)(nil).PetsList), id)
+}

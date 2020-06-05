@@ -11,7 +11,7 @@ import (
 	"github.com/nfv-aws/wcafe-api-controller/config"
 )
 
-func ServerLog() *gin.Engine {
+func GinLog() *gin.Engine {
 	config.Configure()
 	file_path := config.C.LOG.File_path
 
@@ -50,8 +50,9 @@ func ServerLog() *gin.Engine {
 }
 
 func LoggingSettings() {
-	// RDWRはreadとwrite。パーミッションで0666は読み書きができるユーザーその他。
-	logfile, _ := os.OpenFile("./log/gin.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	config.Configure()
+	file_path := config.C.LOG.File_path
+	logfile, _ := os.OpenFile(file_path+"main.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	gin.DefaultWriter = io.MultiWriter(logfile)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	log.SetOutput(gin.DefaultWriter)
