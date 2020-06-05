@@ -57,15 +57,3 @@ func LoggingSettings() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	log.SetOutput(gin.DefaultWriter)
 }
-
-/*
-func Log() {
-	logfile, err := os.OpenFile("./log/gin.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		panic(err)
-	}
-	gin.DefaultWriter = io.MultiWriter(os.Stdout, logfile)
-	//	r := gin.Default()
-	log.SetOutput(gin.DefaultWriter)
-}
-*/
