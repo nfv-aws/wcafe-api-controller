@@ -1,11 +1,15 @@
 package server
 
 import (
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"time"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
 	"github.com/nfv-aws/wcafe-api-controller/controller"
-	logger "github.com/nfv-aws/wcafe-api-controller/log"
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
@@ -16,10 +20,28 @@ func Init() {
 }
 
 func router() *gin.Engine {
-	r := logger.GinLog()
+	f, _ := os.Create("./log/gin.log")
+	gin.DefaultWriter = io.MultiWriter(f)
+	log.SetOutput(gin.DefaultWriter)
+	r := gin.Default()
+
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
+	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
+	r.Use(gin.Recovery())
 
 	// health check
 	r.GET("/health", func(c *gin.Context) {

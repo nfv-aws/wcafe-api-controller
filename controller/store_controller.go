@@ -18,7 +18,6 @@ type StoreController struct {
 // List action: GET /stores
 func (sc StoreController) List(c *gin.Context) {
 	p, err := sc.Storeservice.List()
-
 	if err != nil {
 		c.AbortWithStatus(404)
 		log.Println(err)
