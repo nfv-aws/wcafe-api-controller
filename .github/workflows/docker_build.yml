@@ -1,26 +1,27 @@
-name: Docker_Build
+name: Docker_Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [docker-compose]
+    # branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
 
-  build:
-    name: docker build 
+  docker_test:
+    name: test 
     runs-on: ubuntu-latest
     steps:
         
     - name: checkout
       uses: actions/checkout@v2
       
-    - name: Build the Docker image
-      env:
-        WCAFE_DB_PASSWORD: ${{ secrets.WCAFE_DB_PASSWORD }}
-        WCAFE_DB_ENDPOINT: ${{ secrets.WCAFE_DB_ENDPOINT }}
-      run: docker build --build-arg DB_PASS=$(echo $WCAFE_DB_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DB_ENDPOINT) -t wcafe .
+    - name: build
+      run: docker-compose build
+      
+    - name: run
+      run: docker-compose up -d
     
     - name: Slack Notification
       # 前Stepの実行結果を判定
