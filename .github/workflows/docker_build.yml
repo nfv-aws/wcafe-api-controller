@@ -2,8 +2,7 @@ name: Docker_Test
 
 on:
   push:
-    branches: [docker-compose]
-    # branches: [ master ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 

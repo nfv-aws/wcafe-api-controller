@@ -87,12 +87,11 @@ ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ## コンテナ上で動作確認
 イメージ作成
 ```
-docker build --build-arg DB_PASS=$(echo $WCAFE_DB_PASSWORD) --build-arg DB_ENDPOINT=$(echo $WCAFE_DB_ENDPOINT) -t wcafe .
+docker-compose build
 ```
-
 コンテナの生成と実行
 ```
-docker run -d -p 8080:8080 wcafe
+docker-compose up -d 
 ```
 確認
 ```
