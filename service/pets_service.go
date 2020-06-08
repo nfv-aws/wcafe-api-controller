@@ -121,18 +121,20 @@ func (s petService) Get(id string) (Pet, error) {
 // Update is modify pet
 func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	db := db.GetDB()
-	var u, pt Pet
+	var u Pet
 
+	// 変更前のPet情報を取得
+	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+		return u, err
+	}
+
+	log.Println(c)
+	// 取得したPet情報にUpdateする内容をBind
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
 
-	//作成日・更新日を取得
-	if err := db.Where("id = ?", id).First(&pt).Error; err != nil {
-		return u, err
-	}
-
-	u.CreatedAt = pt.CreatedAt
+	// 更新日時を上書き
 	u.UpdatedAt = internal.JstTime()
 
 	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
