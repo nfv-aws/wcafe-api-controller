@@ -1,0 +1,14 @@
+version: '3'
+services:
+  wcafe: 
+    build: . 
+    ports:
+      - "8080:8080"
+    environment:
+      - WCAFE_DB_ENDPOINT   
+      - WCAFE_DB_PASSWORD
+      - WCAFE_DB_USER
+      - WCAFE_SQS_REGION
+      - WCAFE_SQS_PETS_QUEUE_URL
+      - WCAFE_SQS_STORES_QUEUE_URL
+      - WCAFE_SQS_USERS_QUEUE_URL
