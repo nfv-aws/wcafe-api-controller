@@ -45,6 +45,7 @@ export WCAFE_SQS_PETS_QUEUE_URL=queue_url_1
 export WCAFE_SQS_STORES_QUEUE_URL=queue_url_2
 export WCAFE_SQS_USERS_QUEUE_URL=queue_url_3
 export WCAFE_LOG_FILE_PATH=file_path  
+export WCAFE_DYNAMODB_REGION=region
 
 source ~/.bashrc
 ```

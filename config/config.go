@@ -21,6 +21,9 @@ type Config struct {
 		Stores_Queue_Url string
 		Users_Queue_Url  string
 	}
+	DynamoDB struct {
+		Region string
+	}
 	LOG struct {
 		File_path string
 	}

@@ -17,7 +17,7 @@ var (
 // DynamoDBに接続
 func Dynamo_Init() *dynamo.DB {
 	config.Configure()
-	aws_region = config.C.SQS.Region
+	aws_region = config.C.DynamoDB.Region
 	dynamodb := dynamo.New(session.New(), &aws.Config{
 		Region: aws.String(aws_region),
 	})
