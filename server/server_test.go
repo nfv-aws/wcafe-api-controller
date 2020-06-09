@@ -42,6 +42,7 @@ func TestServer(t *testing.T) {
 		testGETMethod(t, "/api/v1/stores")
 		testGETMethod(t, "/api/v1/users")
 		testGETStorePetsMethod(t, "/api/v1/stores/"+store[0].Id+"/pets")
+		testGETMethod(t, "/api/v1/clerks")
 	})
 
 	t.Run("TEST POST Method", func(t *testing.T) {
