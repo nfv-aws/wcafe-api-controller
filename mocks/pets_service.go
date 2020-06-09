@@ -7,7 +7,7 @@ package mocks
 import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
-	service "github.com/nfv-aws/wcafe-api-controller/service"
+	entity "github.com/nfv-aws/wcafe-api-controller/entity"
 	reflect "reflect"
 )
 
@@ -35,10 +35,10 @@ func (m *MockPetService) EXPECT() *MockPetServiceMockRecorder {
 }
 
 // List mocks base method.
-func (m *MockPetService) List() (service.Pets, error) {
+func (m *MockPetService) List() ([]entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List")
-	ret0, _ := ret[0].(service.Pets)
+	ret0, _ := ret[0].([]entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockPetServiceMockRecorder) List() *gomock.Call {
 }
 
 // Create mocks base method.
-func (m *MockPetService) Create(c *gin.Context) (service.Pet, error) {
+func (m *MockPetService) Create(c *gin.Context) (entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", c)
-	ret0, _ := ret[0].(service.Pet)
+	ret0, _ := ret[0].(entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +65,10 @@ func (mr *MockPetServiceMockRecorder) Create(c interface{}) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockPetService) Get(id string) (service.Pet, error) {
+func (m *MockPetService) Get(id string) (entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", id)
-	ret0, _ := ret[0].(service.Pet)
+	ret0, _ := ret[0].(entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,10 +80,10 @@ func (mr *MockPetServiceMockRecorder) Get(id interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockPetService) Update(id string, c *gin.Context) (service.Pet, error) {
+func (m *MockPetService) Update(id string, c *gin.Context) (entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", id, c)
-	ret0, _ := ret[0].(service.Pet)
+	ret0, _ := ret[0].(entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -95,10 +95,10 @@ func (mr *MockPetServiceMockRecorder) Update(id, c interface{}) *gomock.Call {
 }
 
 // Delete mocks base method.
-func (m *MockPetService) Delete(id string) (service.Pet, error) {
+func (m *MockPetService) Delete(id string) (entity.Pet, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", id)
-	ret0, _ := ret[0].(service.Pet)
+	ret0, _ := ret[0].(entity.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
