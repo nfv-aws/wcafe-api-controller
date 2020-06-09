@@ -72,6 +72,8 @@ func router() *gin.Engine {
 		p.PATCH("/users/:id", user_ctrl.Update)
 		p.DELETE("/users/:id", user_ctrl.Delete)
 
+		sup_ctrl := controller.SupplyController{Supplyservice: service.NewSupplyService()}
+		p.GET("/supplies", sup_ctrl.List)
 	}
 
 	return r

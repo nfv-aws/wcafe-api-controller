@@ -13,3 +13,5 @@ users_queue_url = "USERS_SQS_QUEUE_URL"
 [log]
 file_path = "./log/"
 
+[conductor]
+address = "localhost:50051"
