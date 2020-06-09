@@ -16,5 +16,5 @@ region = "DynamoDB_REGION"
 [log]
 file_path = "./log/"
 
-[conductor]
-address = "localhost:50051"
+[Conductor]
+address = "CONDUCTOR_URL"

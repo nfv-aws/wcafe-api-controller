@@ -47,8 +47,7 @@ func (s supplyService) List() ([]entity.Supply, error) {
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	table := "supplies"
-	r, err := c.SupplyList(ctx, &pb.SupplyRequest{Table: table})
+	r, err := c.SupplyList(ctx, &pb.SupplyRequest{Table: "supplies"})
 	if err != nil {
 		log.Fatalf("could not: %v", err)
 	}
