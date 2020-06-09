@@ -10,6 +10,9 @@ pets_queue_url  = "PETS_SQS_QUEUE_URL"
 stores_queue_url  = "STORES_SQS_QUEUE_URL"
 users_queue_url = "USERS_SQS_QUEUE_URL"
 
+[DynamoDB]
+region = "DynamoDB_REGION"
+
 [log]
 file_path = "./log/"
 

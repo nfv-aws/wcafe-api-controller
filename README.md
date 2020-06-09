@@ -28,6 +28,7 @@ go get github.com/google/uuid
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/session
 github.com/aws/aws-sdk-go/service/sqs
+github.com/guregu/dynamo
 ```
 
 ### 環境設定
@@ -44,6 +45,7 @@ export WCAFE_SQS_PETS_QUEUE_URL=queue_url_1
 export WCAFE_SQS_STORES_QUEUE_URL=queue_url_2
 export WCAFE_SQS_USERS_QUEUE_URL=queue_url_3
 export WCAFE_LOG_FILE_PATH=file_path  
+export WCAFE_DYNAMODB_REGION=region
 
 source ~/.bashrc
 ```
@@ -55,6 +57,15 @@ source ~/.bashrc
 vi config/config.toml
 ```
 **file_pathは末尾の`/`まで記載すること**  
+
+### DynamoDBの準備
+```
+DynamoDBにて、以下のテーブルを用意する
+
+テーブル名：clerks_name
+プライマリキー：name_id
+キー：name
+```
 
 ## 動作確認
 
@@ -111,4 +122,5 @@ https://qiita.com/hiroyky/items/4a9be463e752d5c0c41c
 mockgen -source service/pets_service.go -destination mocks/pets_service.go -package mocks
 mockgen -source service/stores_service.go -destination mocks/stores_service.go -package mocks
 mockgen -source service/users_service.go -destination mocks/users_service.go -package mocks
+mockgen -source service/clerks_service.go -destination mocks/clerks_service.go -package mocks
 ```
