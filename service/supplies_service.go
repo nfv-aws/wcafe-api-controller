@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"google.golang.org/grpc"
 
+	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	pb "github.com/nfv-aws/wcafe-api-controller/protoc"
 )
@@ -30,13 +31,12 @@ func NewSupplyService() SupplyService {
 
 type supplyService struct{}
 
-const (
-	address = "localhost:50051"
-)
-
 // List is get all supply
 func (s supplyService) List() ([]entity.Supply, error) {
 	// Set up a connection to the server.
+	config.Configure()
+	var address = config.C.Conductor.Ip + ":" + config.C.Conductor.Port
+	log.Println(address)
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)

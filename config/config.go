@@ -28,7 +28,8 @@ type Config struct {
 		File_path string
 	}
 	Conductor struct {
-		Address string
+		Ip   string
+		Port string
 	}
 }
 
