@@ -27,6 +27,10 @@ type Config struct {
 	LOG struct {
 		File_path string
 	}
+	Conductor struct {
+		Ip   string
+		Port string
+	}
 }
 
 var C Config

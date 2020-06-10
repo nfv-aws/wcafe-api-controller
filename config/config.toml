@@ -16,3 +16,6 @@ region = "DynamoDB_REGION"
 [log]
 file_path = "./log/"
 
+[Conductor]
+ip = "CONDUCTOR_IP"
+port = "CONDUCTOR_PORT"

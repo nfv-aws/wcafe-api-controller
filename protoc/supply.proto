@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protoc;
+
+service Supplies {
+  rpc SupplyList (SupplyRequest) returns (SupplyResponse) {}
+}
+
+message SupplyRequest {
+  string table = 1;
+}
+
+message SupplyResponse {
+  string message = 1;
+}

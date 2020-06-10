@@ -580,7 +580,62 @@ paths:
                 example: 
                   code: 400
                   message: Bad Request
-                      
+  /supplies:
+    get:
+      tags:
+        - supplies
+      summary: ペット用品一覧取得
+      description: ペット用品一覧取得
+      parameters: []
+      responses:
+        '200':
+          description: supplies一覧取得
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clerks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/supplies'
+                example:
+                  clerks:
+                    - name_id: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
+                      name: "dog food"
+                      price: 500
+                      type: "food"
+                    - name_id: "fba6e715-5462-43b0-ab5d-8d7d727408d4"
+                      name: "ball"
+                      price: 200
+                      type: "toy"
+    post:
+      summary: ペット用品の新規登録
+      tags:
+        - supplies
+      parameters: []
+      requestBody: 
+          description: ペット用品の新規登録
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/supplies" 
+      responses:
+        '201':
+          description: 新規登録に成功
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/supplies"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
 
 components:
   schemas:
@@ -723,3 +778,28 @@ components:
           type: string
       required: 
         - name
+    supplies:
+      type: object
+      properties:
+        name_id:
+          description: ペット用品識別子
+          example: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
+          type: string
+          format: UUID
+          readOnly: true
+        name:
+          description: ペット用品名
+          example: "dog food"
+          type: string
+        price:
+          description: ペット用品の値段
+          example: 500
+          type: integer
+        type:
+          description: ペット用品分類
+          example: "food"
+          type: string
+      required: 
+        - name
+        - price
+        - type
