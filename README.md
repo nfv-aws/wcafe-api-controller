@@ -46,7 +46,8 @@ export WCAFE_SQS_STORES_QUEUE_URL=queue_url_2
 export WCAFE_SQS_USERS_QUEUE_URL=queue_url_3
 export WCAFE_LOG_FILE_PATH=file_path  
 export WCAFE_DYNAMODB_REGION=region
-
+export WCAFE_CONDUCTOR_IP=ip
+export WCAFE_CONDUCTOR_PORT=port
 source ~/.bashrc
 ```
 
@@ -59,14 +60,20 @@ vi config/config.toml
 **file_pathは末尾の`/`まで記載すること**  
 
 ### DynamoDBの準備
-```
 DynamoDBにて、以下のテーブルを用意する
 
+```
 テーブル名：clerks_name
 プライマリキー：name_id
 キー：name
 ```
-
+```
+テーブル名：supplies
+プライマリキー：id (string)
+ソートキー：name (string)
+GSI-プライマリーキー：type (string)
+GSI-プライマリーキー：price (int)
+```
 ## 動作確認
 
 ```
@@ -123,4 +130,5 @@ mockgen -source service/pets_service.go -destination mocks/pets_service.go -pack
 mockgen -source service/stores_service.go -destination mocks/stores_service.go -package mocks
 mockgen -source service/users_service.go -destination mocks/users_service.go -package mocks
 mockgen -source service/clerks_service.go -destination mocks/clerks_service.go -package mocks
+mockgen -source service/supplies_service.go -destination mocks/supplies_service.go -package mocks
 ```
