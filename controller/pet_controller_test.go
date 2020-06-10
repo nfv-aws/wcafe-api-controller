@@ -10,11 +10,21 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 var (
+	p = entity.Pet{
+		Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+		Species:   "Canine",
+		Name:      "Shiba-inu",
+		Age:       1,
+		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
+		CreatedAt: ct,
+		UpdatedAt: ut,
+		Status:    "PENDING_CREATE",
+	}
 	ErrInvalidAddress = errors.New("InvalidAddress: The address https://sqs.ap-northeast-1.amazonaws.com/ is not valid for this endpoint.")
 )
 
@@ -25,22 +35,27 @@ func TestPetList(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().List().Return(service.Pets{}, nil)
-	controller := PetController{Service: serviceMock}
+	p := []entity.Pet{
+		{Id: "sa5bafac-b35c-4852-82ca-b272cd79f2f3", Name: "Sano Shinichiro"},
+		{Id: "sa5bafac-b35c-4852-82ca-b272cd79f2f5", Name: "Suzuki Chihiro"},
+	}
+
+	serviceMock.EXPECT().List().Return(p, nil)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.List(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetGet(t *testing.T) {
+func TestPetGetOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Get(gomock.Any()).Return(p, nil)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Get(c)
 	assert.Equal(t, 200, c.Writer.Status())
@@ -54,8 +69,8 @@ func TestPetGetNotFound(t *testing.T) {
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 
-	serviceMock.EXPECT().Get(gomock.Any()).Return(service.Pet{}, gorm.ErrRecordNotFound)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Get(gomock.Any()).Return(entity.Pet{}, gorm.ErrRecordNotFound)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Get(c)
 	assert.Equal(t, 404, c.Writer.Status())
@@ -68,8 +83,8 @@ func TestPetCreateOK(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(c).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Create(c).Return(p, nil)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
 	assert.Equal(t, 201, c.Writer.Status())
@@ -82,8 +97,8 @@ func TestPetCreateInvalidAddress(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrInvalidAddress)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Create(c).Return(entity.Pet{}, ErrInvalidAddress)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
 	assert.Equal(t, 404, c.Writer.Status())
@@ -96,37 +111,80 @@ func TestPetCreateBadRequest(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Create(c).Return(service.Pet{}, ErrBadRequest)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Create(c).Return(entity.Pet{}, ErrBadRequest)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
 	assert.Equal(t, 400, c.Writer.Status())
 }
 
-func TestPetUpdate(t *testing.T) {
+func TestPetUpdateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Update(gomock.Any(), c).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(p, nil)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Update(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
 
-func TestPetDelete(t *testing.T) {
+func TestPetUpdataNotFound(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockPetService(ctrl)
-	serviceMock.EXPECT().Delete(gomock.Any()).Return(service.Pet{}, nil)
-	controller := PetController{Service: serviceMock}
+
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Pet{}, gorm.ErrRecordNotFound)
+	controller := PetController{Petservice: serviceMock}
+
+	controller.Update(c)
+	assert.Equal(t, 404, c.Writer.Status())
+}
+
+func TestPetUpdateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Pet{}, ErrBadRequest)
+	controller := PetController{Petservice: serviceMock}
+
+	controller.Update(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}
+
+func TestPetDeleteOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Pet{}, nil)
+	controller := PetController{Petservice: serviceMock}
 
 	controller.Delete(c)
 	assert.Equal(t, 204, c.Writer.Status())
+}
+
+func TestPetDeleteNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockPetService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Pet{}, gorm.ErrRecordNotFound)
+	controller := PetController{Petservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, 404, c.Writer.Status())
 }

@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -31,6 +32,47 @@ type Pet struct {
 	Status string `json:"status"`
 }
 
-type Pets struct {
-	Pets *[]Pet `json:"pets"`
+type PetRepository struct {
+	DB *gorm.DB
+}
+
+func (p *PetRepository) Find() ([]Pet, error) {
+	var r []Pet
+	if err := p.DB.Find(&r).Error; err != nil {
+		return r, err
+	}
+
+	return r, nil
+}
+
+func (p *PetRepository) Create(pt Pet) (Pet, error) {
+	if err := p.DB.Create(pt).Error; err != nil {
+		return pt, err
+	}
+	return pt, nil
+}
+
+func (p *PetRepository) Get(id string) (Pet, error) {
+	var r Pet
+
+	if err := p.DB.Where("id = ?", id).First(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (p *PetRepository) Update(id string, pt Pet) (Pet, error) {
+	if err := p.DB.Table("pets").Where("id = ?", id).Updates(pt).Error; err != nil {
+		return pt, err
+	}
+	return pt, nil
+}
+
+func (p *PetRepository) Delete(id string) (Pet, error) {
+	var r Pet
+	if err := p.DB.Table("pets").Where("id = ?", id).Delete(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+
 }

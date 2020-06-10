@@ -342,6 +342,14 @@ paths:
                   name: "toy poodle"
                   age: 5
                   store_id: "75a68334-73b8-11ea-bc55-0242ac130003"
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
                   
     delete:
       summary: ID指定による商品情報の削除

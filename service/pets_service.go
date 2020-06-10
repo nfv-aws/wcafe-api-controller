@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
-	"github.com/nfv-aws/wcafe-api-controller/db"
+	//	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
@@ -33,42 +33,39 @@ func Pets_Init() *sqs.SQS {
 // User is alias of entity.Pet struct
 type Pet entity.Pet
 
-// User is alias of entity.Pets struct
-type Pets entity.Pets
-
 // Service procides pet's behavior
-//type PetService struct{}
 type PetService interface {
-	List() (Pets, error)
-	Create(c *gin.Context) (Pet, error)
-	Get(id string) (Pet, error)
-	Update(id string, c *gin.Context) (Pet, error)
-	Delete(id string) (Pet, error)
+	List() ([]entity.Pet, error)
+	Create(c *gin.Context) (entity.Pet, error)
+	Get(id string) (entity.Pet, error)
+	Update(id string, c *gin.Context) (entity.Pet, error)
+	Delete(id string) (entity.Pet, error)
 }
 
-func NewPetService() PetService {
-	return &petService{}
-}
-
+//type PetService struct{}
 type petService struct {
+	petRepository entity.PetRepository
+}
+
+func NewPetService(db entity.PetRepository) PetService {
+	return &petService{petRepository: db}
 }
 
 // List is get all Pet
-func (s petService) List() (Pets, error) {
-	db := db.GetDB()
-	var l Pets
+func (s petService) List() ([]entity.Pet, error) {
 	var u []entity.Pet
-
-	db.Find(&u)
-
-	l.Pets = &u
-	return l, nil
+	pr := s.petRepository
+	u, err := pr.Find()
+	if err != nil {
+		return u, err
+	}
+	return u, nil
 }
 
 // Create is create Pet model
-func (s petService) Create(c *gin.Context) (Pet, error) {
-	db := db.GetDB()
-	var u Pet
+func (s petService) Create(c *gin.Context) (entity.Pet, error) {
+	pr := s.petRepository
+	var u entity.Pet
 
 	//UUID生成
 	id, err := uuid.NewRandom()
@@ -99,32 +96,33 @@ func (s petService) Create(c *gin.Context) (Pet, error) {
 	// DBに登録
 	u.Status = "PENDING_CREATE"
 	u.CreatedAt = internal.JstTime()
-	if err := db.Create(&u).Error; err != nil {
+
+	u, err = pr.Create(u)
+	if err != nil {
 		return u, err
 	}
-
 	return u, nil
 }
 
 // GetByID is get a Pet
-func (s petService) Get(id string) (Pet, error) {
-	db := db.GetDB()
-	var u Pet
+func (s petService) Get(id string) (entity.Pet, error) {
+	pr := s.petRepository
+	var u entity.Pet
 
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+	u, err := pr.Get(id)
+	if err != nil {
 		return u, err
 	}
-
 	return u, nil
 }
 
 // Update is modify pet
-func (s petService) Update(id string, c *gin.Context) (Pet, error) {
-	db := db.GetDB()
-	var u Pet
+func (s petService) Update(id string, c *gin.Context) (entity.Pet, error) {
+	pr := s.petRepository
+	var u entity.Pet
 
-	// 変更前のPet情報を取得
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+	u, err := pr.Get(id)
+	if err != nil {
 		return u, err
 	}
 
@@ -137,7 +135,8 @@ func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 	// 更新日時を上書き
 	u.UpdatedAt = internal.JstTime()
 
-	if err := db.Table("pets").Where("id = ?", id).Updates(&u).Error; err != nil {
+	u, err = pr.Update(id, u)
+	if err != nil {
 		return u, err
 	}
 
@@ -145,15 +144,19 @@ func (s petService) Update(id string, c *gin.Context) (Pet, error) {
 }
 
 //  Delete is delete a pet
-func (s petService) Delete(id string) (Pet, error) {
-	db := db.GetDB()
-	var u Pet
+func (s petService) Delete(id string) (entity.Pet, error) {
+	pr := s.petRepository
+	var u entity.Pet
 
-	if err := db.Where("id = ?", id).Find(&u).Error; err != nil {
+	// 指定したIDが存在するか確認
+	u, err := pr.Get(id)
+	if err != nil {
 		return u, err
 	}
 
-	if err := db.Table("pets").Where("id = ?", id).Delete(&u).Error; err != nil {
+	// 削除
+	u, err = pr.Delete(id)
+	if err != nil {
 		return u, err
 	}
 
