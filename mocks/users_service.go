@@ -8,7 +8,6 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/nfv-aws/wcafe-api-controller/entity"
-	service "github.com/nfv-aws/wcafe-api-controller/service"
 	reflect "reflect"
 )
 
@@ -96,10 +95,10 @@ func (mr *MockUserServiceMockRecorder) Update(id, c interface{}) *gomock.Call {
 }
 
 // Delete mocks base method.
-func (m *MockUserService) Delete(id string) (service.User, error) {
+func (m *MockUserService) Delete(id string) (entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", id)
-	ret0, _ := ret[0].(service.User)
+	ret0, _ := ret[0].(entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

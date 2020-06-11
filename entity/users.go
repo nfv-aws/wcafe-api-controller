@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -28,6 +29,46 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_time"`
 }
 
-type Users struct {
-	Users *[]User `json:"users"`
+type UserRepository struct {
+	DB *gorm.DB
+}
+
+func (ur *UserRepository) Find() ([]User, error) {
+	var r []User
+	if err := ur.DB.Find(&r).Error; err != nil {
+		return r, err
+	}
+
+	return r, nil
+}
+
+func (ur *UserRepository) Create(u User) (User, error) {
+	if err := ur.DB.Create(u).Error; err != nil {
+		return u, err
+	}
+	return u, nil
+}
+
+func (ur *UserRepository) Get(id string) (User, error) {
+	var r User
+
+	if err := ur.DB.Where("id = ?", id).First(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (ur *UserRepository) Update(id string, u User) (User, error) {
+	if err := ur.DB.Table("users").Where("id = ?", id).Updates(u).Error; err != nil {
+		return u, err
+	}
+	return u, nil
+}
+
+func (ur *UserRepository) Delete(id string) (User, error) {
+	var r User
+	if err := ur.DB.Table("users").Where("id = ?", id).Delete(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
 }

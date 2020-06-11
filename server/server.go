@@ -53,7 +53,8 @@ func router() *gin.Engine {
 
 	p := r.Group("/api/v1")
 	{
-		store_ctrl := controller.StoreController{Storeservice: service.NewStoreService()}
+		store_repo := entity.StoreRepository{DB: db.GetDB()}
+		store_ctrl := controller.StoreController{Storeservice: service.NewStoreService(store_repo)}
 		p.GET("/stores", store_ctrl.List)
 		p.GET("/stores/:id", store_ctrl.Get)
 		p.POST("/stores", store_ctrl.Create)
@@ -69,7 +70,8 @@ func router() *gin.Engine {
 		p.PATCH("/pets/:id", pet_ctrl.Update)
 		p.DELETE("/pets/:id", pet_ctrl.Delete)
 
-		user_ctrl := controller.UserController{Userservice: service.NewUserService()}
+		user_repo := entity.UserRepository{DB: db.GetDB()}
+		user_ctrl := controller.UserController{Userservice: service.NewUserService(user_repo)}
 		p.GET("/users", user_ctrl.List)
 		p.GET("/users/:id", user_ctrl.Get)
 		p.POST("/users", user_ctrl.Create)

@@ -11,7 +11,6 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
-	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
@@ -21,6 +20,26 @@ var (
 	users_svc       *sqs.SQS
 	users_queue_url string
 )
+
+// User is alias of entity.user struct
+type User entity.User
+
+// Service procides user's behavior
+type UserService interface {
+	List() ([]entity.User, error)
+	Create(c *gin.Context) (entity.User, error)
+	Get(id string) (entity.User, error)
+	Update(id string, c *gin.Context) (entity.User, error)
+	Delete(id string) (entity.User, error)
+}
+
+type userService struct {
+	userRepository entity.UserRepository
+}
+
+func NewUserService(db entity.UserRepository) UserService {
+	return &userService{userRepository: db}
+}
 
 //SQS処理
 func Users_Init() *sqs.SQS {
@@ -32,38 +51,20 @@ func Users_Init() *sqs.SQS {
 	return users_svc
 }
 
-// User is alias of entity.user struct
-type User entity.User
-
-// User is alias of entity.users struct
-type Users entity.Users
-
-// Service procides user's behavior
-type UserService interface {
-	List() ([]entity.User, error)
-	Create(c *gin.Context) (entity.User, error)
-	Get(id string) (entity.User, error)
-	Update(id string, c *gin.Context) (entity.User, error)
-	Delete(id string) (User, error)
-}
-
-type userService struct{}
-
-func NewUserService() UserService {
-	return &userService{}
-}
-
 // List is get all user
 func (s userService) List() ([]entity.User, error) {
-	db := db.GetDB()
 	var u []entity.User
-	db.Find(&u)
+	ur := s.userRepository
+	u, err := ur.Find()
+	if err != nil {
+		return u, err
+	}
 	return u, nil
 }
 
 // Create is create user model
 func (s userService) Create(c *gin.Context) (entity.User, error) {
-	db := db.GetDB()
+	ur := s.userRepository
 	var u entity.User
 
 	//UUID生成
@@ -84,10 +85,6 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	}
 
 	u.Id = id.String()
-	u.CreatedAt = internal.JstTime()
-	if err := db.Create(&u).Error; err != nil {
-		return u, err
-	}
 
 	//SQS処理呼び出し
 	log.Println(u.Id)
@@ -100,18 +97,26 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	})
 	if err != nil {
 		log.Println("User SendMessage Error", err)
+	} else {
+		log.Println("User Success", *result.MessageId)
 	}
-	log.Println("User Success", *result.MessageId)
+
+	u.CreatedAt = internal.JstTime()
+	u, err = ur.Create(u)
+	if err != nil {
+		return u, err
+	}
 
 	return u, nil
 }
 
 // Get is get a User
 func (s userService) Get(id string) (entity.User, error) {
-	db := db.GetDB()
+	ur := s.userRepository
 	var u entity.User
 
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+	u, err := ur.Get(id)
+	if err != nil {
 		return u, err
 	}
 
@@ -120,15 +125,16 @@ func (s userService) Get(id string) (entity.User, error) {
 
 // Update is update a User
 func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
-	db := db.GetDB()
-	var u, ut entity.User
+	ur := s.userRepository
 
-	if err := c.BindJSON(&u); err != nil {
+	var u entity.User
+
+	u, err := ur.Get(id)
+	if err != nil {
 		return u, err
 	}
 
-	//作成日・更新日を取得
-	if err := db.Where("id = ?", id).First(&ut).Error; err != nil {
+	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
 
@@ -138,10 +144,10 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 		return u, err
 	}
 
-	u.CreatedAt = ut.CreatedAt
 	u.UpdatedAt = internal.JstTime()
 
-	if err := db.Table("users").Where("id = ?", id).Updates(&u).Error; err != nil {
+	u, err = ur.Update(id, u)
+	if err != nil {
 		return u, err
 	}
 
@@ -149,15 +155,19 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 }
 
 //  Delete is delete a pet
-func (s userService) Delete(id string) (User, error) {
-	db := db.GetDB()
-	var u User
-	//該当データの有無を確認
-	if err := db.Where("id = ?", id).Find(&u).Error; err != nil {
+func (s userService) Delete(id string) (entity.User, error) {
+	ur := s.userRepository
+	var u entity.User
+
+	// 指定したIDが存在するか確認
+	u, err := ur.Get(id)
+	if err != nil {
 		return u, err
 	}
-	//該当データを削除
-	if err := db.Table("users").Where("id = ?", id).Delete(&u).Error; err != nil {
+
+	// 削除
+	u, err = ur.Delete(id)
+	if err != nil {
 		return u, err
 	}
 

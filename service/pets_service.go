@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
-	//	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
@@ -20,15 +19,6 @@ var (
 	aws_region     string
 	pets_queue_url string
 )
-
-func Pets_Init() *sqs.SQS {
-	config.Configure()
-	aws_region = config.C.SQS.Region
-	pets_queue_url = config.C.SQS.Pets_Queue_Url
-	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
-	pets_svc := sqs.New(sess)
-	return pets_svc
-}
 
 // User is alias of entity.Pet struct
 type Pet entity.Pet
@@ -51,10 +41,20 @@ func NewPetService(db entity.PetRepository) PetService {
 	return &petService{petRepository: db}
 }
 
+func Pets_Init() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	pets_queue_url = config.C.SQS.Pets_Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	pets_svc := sqs.New(sess)
+	return pets_svc
+}
+
 // List is get all Pet
 func (s petService) List() ([]entity.Pet, error) {
 	var u []entity.Pet
 	pr := s.petRepository
+
 	u, err := pr.Find()
 	if err != nil {
 		return u, err
@@ -126,7 +126,6 @@ func (s petService) Update(id string, c *gin.Context) (entity.Pet, error) {
 		return u, err
 	}
 
-	log.Println(c)
 	// 取得したPet情報にUpdateする内容をBind
 	if err := c.BindJSON(&u); err != nil {
 		return u, err

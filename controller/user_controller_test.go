@@ -13,7 +13,6 @@ import (
 
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/mocks"
-	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 var (
@@ -160,9 +159,23 @@ func TestUserDelete(t *testing.T) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockUserService(ctrl)
-	serviceMock.EXPECT().Delete(gomock.Any()).Return(service.User{}, nil)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.User{}, nil)
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Delete(c)
 	assert.Equal(t, 204, c.Writer.Status())
+}
+
+func TestUserDeleteNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockUserService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.User{}, gorm.ErrRecordNotFound)
+	controller := UserController{Userservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, 404, c.Writer.Status())
 }

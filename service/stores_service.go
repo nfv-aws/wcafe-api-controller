@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
-	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
 	"github.com/nfv-aws/wcafe-api-controller/internal"
 )
@@ -20,20 +19,8 @@ var (
 	stores_queue_url string
 )
 
-func StoresInit() *sqs.SQS {
-	config.Configure()
-	aws_region = config.C.SQS.Region
-	stores_queue_url = config.C.SQS.Stores_Queue_Url
-	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
-	stores_svc := sqs.New(sess)
-	return stores_svc
-}
-
 // User is alias of entity.Store struct
 type Store entity.Store
-
-// User is alias of entity.stores struct
-type Stores entity.Stores
 
 // Service procides store's behavior
 type StoreService interface {
@@ -45,25 +32,38 @@ type StoreService interface {
 	PetsList(id string) ([]entity.Pet, error)
 }
 
-func NewStoreService() StoreService {
-	return &storeService{}
+type storeService struct {
+	storeRepository entity.StoreRepository
 }
 
-type storeService struct{}
+func NewStoreService(db entity.StoreRepository) StoreService {
+	return &storeService{storeRepository: db}
+}
+
+func StoresInit() *sqs.SQS {
+	config.Configure()
+	aws_region = config.C.SQS.Region
+	stores_queue_url = config.C.SQS.Stores_Queue_Url
+	sess := session.Must(session.NewSession(&aws.Config{Region: aws.String(aws_region)}))
+	stores_svc := sqs.New(sess)
+	return stores_svc
+}
 
 // List is get all Store
 func (s storeService) List() ([]entity.Store, error) {
-	db := db.GetDB()
+	sr := s.storeRepository
 	var u []entity.Store
 
-	db.Find(&u)
-
+	u, err := sr.Find()
+	if err != nil {
+		return u, err
+	}
 	return u, nil
 }
 
 // Create is create Store model
 func (s storeService) Create(c *gin.Context) (entity.Store, error) {
-	db := db.GetDB()
+	sr := s.storeRepository
 	var u entity.Store
 
 	//UUID生成
@@ -93,7 +93,8 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 	}
 
 	u.CreatedAt = internal.JstTime()
-	if err := db.Create(&u).Error; err != nil {
+	u, err = sr.Create(u)
+	if err != nil {
 		return u, err
 	}
 
@@ -102,11 +103,11 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 
 // Get is get a Store
 func (s storeService) Get(id string) (entity.Store, error) {
-
-	db := db.GetDB()
+	sr := s.storeRepository
 	var u entity.Store
 
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
+	u, err := sr.Get(id)
+	if err != nil {
 		return u, err
 	}
 
@@ -115,21 +116,22 @@ func (s storeService) Get(id string) (entity.Store, error) {
 
 // Update is update Store
 func (s storeService) Update(id string, c *gin.Context) (entity.Store, error) {
-	db := db.GetDB()
-	var u, st entity.Store
+	sr := s.storeRepository
+	var u entity.Store
+
+	u, err := sr.Get(id)
+	if err != nil {
+		return u, err
+	}
 
 	if err := c.BindJSON(&u); err != nil {
 		return u, err
 	}
 
-	//作成日・更新日を取得
-	if err := db.Where("id = ?", id).First(&st).Error; err != nil {
-		return u, err
-	}
-	u.CreatedAt = st.CreatedAt
 	u.UpdatedAt = internal.JstTime()
 
-	if err := db.Table("stores").Where("id = ?", id).Updates(&u).Error; err != nil {
+	u, err = sr.Update(id, u)
+	if err != nil {
 		return u, err
 	}
 
@@ -138,15 +140,18 @@ func (s storeService) Update(id string, c *gin.Context) (entity.Store, error) {
 
 // Delete is delete a Store
 func (s storeService) Delete(id string) (entity.Store, error) {
-
-	db := db.GetDB()
+	sr := s.storeRepository
 	var u entity.Store
 
-	if err := db.Where("id = ?", id).Find(&u).Error; err != nil {
+	// 指定したIDが存在するか確認
+	u, err := sr.Get(id)
+	if err != nil {
 		return u, err
 	}
 
-	if err := db.Where("id = ?", id).Delete(&u).Error; err != nil {
+	// 削除
+	u, err = sr.Delete(id)
+	if err != nil {
 		return u, err
 	}
 
@@ -155,14 +160,13 @@ func (s storeService) Delete(id string) (entity.Store, error) {
 
 // Get is get a Store & List is get all Pets
 func (s storeService) PetsList(id string) ([]entity.Pet, error) {
-	db := db.GetDB()
-	var u entity.Store
-	var e []entity.Pet
+	sr := s.storeRepository
+	var p []entity.Pet
 
-	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
-		return e, err
+	p, err := sr.PetsList(id)
+	if err != nil {
+		return p, err
 	}
 
-	db.Table("pets").Where("store_id=?", id).Find(&e)
-	return e, nil
+	return p, nil
 }
