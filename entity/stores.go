@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -28,6 +29,60 @@ type Store struct {
 	UpdatedAt time.Time `json:"updated_time"`
 }
 
-type Stores struct {
-	Stores *[]Store `json:"stores"`
+type StoreRepository struct {
+	DB *gorm.DB
+}
+
+func (sr *StoreRepository) Find() ([]Store, error) {
+	var r []Store
+	if err := sr.DB.Find(&r).Error; err != nil {
+		return r, err
+	}
+
+	return r, nil
+}
+
+func (sr *StoreRepository) Create(s Store) (Store, error) {
+	if err := sr.DB.Create(s).Error; err != nil {
+		return s, err
+	}
+	return s, nil
+}
+
+func (sr *StoreRepository) Get(id string) (Store, error) {
+	var r Store
+
+	if err := sr.DB.Where("id = ?", id).First(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (sr *StoreRepository) Update(id string, s Store) (Store, error) {
+	if err := sr.DB.Table("stores").Where("id = ?", id).Updates(s).Error; err != nil {
+		return s, err
+	}
+	return s, nil
+}
+
+func (sr *StoreRepository) Delete(id string) (Store, error) {
+	var r Store
+	if err := sr.DB.Table("stores").Where("id = ?", id).Delete(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (sr *StoreRepository) PetsList(id string) ([]Pet, error) {
+	var s Store
+	var p []Pet
+
+	if err := sr.DB.Where("id = ?", id).First(&s).Error; err != nil {
+		return p, err
+	}
+	if err := sr.DB.Table("pets").Where("id = ?", id).Find(&p).Error; err != nil {
+		return p, err
+	}
+
+	return p, nil
 }
