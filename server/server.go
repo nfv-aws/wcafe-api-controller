@@ -10,6 +10,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
+	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/controller"
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -23,7 +24,10 @@ func Init() {
 }
 
 func router() *gin.Engine {
-	f, _ := os.Create("./log/gin.log")
+	config.Configure()
+	log_path := config.C.LOG.File_path
+
+	f, _ := os.Create(log_path + "gin.log")
 	gin.DefaultWriter = io.MultiWriter(f)
 	log.SetOutput(gin.DefaultWriter)
 	r := gin.Default()
