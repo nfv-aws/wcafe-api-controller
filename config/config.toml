@@ -14,7 +14,7 @@ users_queue_url = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-u
 region = "ap-northeast-1"
 
 [log]
-file_path = "./log/"
+file_path = "/home/ec2-user/"
 
 [Conductor]
 ip = "localhost"
