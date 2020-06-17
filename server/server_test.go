@@ -55,10 +55,26 @@ func TestServer(t *testing.T) {
 	})
 
 	t.Run("TEST PATCH Method", func(t *testing.T) {
+		//pets
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
+		testPATCHNoneId(t, "/api/v1/pets/testpetid", `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10`)
+		testPATCHNoneStoreId(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"teststoreid"}`)
+		testPATCHBadRequest(t, "/api/v1/pets/"+pet[0].Id, `{"species":" 278493, "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
+		testPATCHBadRequest(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":5674, "age":10, "store_id":"`+store[0].Id+`"}`)
+		testPATCHBadRequest(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":"123", "store_id":"`+store[0].Id+`"}`)
+		//stores
 		testPATCHMethod(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
+		testPATCHNoneId(t, "/api/v1/stores/teststoreid", `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
+		testPATCHBadRequest(t, "/api/v1/stores/"+store[0].Id, `{"name":123, "tag": "`+store[0].Tag+`","address":"`+store[0].Address+`" }`)
+		testPATCHBadRequest(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": 123,"address":"`+store[0].Address+`" }`)
+		testPATCHBadRequest(t, "/api/v1/stores/"+store[0].Id, `{"name":"`+store[0].Name+`", "tag": "`+store[0].Tag+`","address":123 }`)
+		//users
 		testPATCHMethod(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test@test.com"}`)
-		testPATCHBadRequestEmail(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
+		testPATCHNoneId(t, "/api/v1/users/testuserid", `{"number":3345,"email":"test@test.com"}`)
+		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"number":"3345","email":"test@test.com"}`)
+		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"name":9473,"email":"test@test.com"}`)
+		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"address":9473,"email":"test@test.com"}`)
+		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
 	})
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
@@ -183,7 +199,35 @@ func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	assert.Equal(t, 200, w.Code)
 }
 
-func testPATCHBadRequestEmail(t *testing.T, endpoint string, body string) {
+func testPATCHNoneId(t *testing.T, endpoint string, body string) {
+	t.Helper()
+
+	bodyReader := strings.NewReader(body)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 404, w.Code)
+}
+
+func testPATCHNoneStoreId(t *testing.T, endpoint string, body string) {
+	t.Helper()
+
+	bodyReader := strings.NewReader(body)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 400, w.Code)
+}
+
+func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
 	t.Helper()
 
 	bodyReader := strings.NewReader(body)
