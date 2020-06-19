@@ -1,13 +1,12 @@
 package service
 
 import (
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -69,7 +68,7 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Println(err)
+		log.Error().Caller().Err(err)
 		return u, err
 	}
 	u.Id = id.String()
@@ -86,10 +85,10 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("Store SendMessage Error")
+		log.Error().Caller().Msg("Store SendMessage Error")
 		return u, err
 	} else {
-		log.Println("Store Success", *result.MessageId)
+		log.Info().Caller().Msg("Store Success:" + string(*result.MessageId))
 	}
 
 	u.CreatedAt = internal.JstTime()

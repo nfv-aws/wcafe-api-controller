@@ -3,12 +3,13 @@ package server
 import (
 	"fmt"
 	"io"
-	"log"
+	glog "log"
 	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/controller"
@@ -19,17 +20,20 @@ import (
 
 // Init is initialize server
 func Init() {
+	log.Debug().Caller().Msg("initialize server")
 	r := router()
 	r.Run()
 }
 
 func router() *gin.Engine {
+	log.Debug().Caller().Msg("router")
 	config.Configure()
 	log_path := config.C.LOG.File_path
 
-	f, _ := os.Create(log_path + "gin.log")
-	gin.DefaultWriter = io.MultiWriter(f)
-	log.SetOutput(gin.DefaultWriter)
+	f, _ := os.OpenFile(log_path+"gin.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+	glog.SetOutput(gin.DefaultWriter)
+
 	r := gin.Default()
 
 	config := cors.DefaultConfig()

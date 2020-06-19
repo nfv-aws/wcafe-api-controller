@@ -1,13 +1,12 @@
 package service
 
 import (
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -70,7 +69,7 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Println(err)
+		log.Error().Caller().Err(err)
 		return u, err
 	}
 	u.Id = id.String()
@@ -87,10 +86,10 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("Pet SendMessage Error")
+		log.Error().Caller().Msg("Pet SendMessage Error")
 		return u, err
 	} else {
-		log.Println("Pet SendMessage Success", *result.MessageId)
+		log.Info().Caller().Msg("Pet SendMessage Success:" + string(*result.MessageId))
 	}
 
 	// DBに登録

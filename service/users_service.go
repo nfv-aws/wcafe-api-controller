@@ -1,13 +1,12 @@
 package service
 
 import (
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
@@ -70,7 +69,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Println(err)
+		log.Error().Caller().Err(err)
 		return u, err
 	}
 
@@ -87,8 +86,8 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	u.Id = id.String()
 
 	//SQS処理呼び出し
-	log.Println(u.Id)
-	log.Println(users_queue_url)
+	log.Info().Caller().Msg(u.Id)
+	log.Info().Caller().Msg(users_queue_url)
 	users_svc := Users_Init()
 	result, err := users_svc.SendMessage(&sqs.SendMessageInput{
 		MessageBody:  aws.String(u.Id),
@@ -96,9 +95,9 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("User SendMessage Error", err)
+		log.Error().Caller().Msg("User SendMessage Error")
 	} else {
-		log.Println("User Success", *result.MessageId)
+		log.Info().Caller().Msg("User Success:" + string(*result.MessageId))
 	}
 
 	u.CreatedAt = internal.JstTime()

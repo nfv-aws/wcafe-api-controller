@@ -82,6 +82,17 @@ go run main.go
 curl localhost:8080/api/v1/pets
 ```
 
+## ログの設定方法
+ログは以下の3パターンを用意しており、DefaultではInfoモードとなっている。
+- Debugモード
+- Infoモード
+- Errorモード
+
+切り替え方は以下のように環境変数を設定して、プログラムを実行すればよい。
+```
+export LOG_LVE="Debug"
+```
+
 ## UnitTest
 
 ### Controller層(DBはMock利用)

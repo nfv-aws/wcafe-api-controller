@@ -1,9 +1,8 @@
 package controller
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/service"
 )
@@ -15,11 +14,12 @@ type SupplyController struct {
 
 // List action: GET /supplies
 func (sc SupplyController) List(c *gin.Context) {
+	log.Debug().Caller().Msg("supplies list")
 	s, err := sc.Supplyservice.List()
 
 	if err != nil {
 		c.AbortWithStatus(404)
-		log.Println(err)
+		log.Error().Caller().Err(err)
 	} else {
 		c.JSON(200, s)
 	}
