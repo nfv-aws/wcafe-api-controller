@@ -4,6 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -16,6 +17,7 @@ var (
 
 // DynamoDBに接続
 func Dynamo_Init() *dynamo.DB {
+	log.Debug().Caller().Msg("Dynamo_Init")
 	config.Configure()
 	aws_region = config.C.DynamoDB.Region
 	dynamodb := dynamo.New(session.New(), &aws.Config{
@@ -43,6 +45,7 @@ func NewClerkService() ClerkService {
 
 // List is get all clerk
 func (s clerkService) List() ([]entity.Clerk, error) {
+	log.Debug().Caller().Msg("clerks list")
 	dynamodb := Dynamo_Init()
 	table := dynamodb.Table("clerks_name")
 

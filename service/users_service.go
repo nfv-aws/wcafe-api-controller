@@ -1,13 +1,12 @@
 package service
 
 import (
-	"log"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
@@ -43,6 +42,7 @@ func NewUserService(db entity.UserRepository) UserService {
 
 //SQS処理
 func Users_Init() *sqs.SQS {
+	log.Debug().Caller().Msg("users init")
 	config.Configure()
 	aws_region = config.C.SQS.Region
 	users_queue_url = config.C.SQS.Users_Queue_Url
@@ -53,6 +53,7 @@ func Users_Init() *sqs.SQS {
 
 // List is get all user
 func (s userService) List() ([]entity.User, error) {
+	log.Debug().Caller().Msg("users list")
 	var u []entity.User
 	ur := s.userRepository
 	u, err := ur.Find()
@@ -64,13 +65,14 @@ func (s userService) List() ([]entity.User, error) {
 
 // Create is create user model
 func (s userService) Create(c *gin.Context) (entity.User, error) {
+	log.Debug().Caller().Msg("users create")
 	ur := s.userRepository
 	var u entity.User
 
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Println(err)
+		log.Error().Caller().Err(err)
 		return u, err
 	}
 
@@ -87,8 +89,8 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	u.Id = id.String()
 
 	//SQS処理呼び出し
-	log.Println(u.Id)
-	log.Println(users_queue_url)
+	log.Info().Caller().Msg(u.Id)
+	log.Info().Caller().Msg(users_queue_url)
 	users_svc := Users_Init()
 	result, err := users_svc.SendMessage(&sqs.SendMessageInput{
 		MessageBody:  aws.String(u.Id),
@@ -96,9 +98,9 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Println("User SendMessage Error", err)
+		log.Error().Caller().Msg("User SendMessage Error")
 	} else {
-		log.Println("User Success", *result.MessageId)
+		log.Info().Caller().Msg("User Success:" + string(*result.MessageId))
 	}
 
 	u.CreatedAt = internal.JstTime()
@@ -112,6 +114,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 
 // Get is get a User
 func (s userService) Get(id string) (entity.User, error) {
+	log.Debug().Caller().Msg("users get")
 	ur := s.userRepository
 	var u entity.User
 
@@ -125,6 +128,7 @@ func (s userService) Get(id string) (entity.User, error) {
 
 // Update is update a User
 func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
+	log.Debug().Caller().Msg("users update")
 	ur := s.userRepository
 
 	var u entity.User
@@ -156,6 +160,7 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 
 //  Delete is delete a pet
 func (s userService) Delete(id string) (entity.User, error) {
+	log.Debug().Caller().Msg("users delete")
 	ur := s.userRepository
 	var u entity.User
 
