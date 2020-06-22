@@ -11,6 +11,7 @@ import (
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/db"
+	"github.com/nfv-aws/wcafe-api-controller/internal"
 	"github.com/nfv-aws/wcafe-api-controller/server"
 )
 
@@ -40,9 +41,8 @@ func main() {
 	writers := io.MultiWriter(os.Stdout, writer)
 
 	// 時間をJSTに設定
-	jst, _ := time.LoadLocation("Asia/Tokyo")
 	zerolog.TimestampFunc = func() time.Time {
-		return time.Now().In(jst)
+		return internal.JstTime()
 	}
 
 	log.Logger = zerolog.New(writers).With().Timestamp().Logger()
