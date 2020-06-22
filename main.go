@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"os"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -37,6 +38,13 @@ func main() {
 		Compress:   true, // disabled by default
 	})
 	writers := io.MultiWriter(os.Stdout, writer)
+
+	// 時間をJSTに設定
+	jst, _ := time.LoadLocation("Asia/Tokyo")
+	zerolog.TimestampFunc = func() time.Time {
+		return time.Now().In(jst)
+	}
+
 	log.Logger = zerolog.New(writers).With().Timestamp().Logger()
 
 	log.Debug().Caller().Msg("db.init")

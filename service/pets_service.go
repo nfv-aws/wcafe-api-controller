@@ -41,6 +41,7 @@ func NewPetService(db entity.PetRepository) PetService {
 }
 
 func Pets_Init() *sqs.SQS {
+	log.Debug().Caller().Msg("pets init")
 	config.Configure()
 	aws_region = config.C.SQS.Region
 	pets_queue_url = config.C.SQS.Pets_Queue_Url
@@ -51,6 +52,7 @@ func Pets_Init() *sqs.SQS {
 
 // List is get all Pet
 func (s petService) List() ([]entity.Pet, error) {
+	log.Debug().Caller().Msg("pets list")
 	var u []entity.Pet
 	pr := s.petRepository
 
@@ -63,6 +65,7 @@ func (s petService) List() ([]entity.Pet, error) {
 
 // Create is create Pet model
 func (s petService) Create(c *gin.Context) (entity.Pet, error) {
+	log.Debug().Caller().Msg("pets create")
 	pr := s.petRepository
 	var u entity.Pet
 
@@ -105,6 +108,7 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 
 // GetByID is get a Pet
 func (s petService) Get(id string) (entity.Pet, error) {
+	log.Debug().Caller().Msg("pets get")
 	pr := s.petRepository
 	var u entity.Pet
 
@@ -117,6 +121,7 @@ func (s petService) Get(id string) (entity.Pet, error) {
 
 // Update is modify pet
 func (s petService) Update(id string, c *gin.Context) (entity.Pet, error) {
+	log.Debug().Caller().Msg("pets update")
 	pr := s.petRepository
 	var u entity.Pet
 
@@ -143,6 +148,7 @@ func (s petService) Update(id string, c *gin.Context) (entity.Pet, error) {
 
 //  Delete is delete a pet
 func (s petService) Delete(id string) (entity.Pet, error) {
+	log.Debug().Caller().Msg("pets delete")
 	pr := s.petRepository
 	var u entity.Pet
 

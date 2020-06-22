@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"encoding/json"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
@@ -33,13 +33,14 @@ type supplyService struct{}
 
 // List is get all supply
 func (s supplyService) List() ([]entity.Supply, error) {
+	log.Debug().Caller().Msg("supplies list")
 	// Set up a connection to the server.
 	config.Configure()
 	var address = config.C.Conductor.Ip + ":" + config.C.Conductor.Port
-	log.Println(address)
+	log.Info().Caller().Msg(address)
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Error().Caller().Err(err)
 	}
 	defer conn.Close()
 	c := pb.NewSuppliesClient(conn)
@@ -49,13 +50,13 @@ func (s supplyService) List() ([]entity.Supply, error) {
 	defer cancel()
 	r, err := c.SupplyList(ctx, &pb.SupplyRequest{Table: "supplies"})
 	if err != nil {
-		log.Fatalf("could not: %v", err)
+		log.Error().Caller().Err(err)
 	}
-	log.Printf("%s", r.GetMessage())
+	log.Info().Caller().Msg(r.GetMessage())
 	var supplies []entity.Supply
 	err = json.Unmarshal([]byte(r.GetMessage()), &supplies)
 	if err != nil {
-		log.Fatal(err)
+		log.Error().Caller().Err(err)
 	}
 	return supplies, nil
 }

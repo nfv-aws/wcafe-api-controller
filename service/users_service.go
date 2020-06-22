@@ -42,6 +42,7 @@ func NewUserService(db entity.UserRepository) UserService {
 
 //SQS処理
 func Users_Init() *sqs.SQS {
+	log.Debug().Caller().Msg("users init")
 	config.Configure()
 	aws_region = config.C.SQS.Region
 	users_queue_url = config.C.SQS.Users_Queue_Url
@@ -52,6 +53,7 @@ func Users_Init() *sqs.SQS {
 
 // List is get all user
 func (s userService) List() ([]entity.User, error) {
+	log.Debug().Caller().Msg("users list")
 	var u []entity.User
 	ur := s.userRepository
 	u, err := ur.Find()
@@ -63,6 +65,7 @@ func (s userService) List() ([]entity.User, error) {
 
 // Create is create user model
 func (s userService) Create(c *gin.Context) (entity.User, error) {
+	log.Debug().Caller().Msg("users create")
 	ur := s.userRepository
 	var u entity.User
 
@@ -111,6 +114,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 
 // Get is get a User
 func (s userService) Get(id string) (entity.User, error) {
+	log.Debug().Caller().Msg("users get")
 	ur := s.userRepository
 	var u entity.User
 
@@ -124,6 +128,7 @@ func (s userService) Get(id string) (entity.User, error) {
 
 // Update is update a User
 func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
+	log.Debug().Caller().Msg("users update")
 	ur := s.userRepository
 
 	var u entity.User
@@ -155,6 +160,7 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 
 //  Delete is delete a pet
 func (s userService) Delete(id string) (entity.User, error) {
+	log.Debug().Caller().Msg("users delete")
 	ur := s.userRepository
 	var u entity.User
 
