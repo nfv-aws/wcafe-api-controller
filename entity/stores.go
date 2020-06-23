@@ -80,7 +80,7 @@ func (sr *StoreRepository) PetsList(id string) ([]Pet, error) {
 	if err := sr.DB.Where("id = ?", id).First(&s).Error; err != nil {
 		return p, err
 	}
-	if err := sr.DB.Table("pets").Where("id = ?", id).Find(&p).Error; err != nil {
+	if err := sr.DB.Table("pets").Where("store_id = ?", id).Find(&p).Error; err != nil {
 		return p, err
 	}
 

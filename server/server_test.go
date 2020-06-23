@@ -79,8 +79,7 @@ func TestServer(t *testing.T) {
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
-		// **ToDo WCAF-162**
-		// testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
+		testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
 		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
 	})
 
@@ -243,6 +242,22 @@ func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
 
 func testDELETEMethod(t *testing.T, endpoint string) {
 	t.Helper()
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", endpoint, nil)
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 204, w.Code)
+}
+
+func testDELETEStoreMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	var store []entity.Store
+	var pet []entity.Pet
+	db := db.GetDB()
+
+	db.Find(&store)
+	db.Where("store_id = ?", store[0].Id).Delete(&pet)
+
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("DELETE", endpoint, nil)
