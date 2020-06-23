@@ -24,3 +24,16 @@ func (sc SupplyController) List(c *gin.Context) {
 		c.JSON(200, s)
 	}
 }
+
+// Create action: POST /supplies
+func (sc SupplyController) Create(c *gin.Context) {
+	log.Debug().Caller().Msg("supplies create")
+	s, err := sc.Supplyservice.Create(c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Error().Caller().Err(err)
+	} else {
+		c.JSON(201, s)
+	}
+}

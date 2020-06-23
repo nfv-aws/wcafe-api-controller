@@ -6,9 +6,9 @@ type Supply struct {
 	Id string `dynamo:"id" json:"id"`
 
 	// 氏名
-	Name string `dynamo:"name" json:"name"`
+	Name string `dynamo:"name" json:"name" binding:"required"`
 
-	Price int `dynamo:"price" json:"price"`
+	Price int `dynamo:"price" json:"price" binding:"required"`
 
 	Type string `dynamo:"type" json:"type"`
 }

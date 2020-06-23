@@ -38,3 +38,32 @@ func TestSupplyList(t *testing.T) {
 	controller.List(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
+
+func TestSupplyCreateOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockSupplyService(ctrl)
+	su := entity.Supply{Id: "cc5bafac-b35c-4852-82ca-b272cd79f2f3", Name: "dog food", Type: "food", Price: 500}
+	serviceMock.EXPECT().Create(c).Return(su, nil)
+	controller := SupplyController{Supplyservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 201, c.Writer.Status())
+}
+
+func TestSupplyCreateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockSupplyService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Supply{}, ErrBadRequest)
+	controller := SupplyController{Supplyservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}
