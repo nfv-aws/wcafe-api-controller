@@ -52,6 +52,7 @@ func TestServer(t *testing.T) {
 		testPOSTUserMethod(t, "/api/v1/users")
 		testPOSTUserEmail(t, "/api/v1/users")
 		testPOSTUserBadRequestEmail(t, "/api/v1/users")
+		testPOSTClerkMethod(t, "/api/v1/clerks")
 	})
 
 	t.Run("TEST PATCH Method", func(t *testing.T) {
@@ -182,6 +183,19 @@ func testPOSTUserBadRequestEmail(t *testing.T, endpoint string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 400, w.Code)
+}
+
+func testPOSTClerkMethod(t *testing.T, endpoint string) {
+	t.Helper()
+	bodyReader := strings.NewReader(`{"name": "testman"}`)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 201, w.Code)
 }
 
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
