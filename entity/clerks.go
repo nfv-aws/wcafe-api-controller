@@ -6,7 +6,7 @@ type Clerk struct {
 	NameId string `dynamo:"name_id"`
 
 	// 氏名
-	Name string `dynamo:"name"`
+	Name string `dynamo:"name" binding:"required"`
 }
 
 type Clerks struct {

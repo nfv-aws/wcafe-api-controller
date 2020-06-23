@@ -52,11 +52,11 @@ func (s clerkService) List() ([]entity.Clerk, error) {
 	dynamodb := Dynamo_Init()
 	table := dynamodb.Table("clerks_name")
 
-	var c []entity.Clerk
-	if err := table.Scan().All(&c); err != nil {
-		return c, err
+	var cl []entity.Clerk
+	if err := table.Scan().All(&cl); err != nil {
+		return cl, err
 	}
-	return c, nil
+	return cl, nil
 }
 
 // Create is create clerk model
