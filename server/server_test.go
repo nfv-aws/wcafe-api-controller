@@ -47,11 +47,19 @@ func TestServer(t *testing.T) {
 	})
 
 	t.Run("TEST POST Method", func(t *testing.T) {
-		testPOSTPetMethod(t, "/api/v1/pets")
-		testPOSTStoreMethod(t, "/api/v1/stores")
-		testPOSTUserMethod(t, "/api/v1/users")
+		//pets
+		testPOSTMethod(t, "/api/v1/pets", `{"species": "Canine","name":"Shiba lnu", "age": 1, "store_id":"`+store[0].Id+`"}`)
+		//stores
+		testPOSTMethod(t, "/api/v1/stores", `{"name": "`+random()+`","tag":"abc","address":"Tokyo"}`)
+		//users
+		testPOSTMethod(t, "/api/v1/users", `{"number":`+random_num()+`}`)
 		testPOSTUserEmail(t, "/api/v1/users")
 		testPOSTUserBadRequestEmail(t, "/api/v1/users")
+		//supplies
+		testPOSTMethod(t, "/api/v1/supplies", `{"name":"dog food", "price":500, "type": "food"}`)
+		testPOSTBadRequest(t, "/api/v1/supplies", `{"price":500, "type": "food"}`)
+		testPOSTBadRequest(t, "/api/v1/supplies", `{"name":"dog food", "type": "food"}`)
+		testPOSTBadRequest(t, "/api/v1/supplies", `{"name":"dog food", "price":"500", "type": "food"}`)
 	})
 
 	t.Run("TEST PATCH Method", func(t *testing.T) {
@@ -87,6 +95,19 @@ func TestServer(t *testing.T) {
 	tearDown()
 }
 
+func random() string {
+	var n uint64
+	binary.Read(rand.Reader, binary.LittleEndian, &n)
+	return strconv.FormatUint(n, 36)
+}
+
+func random_num() string {
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+	return strconv.Itoa(random_num)
+}
+
+//GET TEST
 func testGETMethod(t *testing.T, endpoint string) {
 	t.Helper()
 	router := router()
@@ -105,9 +126,11 @@ func testGETStorePetsMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
-func testPOSTStoreMethod(t *testing.T, endpoint string) {
+//POST TEST
+func testPOSTMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
-	bodyReader := strings.NewReader(`{"name": "` + random() + `","tag":"abc","address":"Tokyo"}`)
+
+	bodyReader := strings.NewReader(body)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -118,12 +141,10 @@ func testPOSTStoreMethod(t *testing.T, endpoint string) {
 	assert.Equal(t, 201, w.Code)
 }
 
-func testPOSTPetMethod(t *testing.T, endpoint string) {
+func testPOSTBadRequest(t *testing.T, endpoint string, body string) {
 	t.Helper()
-	var store []entity.Store
-	db := db.GetDB()
-	db.Find(&store)
-	bodyReader := strings.NewReader(`{"species": "Canine","name":"Shiba lnu", "age": 1, "store_id":"` + store[0].Id + `"}`)
+
+	bodyReader := strings.NewReader(body)
 	router := router()
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", endpoint, bodyReader)
@@ -131,28 +152,7 @@ func testPOSTPetMethod(t *testing.T, endpoint string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 201, w.Code)
-}
-
-func random() string {
-	var n uint64
-	binary.Read(rand.Reader, binary.LittleEndian, &n)
-	return strconv.FormatUint(n, 36)
-}
-
-func testPOSTUserMethod(t *testing.T, endpoint string) {
-	t.Helper()
-	math_rand.Seed(time.Now().UnixNano())
-	random_num := math_rand.Intn(10000)
-	bodyReader := strings.NewReader(`{"number":` + strconv.Itoa(random_num) + `}`)
-	router := router()
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", endpoint, bodyReader)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-
-	router.ServeHTTP(w, req)
-	assert.Equal(t, 201, w.Code)
+	assert.Equal(t, 400, w.Code)
 }
 
 func testPOSTUserEmail(t *testing.T, endpoint string) {
@@ -185,6 +185,7 @@ func testPOSTUserBadRequestEmail(t *testing.T, endpoint string) {
 	assert.Equal(t, 400, w.Code)
 }
 
+//PATCH TEST
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	t.Helper()
 
@@ -197,6 +198,20 @@ func testPATCHMethod(t *testing.T, endpoint string, body string) {
 
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
+}
+
+func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
+	t.Helper()
+
+	bodyReader := strings.NewReader(body)
+	router := router()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, 400, w.Code)
 }
 
 func testPATCHNoneId(t *testing.T, endpoint string, body string) {
@@ -227,20 +242,7 @@ func testPATCHNoneStoreId(t *testing.T, endpoint string, body string) {
 	assert.Equal(t, 400, w.Code)
 }
 
-func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
-	t.Helper()
-
-	bodyReader := strings.NewReader(body)
-	router := router()
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("PATCH", endpoint, bodyReader)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-
-	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
-}
-
+//DELETE TEST
 func testDELETEMethod(t *testing.T, endpoint string) {
 	t.Helper()
 	router := router()

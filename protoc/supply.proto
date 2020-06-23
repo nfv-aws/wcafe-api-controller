@@ -3,11 +3,17 @@ syntax = "proto3";
 package protoc;
 
 service Supplies {
-  rpc SupplyList (SupplyRequest) returns (SupplyResponse) {}
+  rpc SupplyList (SupplyListRequest) returns (SupplyResponse) {}
+  rpc SupplyCreate (SupplyCreateRequest) returns (SupplyResponse) {}
 }
 
-message SupplyRequest {
+message SupplyListRequest {
   string table = 1;
+}
+
+message SupplyCreateRequest {
+  string table = 1;
+  string body = 2;
 }
 
 message SupplyResponse {
