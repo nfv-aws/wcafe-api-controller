@@ -25,7 +25,7 @@ func (sc SupplyController) List(c *gin.Context) {
 	}
 }
 
-//Create
+// Create action: POST /supplies
 func (sc SupplyController) Create(c *gin.Context) {
 	log.Debug().Caller().Msg("supplies create")
 	s, err := sc.Supplyservice.Create(c)
