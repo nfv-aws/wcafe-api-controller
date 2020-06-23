@@ -15,7 +15,6 @@ type ClerkController struct {
 // List action: GET /clerks
 func (cc ClerkController) List(c *gin.Context) {
 	log.Debug().Caller().Msg("clerks list")
-
 	u, err := cc.Clerkservice.List()
 
 	if err != nil {
@@ -23,5 +22,18 @@ func (cc ClerkController) List(c *gin.Context) {
 		log.Error().Caller().Err(err)
 	} else {
 		c.JSON(200, u)
+	}
+}
+
+// Create action: POST /clerks
+func (cc ClerkController) Create(c *gin.Context) {
+	log.Debug().Caller().Msg("clerks create")
+	u, err := cc.Clerkservice.Create(c)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+		log.Error().Caller().Err(err)
+	} else {
+		c.JSON(201, u)
 	}
 }

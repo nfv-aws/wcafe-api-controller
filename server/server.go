@@ -92,7 +92,7 @@ func router() *gin.Engine {
 
 		clerk_ctrl := controller.ClerkController{Clerkservice: service.NewClerkService()}
 		p.GET("/clerks", clerk_ctrl.List)
-
+		p.POST("/clerks", clerk_ctrl.Create)
 	}
 
 	return r

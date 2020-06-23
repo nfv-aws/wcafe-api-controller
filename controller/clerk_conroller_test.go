@@ -36,3 +36,32 @@ func TestClerkList(t *testing.T) {
 	controller.List(c)
 	assert.Equal(t, 200, c.Writer.Status())
 }
+
+func TestClerkCreateOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+
+	serviceMock.EXPECT().Create(c).Return(cl, nil)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 201, c.Writer.Status())
+}
+
+func TestClerkCreateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Create(c).Return(entity.Clerk{}, ErrBadRequest)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Create(c)
+	assert.Equal(t, 400, c.Writer.Status())
+}

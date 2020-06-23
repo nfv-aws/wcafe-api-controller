@@ -56,6 +56,11 @@ func TestServer(t *testing.T) {
 		testPOSTBadRequest(t, "/api/v1/supplies", `{"price":500, "type": "food"}`)
 		testPOSTBadRequest(t, "/api/v1/supplies", `{"name":"dog food", "type": "food"}`)
 		testPOSTBadRequest(t, "/api/v1/supplies", `{"name":"dog food", "price":"500", "type": "food"}`)
+		testPOSTMethod(t, "/api/v1/clerks", `{"name": "testman"}`)
+		testPOSTBadRequest(t, "/api/v1/clerks", `{}`)
+		testPOSTBadRequest(t, "/api/v1/clerks", `{"name":""}`)
+		testPOSTBadRequest(t, "/api/v1/clerks", `{"name":1}`)
+
 	})
 
 	t.Run("TEST PATCH Method", func(t *testing.T) {

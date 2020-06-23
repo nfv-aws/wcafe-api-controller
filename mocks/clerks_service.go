@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	entity "github.com/nfv-aws/wcafe-api-controller/entity"
 	reflect "reflect"
@@ -46,4 +47,19 @@ func (m *MockClerkService) List() ([]entity.Clerk, error) {
 func (mr *MockClerkServiceMockRecorder) List() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockClerkService)(nil).List))
+}
+
+// Create mocks base method.
+func (m *MockClerkService) Create(c *gin.Context) (entity.Clerk, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", c)
+	ret0, _ := ret[0].(entity.Clerk)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockClerkServiceMockRecorder) Create(c interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockClerkService)(nil).Create), c)
 }
