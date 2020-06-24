@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http/httptest"
 	"testing"
@@ -30,8 +31,8 @@ var (
 func TestStoreList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 	s := []entity.Store{
@@ -43,13 +44,20 @@ func TestStoreList(t *testing.T) {
 
 	controller.List(c)
 	assert.Equal(t, 200, c.Writer.Status())
+
+	var stores []entity.Store
+	err := json.Unmarshal([]byte(w.Body.String()), &stores)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, s, stores)
 }
 
 func TestStoreGetOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 
