@@ -80,7 +80,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 		return u, err
 	}
 
-	//Email validation check
+	//validation Check
 	validate := validator.New()
 	if err := validate.Struct(u); err != nil {
 		return u, err
