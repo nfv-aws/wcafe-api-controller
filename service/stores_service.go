@@ -81,7 +81,6 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		return u, err
 	}
 
-	// validation Check
 	validate := validator.New()
 	if err := validate.Struct(u); err != nil {
 		return u, err
@@ -136,6 +135,11 @@ func (s storeService) Update(id string, c *gin.Context) (entity.Store, error) {
 	}
 
 	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
 		return u, err
 	}
 

@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
 	"github.com/rs/zerolog/log"
+	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -74,6 +75,11 @@ func (s clerkService) Create(c *gin.Context) (entity.Clerk, error) {
 	}
 	cl.NameId = id.String()
 	if err := c.BindJSON(&cl); err != nil {
+		return cl, err
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(cl); err != nil {
 		return cl, err
 	}
 	clerk := Clerk{NameId: cl.NameId, Name: cl.Name}
