@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -22,10 +23,10 @@ func (pc PetController) List(c *gin.Context) {
 	p, err := pc.Petservice.List()
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -37,14 +38,14 @@ func (pc PetController) Create(c *gin.Context) {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "InvalidAddress") {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(400)
+			c.AbortWithStatus(http.StatusBadRequest)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(201, p)
+		c.JSON(http.StatusCreated, p)
 	}
 }
 
@@ -57,10 +58,10 @@ func (pc PetController) Get(c *gin.Context) {
 	p, err := pc.Petservice.Get(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -73,14 +74,14 @@ func (pc PetController) Update(c *gin.Context) {
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(400)
+			c.AbortWithStatus(http.StatusBadRequest)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -92,9 +93,9 @@ func (pc PetController) Delete(c *gin.Context) {
 	p, err := pc.Petservice.Delete(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(204, p)
+		c.JSON(http.StatusNoContent, p)
 	}
 }

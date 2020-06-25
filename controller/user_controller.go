@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
@@ -20,10 +22,10 @@ func (uc UserController) List(c *gin.Context) {
 	u, err := uc.Userservice.List()
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, u)
+		c.JSON(http.StatusOK, u)
 	}
 }
 
@@ -33,10 +35,10 @@ func (uc UserController) Create(c *gin.Context) {
 	u, err := uc.Userservice.Create(c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(201, u)
+		c.JSON(http.StatusCreated, u)
 	}
 }
 
@@ -48,10 +50,10 @@ func (uc UserController) Get(c *gin.Context) {
 	u, err := uc.Userservice.Get(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, u)
+		c.JSON(http.StatusOK, u)
 	}
 }
 
@@ -64,14 +66,14 @@ func (uc UserController) Update(c *gin.Context) {
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(400)
+			c.AbortWithStatus(http.StatusBadRequest)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(200, u)
+		c.JSON(http.StatusOK, u)
 	}
 }
 
@@ -82,9 +84,9 @@ func (uc UserController) Delete(c *gin.Context) {
 	u, err := uc.Userservice.Delete(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(204, u)
+		c.JSON(http.StatusNoContent, u)
 	}
 }

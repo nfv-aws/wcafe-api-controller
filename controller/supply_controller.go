@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 
@@ -18,10 +20,10 @@ func (sc SupplyController) List(c *gin.Context) {
 	s, err := sc.Supplyservice.List()
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, s)
+		c.JSON(http.StatusOK, s)
 	}
 }
 
@@ -31,9 +33,9 @@ func (sc SupplyController) Create(c *gin.Context) {
 	s, err := sc.Supplyservice.Create(c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(201, s)
+		c.JSON(http.StatusCreated, s)
 	}
 }

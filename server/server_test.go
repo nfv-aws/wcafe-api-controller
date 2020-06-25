@@ -144,7 +144,7 @@ func testPOSTMethod(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 201, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
 func testPOSTNoneStoreId(t *testing.T, endpoint string, body string) {
@@ -158,7 +158,7 @@ func testPOSTNoneStoreId(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 func testPOSTBadRequest(t *testing.T, endpoint string, body string) {
 	t.Helper()
@@ -171,7 +171,7 @@ func testPOSTBadRequest(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func testPATCHMethod(t *testing.T, endpoint string, body string) {
@@ -185,7 +185,7 @@ func testPATCHMethod(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
@@ -199,7 +199,7 @@ func testPATCHBadRequest(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func testPATCHNoneId(t *testing.T, endpoint string, body string) {
@@ -213,7 +213,7 @@ func testPATCHNoneId(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 404, w.Code)
+	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
 func testPATCHNoneStoreId(t *testing.T, endpoint string, body string) {
@@ -227,7 +227,7 @@ func testPATCHNoneStoreId(t *testing.T, endpoint string, body string) {
 	req.Header.Add("Accept", "application/json")
 
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
 func testDELETEMethod(t *testing.T, endpoint string) {
@@ -236,7 +236,7 @@ func testDELETEMethod(t *testing.T, endpoint string) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("DELETE", endpoint, nil)
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 204, w.Code)
+	assert.Equal(t, http.StatusNoContent, w.Code)
 }
 
 func testDELETEStoreMethod(t *testing.T, endpoint string) {
@@ -252,5 +252,5 @@ func testDELETEStoreMethod(t *testing.T, endpoint string) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("DELETE", endpoint, nil)
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 204, w.Code)
+	assert.Equal(t, http.StatusNoContent, w.Code)
 }

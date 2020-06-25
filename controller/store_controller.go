@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -21,10 +22,10 @@ func (sc StoreController) List(c *gin.Context) {
 
 	p, err := sc.Storeservice.List()
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -35,14 +36,14 @@ func (sc StoreController) Create(c *gin.Context) {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "InvalidAddress") {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(400)
+			c.AbortWithStatus(http.StatusBadRequest)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(201, p)
+		c.JSON(http.StatusCreated, p)
 	}
 }
 
@@ -53,10 +54,10 @@ func (sc StoreController) Get(c *gin.Context) {
 	p, err := sc.Storeservice.Get(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -68,14 +69,14 @@ func (sc StoreController) Update(c *gin.Context) {
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(400)
+			c.AbortWithStatus(http.StatusBadRequest)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -87,14 +88,14 @@ func (sc StoreController) Delete(c *gin.Context) {
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			log.Error().Caller().Err(err)
 		} else {
-			c.AbortWithStatus(409)
+			c.AbortWithStatus(http.StatusConflict)
 			log.Error().Caller().Err(err)
 		}
 	} else {
-		c.JSON(204, p)
+		c.JSON(http.StatusNoContent, p)
 	}
 }
 
@@ -105,9 +106,9 @@ func (sc StoreController) PetsList(c *gin.Context) {
 	p, err := sc.Storeservice.PetsList(id)
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, p)
+		c.JSON(http.StatusOK, p)
 	}
 }

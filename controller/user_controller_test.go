@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
@@ -44,7 +45,7 @@ func TestUserList(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.List(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestUserGetOK(t *testing.T) {
@@ -59,7 +60,7 @@ func TestUserGetOK(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestUserGetNotFound(t *testing.T) {
@@ -75,7 +76,7 @@ func TestUserGetNotFound(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestUserCreateOK(t *testing.T) {
@@ -90,7 +91,7 @@ func TestUserCreateOK(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 201, c.Writer.Status())
+	assert.Equal(t, http.StatusCreated, c.Writer.Status())
 }
 
 func TestUserCreateBadRequest(t *testing.T) {
@@ -105,7 +106,7 @@ func TestUserCreateBadRequest(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestUserUpdateOK(t *testing.T) {
@@ -120,7 +121,7 @@ func TestUserUpdateOK(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 // ToDo WCAF-118
@@ -135,7 +136,7 @@ func TestUserUpdateNotFound(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestUserUpdateBadRequest(t *testing.T) {
@@ -149,7 +150,7 @@ func TestUserUpdateBadRequest(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestUserDelete(t *testing.T) {
@@ -163,7 +164,7 @@ func TestUserDelete(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 204, c.Writer.Status())
+	assert.Equal(t, http.StatusNoContent, c.Writer.Status())
 }
 
 func TestUserDeleteNotFound(t *testing.T) {
@@ -177,5 +178,5 @@ func TestUserDeleteNotFound(t *testing.T) {
 	controller := UserController{Userservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
