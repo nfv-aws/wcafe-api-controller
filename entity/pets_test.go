@@ -6,9 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/DATA-DOG/go-sqlmock"
-
-	mocks "github.com/nfv-aws/wcafe-api-controller/sqlmocks"
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
+	"github.com/jinzhu/gorm"
 )
 
 var (
@@ -25,8 +24,20 @@ var (
 	ct, ut = time.Now(), time.Now()
 )
 
+func newMock() (*gorm.DB, sqlmock.Sqlmock, error) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		return nil, nil, err
+	}
+	um, err := gorm.Open("mysql", db)
+	if err != nil {
+		return nil, nil, err
+	}
+	return um, mock, nil
+}
+
 func TestPetFindOK(t *testing.T) {
-	db, mock, err := mocks.NewMock()
+	db, mock, err := newMock()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,7 +49,7 @@ func TestPetFindOK(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
 			AddRow("74684838-a5d9-47d8-91a4-ff63ce802763", "Canine", "Shiba-inu", 1, "a103c7e0-b560-4b01-9628-24553f136a6f", "2020-01-01 00:00:00", "2020-01-01 00:10:00", "PENDING_CREATE"))
 
-	mock.ExpectCommit()
+	// mock.ExpectCommit()
 
 	r := PetRepository{DB: db}
 	res, err := r.Find()
