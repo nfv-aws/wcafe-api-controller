@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -44,7 +45,7 @@ func TestPetList(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.List(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestPetGetOK(t *testing.T) {
@@ -58,7 +59,7 @@ func TestPetGetOK(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestPetGetNotFound(t *testing.T) {
@@ -73,7 +74,7 @@ func TestPetGetNotFound(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestPetCreateOK(t *testing.T) {
@@ -87,7 +88,7 @@ func TestPetCreateOK(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 201, c.Writer.Status())
+	assert.Equal(t, http.StatusCreated, c.Writer.Status())
 }
 
 func TestPetCreateInvalidAddress(t *testing.T) {
@@ -101,7 +102,7 @@ func TestPetCreateInvalidAddress(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestPetCreateBadRequest(t *testing.T) {
@@ -115,7 +116,7 @@ func TestPetCreateBadRequest(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestPetUpdateOK(t *testing.T) {
@@ -129,7 +130,7 @@ func TestPetUpdateOK(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestPetUpdataNotFound(t *testing.T) {
@@ -144,7 +145,7 @@ func TestPetUpdataNotFound(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestPetUpdateBadRequest(t *testing.T) {
@@ -158,7 +159,7 @@ func TestPetUpdateBadRequest(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestPetDeleteOK(t *testing.T) {
@@ -172,7 +173,7 @@ func TestPetDeleteOK(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 204, c.Writer.Status())
+	assert.Equal(t, http.StatusNoContent, c.Writer.Status())
 }
 
 func TestPetDeleteNotFound(t *testing.T) {
@@ -186,5 +187,5 @@ func TestPetDeleteNotFound(t *testing.T) {
 	controller := PetController{Petservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
