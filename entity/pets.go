@@ -1,8 +1,10 @@
 package entity
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
 )
 
 type Pet struct {
@@ -37,11 +39,13 @@ type PetRepository struct {
 }
 
 func (pr *PetRepository) Find() ([]Pet, error) {
+	log.Debug().Caller().Msg("pets Find")
 	var r []Pet
 	if err := pr.DB.Find(&r).Error; err != nil {
+		log.Debug().Caller().Msg("errorrrrrrrr")
 		return r, err
 	}
-
+	log.Debug().Caller().Msg("success")
 	return r, nil
 }
 
