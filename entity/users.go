@@ -1,8 +1,10 @@
 package entity
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
 )
 
 type User struct {
@@ -34,6 +36,7 @@ type UserRepository struct {
 }
 
 func (ur *UserRepository) Find() ([]User, error) {
+	log.Debug().Caller().Msg("users Find")
 	var r []User
 	if err := ur.DB.Find(&r).Error; err != nil {
 		return r, err
@@ -43,6 +46,7 @@ func (ur *UserRepository) Find() ([]User, error) {
 }
 
 func (ur *UserRepository) Create(u User) (User, error) {
+	log.Debug().Caller().Msg("users Create")
 	if err := ur.DB.Create(u).Error; err != nil {
 		return u, err
 	}
@@ -50,6 +54,7 @@ func (ur *UserRepository) Create(u User) (User, error) {
 }
 
 func (ur *UserRepository) Get(id string) (User, error) {
+	log.Debug().Caller().Msg("users Get")
 	var r User
 
 	if err := ur.DB.Where("id = ?", id).First(&r).Error; err != nil {
@@ -59,6 +64,7 @@ func (ur *UserRepository) Get(id string) (User, error) {
 }
 
 func (ur *UserRepository) Update(id string, u User) (User, error) {
+	log.Debug().Caller().Msg("users Update")
 	if err := ur.DB.Table("users").Where("id = ?", id).Updates(u).Error; err != nil {
 		return u, err
 	}
@@ -66,6 +72,7 @@ func (ur *UserRepository) Update(id string, u User) (User, error) {
 }
 
 func (ur *UserRepository) Delete(id string) (User, error) {
+	log.Debug().Caller().Msg("users Delete")
 	var r User
 	if err := ur.DB.Table("users").Where("id = ?", id).Delete(&r).Error; err != nil {
 		return r, err

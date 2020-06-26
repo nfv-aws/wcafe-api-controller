@@ -113,6 +113,14 @@ PASS
 ok      github.com/nfv-aws/wcafe-api-controller/server  0.206s
 ```
 
+### entity層(DBはsqlmock利用)
+```
+go test -v ./entity/...
+
+PASS
+ok      github.com/nfv-aws/wcafe-api-controller/entity  0.012s
+```
+
 ## コンテナ上で動作確認
 イメージ作成
 ```

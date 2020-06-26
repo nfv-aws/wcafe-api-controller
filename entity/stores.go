@@ -1,8 +1,10 @@
 package entity
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
 )
 
 type Store struct {
@@ -34,6 +36,7 @@ type StoreRepository struct {
 }
 
 func (sr *StoreRepository) Find() ([]Store, error) {
+	log.Debug().Caller().Msg("stores Find")
 	var r []Store
 	if err := sr.DB.Find(&r).Error; err != nil {
 		return r, err
@@ -43,6 +46,7 @@ func (sr *StoreRepository) Find() ([]Store, error) {
 }
 
 func (sr *StoreRepository) Create(s Store) (Store, error) {
+	log.Debug().Caller().Msg("stores Create")
 	if err := sr.DB.Create(s).Error; err != nil {
 		return s, err
 	}
@@ -50,6 +54,7 @@ func (sr *StoreRepository) Create(s Store) (Store, error) {
 }
 
 func (sr *StoreRepository) Get(id string) (Store, error) {
+	log.Debug().Caller().Msg("stores Get")
 	var r Store
 
 	if err := sr.DB.Where("id = ?", id).First(&r).Error; err != nil {
@@ -59,6 +64,7 @@ func (sr *StoreRepository) Get(id string) (Store, error) {
 }
 
 func (sr *StoreRepository) Update(id string, s Store) (Store, error) {
+	log.Debug().Caller().Msg("stores Update")
 	if err := sr.DB.Table("stores").Where("id = ?", id).Updates(s).Error; err != nil {
 		return s, err
 	}
@@ -66,6 +72,7 @@ func (sr *StoreRepository) Update(id string, s Store) (Store, error) {
 }
 
 func (sr *StoreRepository) Delete(id string) (Store, error) {
+	log.Debug().Caller().Msg("stores Delete")
 	var r Store
 	if err := sr.DB.Table("stores").Where("id = ?", id).Delete(&r).Error; err != nil {
 		return r, err
@@ -74,6 +81,7 @@ func (sr *StoreRepository) Delete(id string) (Store, error) {
 }
 
 func (sr *StoreRepository) PetsList(id string) ([]Pet, error) {
+	log.Debug().Caller().Msg("stores PetsList")
 	var s Store
 	var p []Pet
 
