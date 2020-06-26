@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"reflect"
 	"regexp"
 	"testing"
 	"time"
@@ -43,16 +44,29 @@ func TestPetFindOK(t *testing.T) {
 	defer db.Close()
 	db.LogMode(true)
 
+	pe := Pet{
+		Id:        "84684838-a5d9-47d8-91a4-ff63ce802763",
+		Species:   "TEST2",
+		Name:      "entity-UT2",
+		Age:       10,
+		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
+		CreatedAt: ct,
+		UpdatedAt: ut,
+		Status:    "TEST PASS2",
+	}
+
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `pets`")).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
-			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, ct, ut, p.Status).
-			AddRow("84684838-a5d9-47d8-91a4-ff63ce802763", "Canine", "Shiba-inu", 1, "a103c7e0-b560-4b01-9628-24553f136a6f", ct, ut, "PENDING_CREATE"))
+			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, p.CreatedAt, p.UpdatedAt, p.Status).
+			AddRow(pe.Id, pe.Species, pe.Name, pe.Age, pe.StoreId, pe.CreatedAt, pe.UpdatedAt, pe.Status))
 
 	r := PetRepository{DB: db}
 	_, err = r.Find()
 	if err != nil {
 		t.Error(err)
 	}
+	pl := [...]Pet{p, pe}
+	reflect.DeepEqual(r, pl)
 }
 
 func TestPetCreateOK(t *testing.T) {
@@ -74,6 +88,7 @@ func TestPetCreateOK(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	reflect.DeepEqual(r, p)
 }
 
 func TestPetGetOK(t *testing.T) {
@@ -87,13 +102,14 @@ func TestPetGetOK(t *testing.T) {
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `pets` WHERE (id = ?)")).
 		WithArgs(p.Id).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
-			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, ct, ut, p.Status))
+			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, p.CreatedAt, p.UpdatedAt, p.Status))
 
 	r := PetRepository{DB: db}
 	_, err = r.Get(p.Id)
 	if err != nil {
 		t.Error(err)
 	}
+	reflect.DeepEqual(r, p)
 }
 
 func TestPetUpdateOK(t *testing.T) {
@@ -104,31 +120,30 @@ func TestPetUpdateOK(t *testing.T) {
 	defer db.Close()
 	db.LogMode(true)
 
-	var (
-		pe = Pet{
-			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
-			Species:   "TEST",
-			Name:      "entity-UT",
-			Age:       6,
-			StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
-			CreatedAt: ct,
-			UpdatedAt: ut,
-			Status:    "TEST PASS",
-		}
-	)
+	pu := Pet{
+		Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+		Species:   "UPDATE TEST",
+		Name:      "entity-UT",
+		Age:       6,
+		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
+		CreatedAt: ct,
+		UpdatedAt: ut,
+		Status:    "TEST PASS",
+	}
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
 		"UPDATE `pets` SET `age` = ?, `created_at` = ?, `id` = ?, `name` = ?, `species` = ?, `status` = ?, `store_id` = ?, `updated_at` = ? WHERE (id = ?)")).
-		WithArgs(pe.Age, ct, pe.Id, pe.Name, pe.Species, pe.Status, pe.StoreId, ut, p.Id).
+		WithArgs(pu.Age, pu.CreatedAt, pu.Id, pu.Name, pu.Species, pu.Status, pu.StoreId, pu.UpdatedAt, p.Id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	r := PetRepository{DB: db}
-	_, err = r.Update(p.Id, pe)
+	_, err = r.Update(p.Id, pu)
 	if err != nil {
 		t.Error(err)
 	}
+	reflect.DeepEqual(r, pu)
 }
 
 func TestPetDeleteOK(t *testing.T) {
@@ -151,4 +166,5 @@ func TestPetDeleteOK(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	reflect.DeepEqual(r, p)
 }
