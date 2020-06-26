@@ -1,27 +1,27 @@
 package entity
 
 import (
-	"reflect"
 	"regexp"
 	"testing"
 	"time"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
-	p = Pet{
+	actual = Pet{
 		Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
 		Species:   "TEST",
 		Name:      "entity-UT",
 		Age:       5,
 		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
-		CreatedAt: ct,
-		UpdatedAt: ut,
+		CreatedAt: now,
+		UpdatedAt: now,
 		Status:    "TEST PASS",
 	}
-	ct, ut = time.Now(), time.Now()
+	now = time.Now()
 )
 
 func newMock() (*gorm.DB, sqlmock.Sqlmock, error) {
@@ -44,29 +44,40 @@ func TestPetFindOK(t *testing.T) {
 	defer db.Close()
 	db.LogMode(true)
 
-	pe := Pet{
-		Id:        "84684838-a5d9-47d8-91a4-ff63ce802763",
-		Species:   "TEST2",
-		Name:      "entity-UT2",
-		Age:       10,
-		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
-		CreatedAt: ct,
-		UpdatedAt: ut,
-		Status:    "TEST PASS2",
+	var test_case = []Pet{
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Species:   "TEST",
+			Name:      "entity-UT",
+			Age:       1,
+			StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
+			CreatedAt: now,
+			UpdatedAt: now,
+			Status:    "TEST PASS",
+		},
+		{
+			Id:        "84684838-a5d9-47d8-91a4-ff63ce802763",
+			Species:   "TEST2",
+			Name:      "entity-UT2",
+			Age:       2,
+			StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
+			CreatedAt: now,
+			UpdatedAt: now,
+			Status:    "TEST PASS",
+		},
 	}
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `pets`")).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
-			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, p.CreatedAt, p.UpdatedAt, p.Status).
-			AddRow(pe.Id, pe.Species, pe.Name, pe.Age, pe.StoreId, pe.CreatedAt, pe.UpdatedAt, pe.Status))
+			AddRow(test_case[0].Id, test_case[0].Species, test_case[0].Name, test_case[0].Age, test_case[0].StoreId, test_case[0].CreatedAt, test_case[0].UpdatedAt, test_case[0].Status).
+			AddRow(test_case[1].Id, test_case[1].Species, test_case[1].Name, test_case[1].Age, test_case[1].StoreId, test_case[1].CreatedAt, test_case[1].UpdatedAt, test_case[1].Status))
 
 	r := PetRepository{DB: db}
-	_, err = r.Find()
+	res, err := r.Find()
 	if err != nil {
 		t.Error(err)
 	}
-	pl := [...]Pet{p, pe}
-	reflect.DeepEqual(r, pl)
+	assert.ElementsMatch(t, res, test_case)
 }
 
 func TestPetCreateOK(t *testing.T) {
@@ -80,15 +91,15 @@ func TestPetCreateOK(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
 		"INSERT INTO `pets` (`id`,`species`,`name`,`age`,`store_id`,`created_at`,`updated_at`,`status`) VALUES (?,?,?,?,?,?,?,?)")).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WillReturnResult(sqlmock.NewResult(1, 8))
 	mock.ExpectCommit()
 
 	r := PetRepository{DB: db}
-	_, err = r.Create(p)
+	res, err := r.Create(actual)
 	if err != nil {
 		t.Error(err)
 	}
-	reflect.DeepEqual(r, p)
+	assert.Equal(t, res, actual)
 }
 
 func TestPetGetOK(t *testing.T) {
@@ -100,16 +111,16 @@ func TestPetGetOK(t *testing.T) {
 	db.LogMode(true)
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `pets` WHERE (id = ?)")).
-		WithArgs(p.Id).
+		WithArgs(actual.Id).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
-			AddRow(p.Id, p.Species, p.Name, p.Age, p.StoreId, p.CreatedAt, p.UpdatedAt, p.Status))
+			AddRow(actual.Id, actual.Species, actual.Name, actual.Age, actual.StoreId, actual.CreatedAt, actual.UpdatedAt, actual.Status))
 
 	r := PetRepository{DB: db}
-	_, err = r.Get(p.Id)
+	res, err := r.Get(actual.Id)
 	if err != nil {
 		t.Error(err)
 	}
-	reflect.DeepEqual(r, p)
+	assert.Equal(t, res, actual)
 }
 
 func TestPetUpdateOK(t *testing.T) {
@@ -126,24 +137,24 @@ func TestPetUpdateOK(t *testing.T) {
 		Name:      "entity-UT",
 		Age:       6,
 		StoreId:   "a103c7e0-b560-4b01-9628-24553f136a6f",
-		CreatedAt: ct,
-		UpdatedAt: ut,
+		CreatedAt: now,
+		UpdatedAt: now,
 		Status:    "TEST PASS",
 	}
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
 		"UPDATE `pets` SET `age` = ?, `created_at` = ?, `id` = ?, `name` = ?, `species` = ?, `status` = ?, `store_id` = ?, `updated_at` = ? WHERE (id = ?)")).
-		WithArgs(pu.Age, pu.CreatedAt, pu.Id, pu.Name, pu.Species, pu.Status, pu.StoreId, pu.UpdatedAt, p.Id).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WithArgs(pu.Age, pu.CreatedAt, pu.Id, pu.Name, pu.Species, pu.Status, pu.StoreId, pu.UpdatedAt, actual.Id).
+		WillReturnResult(sqlmock.NewResult(1, 6))
 	mock.ExpectCommit()
 
 	r := PetRepository{DB: db}
-	_, err = r.Update(p.Id, pu)
+	res, err := r.Update(actual.Id, pu)
 	if err != nil {
 		t.Error(err)
 	}
-	reflect.DeepEqual(r, pu)
+	assert.Equal(t, res, pu)
 }
 
 func TestPetDeleteOK(t *testing.T) {
@@ -157,14 +168,16 @@ func TestPetDeleteOK(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
 		"DELETE FROM `pets` WHERE (id = ?)")).
-		WithArgs(p.Id).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WithArgs(actual.Id).
+		WillReturnResult(sqlmock.NewResult(1, 8))
 	mock.ExpectCommit()
 
+	var empty Pet
+
 	r := PetRepository{DB: db}
-	_, err = r.Delete(p.Id)
+	res, err := r.Delete(actual.Id)
 	if err != nil {
 		t.Error(err)
 	}
-	reflect.DeepEqual(r, p)
+	assert.Equal(t, res, empty)
 }
