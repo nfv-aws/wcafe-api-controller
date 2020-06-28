@@ -1,8 +1,10 @@
 package entity
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
+	"github.com/rs/zerolog/log"
 )
 
 type Pet struct {
@@ -37,15 +39,16 @@ type PetRepository struct {
 }
 
 func (pr *PetRepository) Find() ([]Pet, error) {
+	log.Debug().Caller().Msg("pets Find")
 	var r []Pet
 	if err := pr.DB.Find(&r).Error; err != nil {
 		return r, err
 	}
-
 	return r, nil
 }
 
 func (pr *PetRepository) Create(p Pet) (Pet, error) {
+	log.Debug().Caller().Msg("pets Create")
 	if err := pr.DB.Create(p).Error; err != nil {
 		return p, err
 	}
@@ -53,8 +56,8 @@ func (pr *PetRepository) Create(p Pet) (Pet, error) {
 }
 
 func (pr *PetRepository) Get(id string) (Pet, error) {
+	log.Debug().Caller().Msg("pets Get")
 	var r Pet
-
 	if err := pr.DB.Where("id = ?", id).First(&r).Error; err != nil {
 		return r, err
 	}
@@ -62,6 +65,7 @@ func (pr *PetRepository) Get(id string) (Pet, error) {
 }
 
 func (pr *PetRepository) Update(id string, p Pet) (Pet, error) {
+	log.Debug().Caller().Msg("pets Update")
 	if err := pr.DB.Table("pets").Where("id = ?", id).Updates(p).Error; err != nil {
 		return p, err
 	}
@@ -69,6 +73,7 @@ func (pr *PetRepository) Update(id string, p Pet) (Pet, error) {
 }
 
 func (pr *PetRepository) Delete(id string) (Pet, error) {
+	log.Debug().Caller().Msg("pets Delete")
 	var r Pet
 	if err := pr.DB.Table("pets").Where("id = ?", id).Delete(&r).Error; err != nil {
 		return r, err

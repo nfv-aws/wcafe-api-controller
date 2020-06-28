@@ -3,6 +3,7 @@ module github.com/nfv-aws/wcafe-api-controller
 go 1.13
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.4.1
 	github.com/RaMin0/gin-health-check v0.0.0-20180807004848-a677317b3f01
 	github.com/aws/aws-sdk-go v1.30.24
 	github.com/gin-contrib/cors v1.3.1
