@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -23,8 +24,8 @@ var (
 func TestClerkList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockClerkService(ctrl)
 	cl := []entity.Clerk{
@@ -33,24 +34,35 @@ func TestClerkList(t *testing.T) {
 	}
 	serviceMock.EXPECT().List().Return(cl, nil)
 	controller := ClerkController{Clerkservice: serviceMock}
-
 	controller.List(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var clerks []entity.Clerk
+	err := json.Unmarshal([]byte(w.Body.String()), &clerks)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, cl, clerks)
 }
 
 func TestClerkCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockClerkService(ctrl)
-
 	serviceMock.EXPECT().Create(c).Return(cl, nil)
 	controller := ClerkController{Clerkservice: serviceMock}
-
 	controller.Create(c)
 	assert.Equal(t, http.StatusCreated, c.Writer.Status())
+
+	var clerk entity.Clerk
+	err := json.Unmarshal([]byte(w.Body.String()), &clerk)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, cl, clerk)
 }
 
 func TestClerkCreateBadRequest(t *testing.T) {
