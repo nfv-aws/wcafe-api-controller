@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
@@ -29,6 +30,14 @@ var (
 	ErrConflict = errors.New("Error 1451: Cannot delete or update a parent row: a foreign key constraint fails (`wcafe`.`pets`, CONSTRAINT `pets_store_id_stores_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)")
 )
 
+func resetFields(store *entity.Store) *entity.Store {
+	// 元の値は変えず、CreatedAtとUpdatedAtだけゼロ値にしたコピーを作る
+	after := *store
+	after.CreatedAt = time.Time{}
+	after.UpdatedAt = time.Time{}
+	return &after
+}
+
 func TestStoreList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -42,7 +51,6 @@ func TestStoreList(t *testing.T) {
 	}
 	serviceMock.EXPECT().List().Return(s, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.List(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
 
@@ -61,12 +69,19 @@ func TestStoreGetOK(t *testing.T) {
 	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
-
 	serviceMock.EXPECT().Get(gomock.Any()).Return(s, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.Get(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var store entity.Store
+	err := json.Unmarshal([]byte(w.Body.String()), &store)
+	if err != nil {
+		panic(err.Error())
+	}
+	get := resetFields(&store)
+	want := resetFields(&s)
+	assert.Equal(t, want, get)
 }
 
 func TestStoreGetNotFound(t *testing.T) {
@@ -87,16 +102,23 @@ func TestStoreGetNotFound(t *testing.T) {
 func TestStoreCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
-
 	serviceMock.EXPECT().Create(c).Return(s, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.Create(c)
 	assert.Equal(t, http.StatusCreated, c.Writer.Status())
+
+	var store entity.Store
+	err := json.Unmarshal([]byte(w.Body.String()), &store)
+	if err != nil {
+		panic(err.Error())
+	}
+	get := resetFields(&store)
+	want := resetFields(&s)
+	assert.Equal(t, want, get)
 }
 
 func TestStoreCreateInvalidAddress(t *testing.T) {
@@ -127,32 +149,26 @@ func TestStoreCreateBadRequest(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
-func TestStoreUpdate(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
-
-	serviceMock := mocks.NewMockStoreService(ctrl)
-
-	serviceMock.EXPECT().Create(c).Return(entity.Store{}, ErrBadRequest)
-	controller := StoreController{Storeservice: serviceMock}
-
-	controller.Create(c)
-	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
-}
-
 func TestStoreUpdateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 	serviceMock.EXPECT().Update(gomock.Any(), c).Return(s, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.Update(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var store entity.Store
+	err := json.Unmarshal([]byte(w.Body.String()), &store)
+	if err != nil {
+		panic(err.Error())
+	}
+	get := resetFields(&store)
+	want := resetFields(&s)
+	assert.Equal(t, want, get)
 }
 
 func TestStoreUpdataNotFound(t *testing.T) {
@@ -187,7 +203,6 @@ func TestStoreUpdateBadRequest(t *testing.T) {
 func TestStoreDeleteOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
@@ -230,7 +245,8 @@ func TestStorePetsList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	p := []entity.Pet{
 		{Id: "pa5bafac-b35c-4852-82ca-b272cd79f2f3", Species: "Dog"},
@@ -240,23 +256,36 @@ func TestStorePetsList(t *testing.T) {
 	serviceMock := mocks.NewMockStoreService(ctrl)
 	serviceMock.EXPECT().PetsList(gomock.Any()).Return(p, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.PetsList(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var pets []entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pets)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, p, pets)
 }
 
 func TestStorePetsListEmpty(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 	serviceMock.EXPECT().PetsList(gomock.Any()).Return([]entity.Pet{}, nil)
 	controller := StoreController{Storeservice: serviceMock}
-
 	controller.PetsList(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var pets []entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pets)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, []entity.Pet{}, pets)
 }
 
 func TestStorePetsListNotFound(t *testing.T) {
