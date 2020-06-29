@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -30,11 +31,19 @@ var (
 	ErrBadRequest = errors.New("json: cannot unmarshal number into Go struct field User.email of type string")
 )
 
+func resetUserTimeFields(user *entity.User) *entity.User {
+	// 元の値は変えず、CreatedAtとUpdatedAtだけゼロ値にしたコピーを作る
+	after := *user
+	after.CreatedAt = time.Time{}
+	after.UpdatedAt = time.Time{}
+	return &after
+}
+
 func TestUserList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockUserService(ctrl)
 	u := []entity.User{
@@ -43,24 +52,35 @@ func TestUserList(t *testing.T) {
 	}
 	serviceMock.EXPECT().List().Return(u, nil)
 	controller := UserController{Userservice: serviceMock}
-
 	controller.List(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var users []entity.User
+	err := json.Unmarshal([]byte(w.Body.String()), &users)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, u, users)
 }
 
 func TestUserGetOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockUserService(ctrl)
-
 	serviceMock.EXPECT().Get(gomock.Any()).Return(u, nil)
 	controller := UserController{Userservice: serviceMock}
-
 	controller.Get(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var user entity.User
+	err := json.Unmarshal([]byte(w.Body.String()), &user)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetUserTimeFields(&u), resetUserTimeFields(&user))
 }
 
 func TestUserGetNotFound(t *testing.T) {
@@ -82,16 +102,21 @@ func TestUserGetNotFound(t *testing.T) {
 func TestUserCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockUserService(ctrl)
-
 	serviceMock.EXPECT().Create(c).Return(u, nil)
 	controller := UserController{Userservice: serviceMock}
-
 	controller.Create(c)
 	assert.Equal(t, http.StatusCreated, c.Writer.Status())
+
+	var user entity.User
+	err := json.Unmarshal([]byte(w.Body.String()), &user)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetUserTimeFields(&u), resetUserTimeFields(&user))
 }
 
 func TestUserCreateBadRequest(t *testing.T) {
@@ -112,19 +137,23 @@ func TestUserCreateBadRequest(t *testing.T) {
 func TestUserUpdateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockUserService(ctrl)
-
 	serviceMock.EXPECT().Update(gomock.Any(), c).Return(u, nil)
 	controller := UserController{Userservice: serviceMock}
-
 	controller.Update(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var user entity.User
+	err := json.Unmarshal([]byte(w.Body.String()), &user)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetUserTimeFields(&u), resetUserTimeFields(&user))
 }
 
-// ToDo WCAF-118
 func TestUserUpdateNotFound(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

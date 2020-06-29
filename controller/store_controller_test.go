@@ -30,7 +30,7 @@ var (
 	ErrConflict = errors.New("Error 1451: Cannot delete or update a parent row: a foreign key constraint fails (`wcafe`.`pets`, CONSTRAINT `pets_store_id_stores_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)")
 )
 
-func resetFields(store *entity.Store) *entity.Store {
+func resetStoreTimeFields(store *entity.Store) *entity.Store {
 	// 元の値は変えず、CreatedAtとUpdatedAtだけゼロ値にしたコピーを作る
 	after := *store
 	after.CreatedAt = time.Time{}
@@ -79,9 +79,7 @@ func TestStoreGetOK(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	get := resetFields(&store)
-	want := resetFields(&s)
-	assert.Equal(t, want, get)
+	assert.Equal(t, resetStoreTimeFields(&s), resetStoreTimeFields(&store))
 }
 
 func TestStoreGetNotFound(t *testing.T) {
@@ -116,9 +114,7 @@ func TestStoreCreateOK(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	get := resetFields(&store)
-	want := resetFields(&s)
-	assert.Equal(t, want, get)
+	assert.Equal(t, resetStoreTimeFields(&s), resetStoreTimeFields(&store))
 }
 
 func TestStoreCreateInvalidAddress(t *testing.T) {
@@ -166,9 +162,7 @@ func TestStoreUpdateOK(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	get := resetFields(&store)
-	want := resetFields(&s)
-	assert.Equal(t, want, get)
+	assert.Equal(t, resetStoreTimeFields(&s), resetStoreTimeFields(&store))
 }
 
 func TestStoreUpdataNotFound(t *testing.T) {

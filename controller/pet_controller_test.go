@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
@@ -29,37 +31,56 @@ var (
 	ErrInvalidAddress = errors.New("InvalidAddress: The address https://sqs.ap-northeast-1.amazonaws.com/ is not valid for this endpoint.")
 )
 
+func resetPetTimeFields(pet *entity.Pet) *entity.Pet {
+	// 元の値は変えず、CreatedAtとUpdatedAtだけゼロ値にしたコピーを作る
+	after := *pet
+	after.CreatedAt = time.Time{}
+	after.UpdatedAt = time.Time{}
+	return &after
+}
+
 func TestPetList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 	p := []entity.Pet{
 		{Id: "sa5bafac-b35c-4852-82ca-b272cd79f2f3", Name: "Sano Shinichiro"},
 		{Id: "sa5bafac-b35c-4852-82ca-b272cd79f2f5", Name: "Suzuki Chihiro"},
 	}
-
 	serviceMock.EXPECT().List().Return(p, nil)
 	controller := PetController{Petservice: serviceMock}
-
 	controller.List(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var pets []entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pets)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, p, pets)
 }
 
 func TestPetGetOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 	serviceMock.EXPECT().Get(gomock.Any()).Return(p, nil)
 	controller := PetController{Petservice: serviceMock}
-
 	controller.Get(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var pet entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pet)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetPetTimeFields(&p), resetPetTimeFields(&pet))
 }
 
 func TestPetGetNotFound(t *testing.T) {
@@ -80,15 +101,21 @@ func TestPetGetNotFound(t *testing.T) {
 func TestPetCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 	serviceMock.EXPECT().Create(c).Return(p, nil)
 	controller := PetController{Petservice: serviceMock}
-
 	controller.Create(c)
 	assert.Equal(t, http.StatusCreated, c.Writer.Status())
+
+	var pet entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pet)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetPetTimeFields(&p), resetPetTimeFields(&pet))
 }
 
 func TestPetCreateInvalidAddress(t *testing.T) {
@@ -122,15 +149,21 @@ func TestPetCreateBadRequest(t *testing.T) {
 func TestPetUpdateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockPetService(ctrl)
 	serviceMock.EXPECT().Update(gomock.Any(), c).Return(p, nil)
 	controller := PetController{Petservice: serviceMock}
-
 	controller.Update(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var pet entity.Pet
+	err := json.Unmarshal([]byte(w.Body.String()), &pet)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, resetPetTimeFields(&p), resetPetTimeFields(&pet))
 }
 
 func TestPetUpdataNotFound(t *testing.T) {
