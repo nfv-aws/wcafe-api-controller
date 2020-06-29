@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -30,8 +32,8 @@ var (
 func TestStoreList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 	s := []entity.Store{
@@ -42,14 +44,21 @@ func TestStoreList(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.List(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var stores []entity.Store
+	err := json.Unmarshal([]byte(w.Body.String()), &stores)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, s, stores)
 }
 
 func TestStoreGetOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
 	serviceMock := mocks.NewMockStoreService(ctrl)
 
@@ -57,7 +66,7 @@ func TestStoreGetOK(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestStoreGetNotFound(t *testing.T) {
@@ -72,7 +81,7 @@ func TestStoreGetNotFound(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Get(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestStoreCreateOK(t *testing.T) {
@@ -87,7 +96,7 @@ func TestStoreCreateOK(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 201, c.Writer.Status())
+	assert.Equal(t, http.StatusCreated, c.Writer.Status())
 }
 
 func TestStoreCreateInvalidAddress(t *testing.T) {
@@ -101,7 +110,7 @@ func TestStoreCreateInvalidAddress(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestStoreCreateBadRequest(t *testing.T) {
@@ -115,7 +124,7 @@ func TestStoreCreateBadRequest(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestStoreUpdate(t *testing.T) {
@@ -130,7 +139,7 @@ func TestStoreUpdate(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestStoreUpdateOK(t *testing.T) {
@@ -143,7 +152,7 @@ func TestStoreUpdateOK(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestStoreUpdataNotFound(t *testing.T) {
@@ -158,7 +167,7 @@ func TestStoreUpdataNotFound(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestStoreUpdateBadRequest(t *testing.T) {
@@ -172,7 +181,7 @@ func TestStoreUpdateBadRequest(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Update(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
 func TestStoreDeleteOK(t *testing.T) {
@@ -186,7 +195,7 @@ func TestStoreDeleteOK(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 204, c.Writer.Status())
+	assert.Equal(t, http.StatusNoContent, c.Writer.Status())
 }
 
 func TestStoreDeleteNotFound(t *testing.T) {
@@ -200,7 +209,7 @@ func TestStoreDeleteNotFound(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }
 
 func TestStoreDeleteConflict(t *testing.T) {
@@ -214,7 +223,7 @@ func TestStoreDeleteConflict(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.Delete(c)
-	assert.Equal(t, 409, c.Writer.Status())
+	assert.Equal(t, http.StatusConflict, c.Writer.Status())
 }
 
 func TestStorePetsList(t *testing.T) {
@@ -233,7 +242,7 @@ func TestStorePetsList(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.PetsList(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestStorePetsListEmpty(t *testing.T) {
@@ -247,7 +256,7 @@ func TestStorePetsListEmpty(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.PetsList(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestStorePetsListNotFound(t *testing.T) {
@@ -262,5 +271,5 @@ func TestStorePetsListNotFound(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 
 	controller.PetsList(c)
-	assert.Equal(t, 404, c.Writer.Status())
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }

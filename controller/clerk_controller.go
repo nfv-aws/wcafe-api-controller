@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 
@@ -18,10 +20,10 @@ func (cc ClerkController) List(c *gin.Context) {
 	u, err := cc.Clerkservice.List()
 
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(200, u)
+		c.JSON(http.StatusOK, u)
 	}
 }
 
@@ -31,9 +33,9 @@ func (cc ClerkController) Create(c *gin.Context) {
 	u, err := cc.Clerkservice.Create(c)
 
 	if err != nil {
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		log.Error().Caller().Err(err)
 	} else {
-		c.JSON(201, u)
+		c.JSON(http.StatusCreated, u)
 	}
 }

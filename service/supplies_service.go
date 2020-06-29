@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -91,6 +92,12 @@ func (s supplyService) Create(c *gin.Context) (entity.Supply, error) {
 	if err := c.BindJSON(&supply); err != nil {
 		return supply, err
 	}
+
+	validate := validator.New()
+	if err := validate.Struct(supply); err != nil {
+		return supply, err
+	}
+
 	supply.Id = id.String()
 	req, err := json.Marshal(supply)
 	if err != nil {

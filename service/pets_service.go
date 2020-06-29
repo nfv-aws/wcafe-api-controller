@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -81,6 +82,10 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 		return u, err
 	}
 
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
+		return u, err
+	}
 	// SQSに接続
 	pets_svc := Pets_Init()
 	result, err := pets_svc.SendMessage(&sqs.SendMessageInput{
@@ -132,6 +137,11 @@ func (s petService) Update(id string, c *gin.Context) (entity.Pet, error) {
 
 	// 取得したPet情報にUpdateする内容をBind
 	if err := c.BindJSON(&u); err != nil {
+		return u, err
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
 		return u, err
 	}
 

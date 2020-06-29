@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -34,7 +35,7 @@ func TestClerkList(t *testing.T) {
 	controller := ClerkController{Clerkservice: serviceMock}
 
 	controller.List(c)
-	assert.Equal(t, 200, c.Writer.Status())
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
 }
 
 func TestClerkCreateOK(t *testing.T) {
@@ -49,7 +50,7 @@ func TestClerkCreateOK(t *testing.T) {
 	controller := ClerkController{Clerkservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 201, c.Writer.Status())
+	assert.Equal(t, http.StatusCreated, c.Writer.Status())
 }
 
 func TestClerkCreateBadRequest(t *testing.T) {
@@ -63,5 +64,5 @@ func TestClerkCreateBadRequest(t *testing.T) {
 	controller := ClerkController{Clerkservice: serviceMock}
 
 	controller.Create(c)
-	assert.Equal(t, 400, c.Writer.Status())
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
