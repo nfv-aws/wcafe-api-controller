@@ -24,7 +24,7 @@ func (pc PetController) List(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, p)
 	}
@@ -39,10 +39,10 @@ func (pc PetController) Create(c *gin.Context) {
 	if err != nil {
 		if strings.Contains(err.Error(), "InvalidAddress") {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusCreated, p)
@@ -59,7 +59,7 @@ func (pc PetController) Get(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, p)
 	}
@@ -75,10 +75,10 @@ func (pc PetController) Update(c *gin.Context) {
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusOK, p)
@@ -94,7 +94,7 @@ func (pc PetController) Delete(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusNoContent, p)
 	}

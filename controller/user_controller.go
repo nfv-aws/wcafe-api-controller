@@ -23,7 +23,7 @@ func (uc UserController) List(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, u)
 	}
@@ -36,7 +36,7 @@ func (uc UserController) Create(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusCreated, u)
 	}
@@ -51,7 +51,7 @@ func (uc UserController) Get(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, u)
 	}
@@ -67,10 +67,10 @@ func (uc UserController) Update(c *gin.Context) {
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusOK, u)
@@ -85,7 +85,7 @@ func (uc UserController) Delete(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusNoContent, u)
 	}
