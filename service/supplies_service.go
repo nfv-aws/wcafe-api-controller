@@ -43,7 +43,7 @@ func (s supplyService) List() ([]entity.Supply, error) {
 	log.Info().Caller().Msg(address)
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	defer conn.Close()
 	c := pb.NewSuppliesClient(conn)
@@ -53,13 +53,13 @@ func (s supplyService) List() ([]entity.Supply, error) {
 	defer cancel()
 	r, err := c.SupplyList(ctx, &pb.SupplyListRequest{Table: "supplies"})
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	log.Info().Caller().Msg(r.GetMessage())
 	var supplies []entity.Supply
 	err = json.Unmarshal([]byte(r.GetMessage()), &supplies)
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	return supplies, nil
 }
@@ -73,7 +73,7 @@ func (s supplyService) Create(c *gin.Context) (entity.Supply, error) {
 	log.Info().Caller().Msg(address)
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	defer conn.Close()
 	connect := pb.NewSuppliesClient(conn)
@@ -86,7 +86,7 @@ func (s supplyService) Create(c *gin.Context) (entity.Supply, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 		return supply, err
 	}
 	if err := c.BindJSON(&supply); err != nil {
@@ -101,17 +101,17 @@ func (s supplyService) Create(c *gin.Context) (entity.Supply, error) {
 	supply.Id = id.String()
 	req, err := json.Marshal(supply)
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 
 	r, err := connect.SupplyCreate(ctx, &pb.SupplyCreateRequest{Table: "supplies", Body: string(req)})
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	log.Info().Caller().Msg(r.GetMessage())
 	err = json.Unmarshal([]byte(r.GetMessage()), &supply)
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	}
 	return supply, nil
 }

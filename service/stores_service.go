@@ -72,7 +72,7 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 	//UUID生成
 	id, err := uuid.NewRandom()
 	if err != nil {
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 		return u, err
 	}
 	u.Id = id.String()
