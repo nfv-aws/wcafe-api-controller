@@ -21,7 +21,7 @@ func (sc SupplyController) List(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, s)
 	}
@@ -34,7 +34,7 @@ func (sc SupplyController) Create(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusCreated, s)
 	}

@@ -23,7 +23,7 @@ func (sc StoreController) List(c *gin.Context) {
 	p, err := sc.Storeservice.List()
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, p)
 	}
@@ -37,10 +37,10 @@ func (sc StoreController) Create(c *gin.Context) {
 	if err != nil {
 		if strings.Contains(err.Error(), "InvalidAddress") {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusCreated, p)
@@ -55,7 +55,7 @@ func (sc StoreController) Get(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, p)
 	}
@@ -70,10 +70,10 @@ func (sc StoreController) Update(c *gin.Context) {
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusOK, p)
@@ -89,10 +89,10 @@ func (sc StoreController) Delete(c *gin.Context) {
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			c.AbortWithStatus(http.StatusNotFound)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		} else {
 			c.AbortWithStatus(http.StatusConflict)
-			log.Error().Caller().Err(err)
+			log.Error().Caller().Err(err).Send()
 		}
 	} else {
 		c.JSON(http.StatusNoContent, p)
@@ -107,7 +107,7 @@ func (sc StoreController) PetsList(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
-		log.Error().Caller().Err(err)
+		log.Error().Caller().Err(err).Send()
 	} else {
 		c.JSON(http.StatusOK, p)
 	}
