@@ -43,6 +43,45 @@ func newUsersMock() (*gorm.DB, sqlmock.Sqlmock, error) {
 	return um, mock, nil
 }
 
+//正常系
+func TestUserValidator(t *testing.T) {
+	var cases = []User{
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Number:    123,
+			Name:      "entity-UT",
+			Address:   "Test City",
+			Email:     "test@mail.com",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Number:    123,
+			Name:      "entity-UT",
+			Address:   "Test City",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Number:    123,
+			Name:      "entity-UT",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Number:    123,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+	for _, tc := range cases {
+		assert.Equal(t, nil, UserValidator(tc))
+	}
+}
+
 func TestUserFindOK(t *testing.T) {
 	db, mock, err := newUsersMock()
 	if err != nil {
@@ -173,4 +212,30 @@ func TestUserDeleteOK(t *testing.T) {
 		t.Error(err)
 	}
 	assert.Equal(t, empty, res)
+}
+
+//準正常系
+func TestUserValidatorNG(t *testing.T) {
+	var cases = []User{
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Name:      "entity-UT",
+			Address:   "Test City",
+			Email:     "test@mail.com",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		{
+			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+			Number:    123,
+			Name:      "entity-UT",
+			Address:   "Test City",
+			Email:     "test",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+	for _, tc := range cases {
+		assert.Error(t, UserValidator(tc))
+	}
 }
