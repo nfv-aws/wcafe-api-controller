@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"gopkg.in/go-playground/validator.v9"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -81,8 +80,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	}
 
 	//validation Check
-	validate := validator.New()
-	if err := validate.Struct(u); err != nil {
+	if err := entity.UserValidator(u); err != nil {
 		return u, err
 	}
 
@@ -142,9 +140,8 @@ func (s userService) Update(id string, c *gin.Context) (entity.User, error) {
 		return u, err
 	}
 
-	//Email validation check
-	validate := validator.New()
-	if err := validate.Struct(u); err != nil {
+	//validation Check
+	if err := entity.UserValidator(u); err != nil {
 		return u, err
 	}
 

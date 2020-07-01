@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/rs/zerolog/log"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type User struct {
@@ -13,7 +14,7 @@ type User struct {
 	Id string `gorm:"type:varchar(255)" json:"id"`
 
 	// 会員番号
-	Number int32 `gorm:"type:int(32) AUTO_INCREMENT;NOT NULL;unique" json:"number"  binding:"required"`
+	Number int32 `gorm:"type:int(32) AUTO_INCREMENT;NOT NULL;unique" json:"number"  binding:"required" validate:"required"`
 
 	// 氏名
 	Name string `gorm:"type:varchar(255)" json:"name"`
@@ -33,6 +34,14 @@ type User struct {
 
 type UserRepository struct {
 	DB *gorm.DB
+}
+
+func UserValidator(u User) error {
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (ur *UserRepository) Find() ([]User, error) {
