@@ -1,10 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -36,7 +36,14 @@ type Config struct {
 var C Config
 
 func Configure() {
-	viper.SetConfigName("config")
+	//configファイルの読み込み設定
+	if os.Getenv("CONFIG_ACCESS") == "Production" {
+		log.Debug().Caller().Msg("Production Config")
+		viper.SetConfigName("config_production")
+	} else {
+		log.Debug().Caller().Msg("Local Config")
+		viper.SetConfigName("config")
+	}
 	viper.SetConfigType("toml")
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
@@ -49,12 +56,12 @@ func Configure() {
 
 	// conf読み取り
 	if err := viper.ReadInConfig(); err != nil {
-		log.Println("config file read error: ", err)
+		log.Error().Caller().Err(err).Send()
 		os.Exit(1)
 	}
 
 	if err := viper.Unmarshal(&C); err != nil {
-		log.Println("config file Unmarshal error: ", err)
+		log.Error().Caller().Err(err).Send()
 		os.Exit(1)
 	}
 }

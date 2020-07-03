@@ -50,7 +50,10 @@ export WCAFE_CONDUCTOR_IP=ip
 export WCAFE_CONDUCTOR_PORT=port
 source ~/.bashrc
 ```
-
+#### IT,本番環境の場合以下の環境変数を追加
+```
+export CONFIG_ACCESS="Production"
+```
 
 ユーザーやDB名、キューのURLは以下でも編集可能
 
