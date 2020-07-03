@@ -5,17 +5,18 @@ password = "DB_PASSWORD"
 name = "wcafe"
 
 [sqs]
-region = "ap-northeast-1"
-pets_queue_url  = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-pets-sqs"
-stores_queue_url  = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-stores-sqs"
-users_queue_url = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-users-sqs"
+region = "SQS_REGION"
+pets_queue_url  = "PETS_SQS_QUEUE_URL"
+stores_queue_url  = "STORES_SQS_QUEUE_URL"
+users_queue_url = "USERS_SQS_QUEUE_URL"
 
 [DynamoDB]
-region = "ap-northeast-1"
+region = "DynamoDB_REGION"
 
 [log]
 file_path = "/home/ec2-user/"
 
 [Conductor]
-ip = "localhost"
-port = "50051"
+ip = "CONDUCTOR_IP"
+port = "CONDUCTOR_PORT"
+		

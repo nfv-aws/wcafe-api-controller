@@ -1,0 +1,21 @@
+[db]
+endpoint = "AMAZON_RDS_ENDPOINT"
+user = "admin"
+password = "DB_PASSWORD"
+name = "wcafe"
+
+[sqs]
+region = "ap-northeast-1"
+pets_queue_url  = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-pets-sqs"
+stores_queue_url  = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-stores-sqs"
+users_queue_url = "https://sqs.ap-northeast-1.amazonaws.com/292364111734/wcafe-users-sqs"
+
+[DynamoDB]
+region = "ap-northeast-1"
+
+[log]
+file_path = "/home/ec2-user/"
+
+[Conductor]
+ip = "localhost"
+port = "50051"
