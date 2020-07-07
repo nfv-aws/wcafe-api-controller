@@ -16,8 +16,8 @@ import (
 
 var (
 	cl = entity.Clerk{
-		NameId: "cc5bafac-b35c-4852-82ca-b272cd79f2f3",
-		Name:   "Sano Shinichiro",
+		Id:   "cc5bafac-b35c-4852-82ca-b272cd79f2f3",
+		Name: "Sano Shinichiro",
 	}
 )
 
@@ -29,8 +29,8 @@ func TestClerkList(t *testing.T) {
 
 	serviceMock := mocks.NewMockClerkService(ctrl)
 	cl := []entity.Clerk{
-		{NameId: "cc5bafac-b35c-4852-82ca-b272cd79f2f3", Name: "Sano Shinichiro"},
-		{NameId: "cc5bafac-b35c-4852-82ca-b272cd79f2f5", Name: "Suzuki Chihiro"},
+		{Id: "cc5bafac-b35c-4852-82ca-b272cd79f2f3", Name: "Sano Shinichiro"},
+		{Id: "cc5bafac-b35c-4852-82ca-b272cd79f2f5", Name: "Suzuki Chihiro"},
 	}
 	serviceMock.EXPECT().List().Return(cl, nil)
 	controller := ClerkController{Clerkservice: serviceMock}
