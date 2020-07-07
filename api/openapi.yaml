@@ -588,6 +588,60 @@ paths:
                 example: 
                   code: 400
                   message: Bad Request
+
+  /clerks/{name_id}:
+    get:
+      tags:
+        - clerks
+      summary: ID指定による店員詳細情報取得
+      description: ID指定による店員詳細情報取得
+      parameters:
+        - name: name_id
+          in: path
+          description: 店員識別子
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: 店員情報
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clerks'
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+    delete:
+      summary: ID指定による店員情報の削除
+      tags:
+        - clerks
+      parameters: 
+        - name: name_id
+          in: path
+          description: 店員ID
+          required: true
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '204':
+          description: 店員情報削除
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+                  
   /supplies:
     get:
       tags:
