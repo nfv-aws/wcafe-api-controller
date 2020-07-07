@@ -3,7 +3,7 @@ package entity
 type Clerk struct {
 
 	// 店員の識別子
-	NameId string `dynamo:"name_id"`
+	Id string `dynamo:"id"`
 
 	// 氏名
 	Name string `dynamo:"name" binding:"required"`

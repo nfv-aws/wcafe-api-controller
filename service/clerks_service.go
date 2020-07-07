@@ -51,7 +51,7 @@ func NewClerkService() ClerkService {
 func (s clerkService) List() ([]entity.Clerk, error) {
 	log.Debug().Caller().Msg("clerks list")
 	dynamodb := Dynamo_Init()
-	table := dynamodb.Table("clerks_name")
+	table := dynamodb.Table("clerks")
 
 	var cl []entity.Clerk
 	if err := table.Scan().All(&cl); err != nil {
@@ -64,7 +64,7 @@ func (s clerkService) List() ([]entity.Clerk, error) {
 func (s clerkService) Create(c *gin.Context) (entity.Clerk, error) {
 	log.Debug().Caller().Msg("clerks create")
 	dynamodb := Dynamo_Init()
-	table := dynamodb.Table("clerks_name")
+	table := dynamodb.Table("clerks")
 	var cl entity.Clerk
 
 	//UUID生成
@@ -73,7 +73,7 @@ func (s clerkService) Create(c *gin.Context) (entity.Clerk, error) {
 		log.Error().Caller().Err(err).Send()
 		return cl, err
 	}
-	cl.NameId = id.String()
+	cl.Id = id.String()
 	if err := c.BindJSON(&cl); err != nil {
 		return cl, err
 	}
@@ -82,7 +82,7 @@ func (s clerkService) Create(c *gin.Context) (entity.Clerk, error) {
 	if err := validate.Struct(cl); err != nil {
 		return cl, err
 	}
-	clerk := Clerk{NameId: cl.NameId, Name: cl.Name}
+	clerk := Clerk{Id: cl.Id, Name: cl.Name}
 	if err := table.Put(clerk).Run(); err != nil {
 		return cl, err
 	}

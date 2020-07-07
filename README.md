@@ -66,9 +66,9 @@ vi config/config.toml
 DynamoDBにて、以下のテーブルを用意する
 
 ```
-テーブル名：clerks_name
-プライマリキー：name_id
-キー：name
+テーブル名：clerks
+プライマリキー：id(string)
+キー：name(string)
 ```
 ```
 テーブル名：supplies
