@@ -557,9 +557,9 @@ paths:
                       $ref: '#/components/schemas/clerks'
                 example:
                   clerks:
-                    - name_id: 55043cdf-0c06-4c74-99e6-6ae920
+                    - id: 55043cdf-0c06-4c74-99e6-6ae920
                       name: "kato"
-                    - name_id: 22243azf-9p12-1s68-11e1-9as037
+                    - id: 22243azf-9p12-1s68-11e1-9as037
                       name: "kosaka"
     post:
       summary: 店員の新規登録
@@ -589,14 +589,14 @@ paths:
                   code: 400
                   message: Bad Request
 
-  /clerks/{name_id}:
+  /clerks/{clerk_id}:
     get:
       tags:
         - clerks
       summary: ID指定による店員詳細情報取得
       description: ID指定による店員詳細情報取得
       parameters:
-        - name: name_id
+        - name: clerk_id
           in: path
           description: 店員識別子
           required: true
@@ -623,7 +623,7 @@ paths:
       tags:
         - clerks
       parameters: 
-        - name: name_id
+        - name: clerk_id
           in: path
           description: 店員ID
           required: true
@@ -663,11 +663,11 @@ paths:
                       $ref: '#/components/schemas/supplies'
                 example:
                   clerks:
-                    - name_id: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
+                    - id: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
                       name: "dog food"
                       price: 500
                       type: "food"
-                    - name_id: "fba6e715-5462-43b0-ab5d-8d7d727408d4"
+                    - id: "fba6e715-5462-43b0-ab5d-8d7d727408d4"
                       name: "ball"
                       price: 200
                       type: "toy"
@@ -828,7 +828,7 @@ components:
     clerks:
       type: object
       properties:
-        name_id:
+        id:
           description: 店員識別子
           example: "11043cdf-0c06-4c74-99e6-6ae920"
           type: string
@@ -843,7 +843,7 @@ components:
     supplies:
       type: object
       properties:
-        name_id:
+        id:
           description: ペット用品識別子
           example: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
           type: string
