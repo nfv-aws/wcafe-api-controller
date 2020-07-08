@@ -134,11 +134,10 @@ func TestStoreCreateBadRequestvalidation(t *testing.T) {
 	mock.ExpectCommit()
 
 	r := StoreRepository{DB: db}
-	res, err := r.Create(store)
+	_, err_res := r.Create(store)
 
-	_ = res
 	expect := `'Store.Name' Error:Field validation for 'Name' failed on the 'required' tag","time":"2020-07-02T14:20:37+09:00"`
-	assert.EqualError(t, err, expect)
+	assert.EqualError(t, err_res, expect)
 }
 
 func TestStoreCreateBadRequestDuplicate(t *testing.T) {
@@ -158,11 +157,10 @@ func TestStoreCreateBadRequestDuplicate(t *testing.T) {
 	mock.ExpectCommit()
 
 	r := StoreRepository{DB: db}
-	res, err := r.Create(store)
+	_, err_res := r.Create(store)
 
-	_ = res
 	expect := `Error 1062: Duplicate entry 'Shinagawa-Pet-Shop' for key 'name' `
-	assert.EqualError(t, err, expect)
+	assert.EqualError(t, err_res, expect)
 }
 
 func TestStoreGetOK(t *testing.T) {
@@ -201,9 +199,9 @@ func TestStoreGetNotFound(t *testing.T) {
 		WillReturnError(gorm.ErrRecordNotFound)
 
 	r := StoreRepository{DB: db}
-	res, err := r.Get(store.Id)
-	_ = res
-	assert.EqualError(t, err, "record not found")
+	_, err_res := r.Get(store.Id)
+
+	assert.EqualError(t, err_res, "record not found")
 }
 
 func TestStoreUpdateOK(t *testing.T) {
@@ -246,9 +244,9 @@ func TestStoreUpdateNotFound(t *testing.T) {
 	mock.ExpectCommit()
 
 	r := StoreRepository{DB: db}
-	res, err := r.Update("test-id", update_store)
-	_ = res
-	assert.EqualError(t, err, "record not found")
+	_, err_res := r.Update("test-id", update_store)
+
+	assert.EqualError(t, err_res, "record not found")
 }
 
 func TestStoreDeleteOK(t *testing.T) {
@@ -292,9 +290,9 @@ func TestStoreDeleteNotFound(t *testing.T) {
 	mock.ExpectCommit()
 
 	r := StoreRepository{DB: db}
-	res, err := r.Delete("test-id")
-	_ = res
-	assert.EqualError(t, err, "record not found")
+	_, err_res := r.Delete("test-id")
+
+	assert.EqualError(t, err_res, "record not found")
 }
 
 func TestStorePetsListOK(t *testing.T) {
@@ -335,7 +333,7 @@ func TestStorePetsListNotFound(t *testing.T) {
 		WillReturnError(gorm.ErrRecordNotFound)
 
 	r := StoreRepository{DB: db}
-	res, err := r.PetsList(store.Id)
-	_ = res
-	assert.EqualError(t, err, "record not found")
+	_, err_res := r.PetsList(store.Id)
+
+	assert.EqualError(t, err_res, "record not found")
 }
