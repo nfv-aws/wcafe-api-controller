@@ -15,11 +15,13 @@ import (
 
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
+	"github.com/nfv-aws/wcafe-api-controller/service"
 )
 
 func setup() {
 	// UT共通初期設定
 	db.Init()
+
 }
 
 func tearDown() {
@@ -44,10 +46,16 @@ func TestServer(t *testing.T) {
 	var pet []entity.Pet
 	var store []entity.Store
 	var user []entity.User
+	var supply []entity.Supply
+
 	db := db.GetDB()
 	db.Find(&pet)
 	db.Find(&store)
 	db.Find(&user)
+
+	dynamodb := service.Dynamo_Init()
+	table := dynamodb.Table("supplies")
+	table.Scan().All(&supply)
 
 	math_rand.Seed(time.Now().UnixNano())
 	random_num := math_rand.Intn(10000)
@@ -110,6 +118,7 @@ func TestServer(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
 		testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
 		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
+		testDELETEMethod(t, "/api/v1/supplies/"+supply[0].Id)
 	})
 
 	tearDown()

@@ -44,12 +44,12 @@ func (sc SupplyController) Create(c *gin.Context) {
 func (sc SupplyController) Delete(c *gin.Context) {
 	log.Debug().Caller().Msg("supplies delete")
 	id := c.Params.ByName("id")
-	s, err := sc.Supplyservice.Delete(id)
 
+	s, err := sc.Supplyservice.Delete(id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()
 	} else {
-		c.JSON(http.StatusCreated, s)
+		c.JSON(http.StatusNoContent, s)
 	}
 }
