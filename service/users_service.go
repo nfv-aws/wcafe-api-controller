@@ -101,7 +101,9 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 		log.Info().Caller().Msg("User Success:" + string(*result.MessageId))
 	}
 
+	u.Status = "PENDING_CREATE"
 	u.CreatedAt = internal.JstTime()
+
 	u, err = ur.Create(u)
 	if err != nil {
 		return u, err
