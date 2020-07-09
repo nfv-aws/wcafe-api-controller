@@ -100,7 +100,6 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 		log.Info().Caller().Msg("Pet SendMessage Success:" + string(*result.MessageId))
 	}
 
-	// DBに登録
 	u.Status = "PENDING_CREATE"
 	u.CreatedAt = internal.JstTime()
 
