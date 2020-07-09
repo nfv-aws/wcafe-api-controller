@@ -394,14 +394,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/users'
-                example:
-                  users:
-                    - id: "89043cdf-0c06-4c74-99e6-6ae920"
-                      number: 1
-                      name: "Sano"
-                    - id: "919dfefd-0b0a-4665-b7d9-a189e2"
-                      number: 2
-                      name: "Suzuki"
                   
     post:
       tags:
@@ -736,6 +728,11 @@ components:
           example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
+        status:
+          description: ステータス
+          example: "CREATED"
+          type: string
+          readOnly: true
       required:
         - name  
         - tag
@@ -779,6 +776,11 @@ components:
           example: "2020-05-01 00:49:07"
           type: string
           readOnly: true
+        status:
+          description: ステータス
+          example: "CREATED"
+          type: string
+          readOnly: true
       required: 
         - species
         - name
@@ -820,6 +822,11 @@ components:
         updated_at:
           description: 更新日時
           example: "2020-05-01 00:49:07"
+          type: string
+          readOnly: true
+        status:
+          description: ステータス
+          example: "CREATED"
           type: string
           readOnly: true
       required: 
