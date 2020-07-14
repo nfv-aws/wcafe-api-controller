@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/guregu/dynamo"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -80,4 +81,32 @@ func TestSupplyCreateBadRequest(t *testing.T) {
 
 	controller.Create(c)
 	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
+}
+
+func TestSupplyDeleteOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockSupplyService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Supply{}, nil)
+	controller := SupplyController{Supplyservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, http.StatusNoContent, c.Writer.Status())
+
+}
+
+func TestSupplyDeleteNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockSupplyService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Supply{}, dynamo.ErrNotFound)
+	controller := SupplyController{Supplyservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
+
 }

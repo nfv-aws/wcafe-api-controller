@@ -29,6 +29,9 @@ type Store struct {
 
 	//更新日時
 	UpdatedAt time.Time `json:"updated_time"`
+
+	//ステータス
+	Status string `json:"status"`
 }
 
 type StoreRepository struct {

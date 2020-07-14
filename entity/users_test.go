@@ -18,6 +18,7 @@ var (
 		Email:     "test@mail.com",
 		CreatedAt: now,
 		UpdatedAt: now,
+		Status:    "TEST PASS",
 	}
 
 	update_user = User{
@@ -28,6 +29,7 @@ var (
 		Email:     "test@mail.com",
 		CreatedAt: now,
 		UpdatedAt: now,
+		Status:    "TEST PASS",
 	}
 )
 
@@ -54,6 +56,7 @@ func TestUserValidator(t *testing.T) {
 			Email:     "test@mail.com",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 		{
 			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
@@ -62,6 +65,7 @@ func TestUserValidator(t *testing.T) {
 			Address:   "Test City",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 		{
 			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
@@ -69,12 +73,14 @@ func TestUserValidator(t *testing.T) {
 			Name:      "entity-UT",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 		{
 			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
 			Number:    123,
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 	}
 	for _, tc := range cases {
@@ -99,6 +105,7 @@ func TestUserFindOK(t *testing.T) {
 			Email:     "test@mail.com",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 		{
 			Id:        "74669088-s5d9-47n8-41c4-ff63ce808456",
@@ -108,13 +115,14 @@ func TestUserFindOK(t *testing.T) {
 			Email:     "test3@mail.com",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 	}
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users`")).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "number", "name", "address", "email", "created_at", "updated_at"}).
-			AddRow(list_user[0].Id, list_user[0].Number, list_user[0].Name, list_user[0].Address, list_user[0].Email, list_user[0].CreatedAt, list_user[0].UpdatedAt).
-			AddRow(list_user[1].Id, list_user[1].Number, list_user[1].Name, list_user[1].Address, list_user[1].Email, list_user[1].CreatedAt, list_user[1].UpdatedAt))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "number", "name", "address", "email", "created_at", "updated_at", "status"}).
+			AddRow(list_user[0].Id, list_user[0].Number, list_user[0].Name, list_user[0].Address, list_user[0].Email, list_user[0].CreatedAt, list_user[0].UpdatedAt, list_user[0].Status).
+			AddRow(list_user[1].Id, list_user[1].Number, list_user[1].Name, list_user[1].Address, list_user[1].Email, list_user[1].CreatedAt, list_user[1].UpdatedAt, list_user[1].Status))
 
 	r := UserRepository{DB: db}
 	res, err := r.Find()
@@ -134,8 +142,8 @@ func TestUserCreateOK(t *testing.T) {
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
-		"INSERT INTO `users` (`id`,`number`,`name`,`address`,`email`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?,?)")).
-		WillReturnResult(sqlmock.NewResult(1, 7))
+		"INSERT INTO `users` (`id`,`number`,`name`,`address`,`email`,`created_at`,`updated_at`,`status`) VALUES (?,?,?,?,?,?,?,?)")).
+		WillReturnResult(sqlmock.NewResult(1, 8))
 	mock.ExpectCommit()
 
 	r := UserRepository{DB: db}
@@ -156,8 +164,8 @@ func TestUserGetOK(t *testing.T) {
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users` WHERE (id = ?)")).
 		WithArgs(user.Id).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "number", "name", "address", "email", "created_at", "updated_at"}).
-			AddRow(user.Id, user.Number, user.Name, user.Address, user.Email, user.CreatedAt, user.UpdatedAt))
+		WillReturnRows(sqlmock.NewRows([]string{"id", "number", "name", "address", "email", "created_at", "updated_at", "status"}).
+			AddRow(user.Id, user.Number, user.Name, user.Address, user.Email, user.CreatedAt, user.UpdatedAt, user.Status))
 
 	r := UserRepository{DB: db}
 	res, err := r.Get(user.Id)
@@ -177,9 +185,9 @@ func TestUserUpdateOK(t *testing.T) {
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(
-		"UPDATE `users` SET `address` = ?, `created_at` = ?, `email` = ?, `id` = ?, `name` = ?, `number` = ?, `updated_at` = ? WHERE (id = ?)")).
-		WithArgs(update_user.Address, update_user.CreatedAt, update_user.Email, update_user.Id, update_user.Name, update_user.Number, update_user.UpdatedAt, user.Id).
-		WillReturnResult(sqlmock.NewResult(1, 6))
+		"UPDATE `users` SET `address` = ?, `created_at` = ?, `email` = ?, `id` = ?, `name` = ?, `number` = ?, `status` = ?, `updated_at` = ? WHERE (id = ?)")).
+		WithArgs(update_user.Address, update_user.CreatedAt, update_user.Email, update_user.Id, update_user.Name, update_user.Number, update_user.Status, update_user.UpdatedAt, user.Id).
+		WillReturnResult(sqlmock.NewResult(1, 8))
 	mock.ExpectCommit()
 
 	r := UserRepository{DB: db}
@@ -224,6 +232,7 @@ func TestUserValidatorNG(t *testing.T) {
 			Email:     "test@mail.com",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 		{
 			Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
@@ -233,6 +242,7 @@ func TestUserValidatorNG(t *testing.T) {
 			Email:     "test",
 			CreatedAt: now,
 			UpdatedAt: now,
+			Status:    "TEST PASS",
 		},
 	}
 	for _, tc := range cases {

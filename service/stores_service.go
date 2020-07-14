@@ -100,7 +100,9 @@ func (s storeService) Create(c *gin.Context) (entity.Store, error) {
 		log.Info().Caller().Msg("Store Success:" + string(*result.MessageId))
 	}
 
+	u.Status = "PENDING_CREATE"
 	u.CreatedAt = internal.JstTime()
+
 	u, err = sr.Create(u)
 	if err != nil {
 		return u, err
