@@ -63,7 +63,6 @@ func TestStoreList(t *testing.T) {
 	controller := StoreController{Storeservice: serviceMock}
 	log.Println("ここまでOk")
 	controller.List(c)
-	// log.Println(err)
 	log.Println("ここはまだ")
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
 

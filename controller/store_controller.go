@@ -40,6 +40,11 @@ func (sc StoreController) List(c *gin.Context) {
 	log.Debug().Caller().Int("offset:", offset).Send()
 
 	p, err := sc.Storeservice.List(limit, offset)
+	// nilで落ちてるかチェック（テスト用、後で消す）
+	if p == nil {
+		log.Debug().Caller().Msg("p is nil")
+		return
+	}
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()

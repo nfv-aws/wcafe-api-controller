@@ -41,6 +41,14 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/stores"  #参照するモデル
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
 
     post:
       summary: 店舗の新規登録
