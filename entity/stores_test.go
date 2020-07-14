@@ -3,7 +3,6 @@ package entity
 import (
 	"regexp"
 	"testing"
-	"time"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
@@ -24,7 +23,7 @@ var (
 
 	update_store = Store{
 		Id:          "st684838-a5d9-47d8-91a4-ff63ce802763",
-		Name:        "entity-UT",
+		Name:        "Update-store-UT",
 		Tag:         "Test",
 		Address:     "Aomori",
 		StrongPoint: "namahage",
@@ -32,7 +31,6 @@ var (
 		UpdatedAt:   now,
 		Status:      "TEST PASS",
 	}
-	now = time.Now()
 )
 
 func newStoreMock() (*gorm.DB, sqlmock.Sqlmock, error) {
@@ -77,106 +75,108 @@ func TestStoreFindOK(t *testing.T) {
 			Status:      "TEST PASS",
 		},
 	}
+	limit := 2
+	offset := 0
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `stores`")).
-		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "tag", "address", "strong_point", "created_at", "updated_at", "status"}).
 			AddRow(list_store[0].Id, list_store[0].Name, list_store[0].Tag, list_store[0].Address, list_store[0].StrongPoint, list_store[0].CreatedAt, list_store[0].UpdatedAt, list_store[0].Status).
 			AddRow(list_store[1].Id, list_store[1].Name, list_store[1].Tag, list_store[1].Address, list_store[1].StrongPoint, list_store[1].CreatedAt, list_store[1].UpdatedAt, list_store[1].Status))
 
 	r := StoreRepository{DB: db}
-	res, err := r.Find()
+	res, err := r.Find(limit, offset)
 	if err != nil {
 		t.Error(err)
 	}
 	assert.ElementsMatch(t, res, list_store)
 }
 
-// func TestStoreCreateOK(t *testing.T) {
-// 	db, mock, err := newMock()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	defer db.Close()
-// 	db.LogMode(true)
+func TestStoreCreateOK(t *testing.T) {
+	db, mock, err := newMock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	db.LogMode(true)
 
-// 	mock.ExpectBegin()
-// 	mock.ExpectExec(regexp.QuoteMeta(
-// 		"INSERT INTO `stores` (`id`,`species`,`name`,`age`,`store_id`,`created_at`,`updated_at`,`status`) VALUES (?,?,?,?,?,?,?,?)")).
-// 		WillReturnResult(sqlmock.NewResult(1, 8))
-// 	mock.ExpectCommit()
+	mock.ExpectBegin()
+	mock.ExpectExec(regexp.QuoteMeta(
+		"INSERT INTO `stores` (`id`,`name`,`tag`,`address`,`strong_point`,`created_at`,`updated_at`,`status`) VALUES (?,?,?,?,?,?,?,?)")).
+		WillReturnResult(sqlmock.NewResult(1, 8))
+	mock.ExpectCommit()
 
-// 	r := StoreRepository{DB: db}
-// 	res, err := r.Create(store)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	assert.Equal(t, res, store)
-// }
+	r := StoreRepository{DB: db}
+	res, err := r.Create(store)
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, res, store)
+}
 
-// func TestStoreGetOK(t *testing.T) {
-// 	db, mock, err := newMock()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	defer db.Close()
-// 	db.LogMode(true)
+func TestStoreGetOK(t *testing.T) {
+	db, mock, err := newMock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	db.LogMode(true)
 
-// 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `stores` WHERE (id = ?)")).
-// 		WithArgs(store.Id).
-// 		WillReturnRows(sqlmock.NewRows([]string{"id", "species", "name", "age", "store_id", "created_at", "updated_at", "status"}).
-// 			AddRow(store.Id, store.Species, store.Name, store.Age, store.StoreId, store.CreatedAt, store.UpdatedAt, store.Status))
+	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `stores` WHERE (id = ?)")).
+		WithArgs(store.Id).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "tag", "address", "strong_point", "created_at", "updated_at", "status"}).
+			AddRow(store.Id, store.Name, store.Tag, store.Address, store.StrongPoint, store.CreatedAt, store.UpdatedAt, store.Status))
 
-// 	r := StoreRepository{DB: db}
-// 	res, err := r.Get(store.Id)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	assert.Equal(t, res, store)
-// }
+	r := StoreRepository{DB: db}
+	res, err := r.Get(store.Id)
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, res, store)
+}
 
-// func TestStoreUpdateOK(t *testing.T) {
-// 	db, mock, err := newMock()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	defer db.Close()
-// 	db.LogMode(true)
+func TestStoreUpdateOK(t *testing.T) {
+	db, mock, err := newMock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	db.LogMode(true)
 
-// 	mock.ExpectBegin()
-// 	mock.ExpectExec(regexp.QuoteMeta(
-// 		"UPDATE `stores` SET `age` = ?, `created_at` = ?, `id` = ?, `name` = ?, `species` = ?, `status` = ?, `store_id` = ?, `updated_at` = ? WHERE (id = ?)")).
-// 		WithArgs(update_store.Age, update_store.CreatedAt, update_store.Id, update_store.Name, update_store.Species, update_store.Status, update_store.StoreId, update_store.UpdatedAt, store.Id).
-// 		WillReturnResult(sqlmock.NewResult(1, 6))
-// 	mock.ExpectCommit()
+	mock.ExpectBegin()
+	mock.ExpectExec(regexp.QuoteMeta(
+		"UPDATE `stores` SET `address` = ?, `created_at` = ?, `id` = ?, `name` = ?, `status` = ?, `strong_point` = ?, `tag` = ?, `updated_at` = ? WHERE (id = ?)")).
+		WithArgs(update_store.Address, update_store.CreatedAt, update_store.Id, update_store.Name, update_store.Status, update_store.StrongPoint, update_store.Tag, update_store.UpdatedAt, store.Id).
+		WillReturnResult(sqlmock.NewResult(1, 8))
+	mock.ExpectCommit()
 
-// 	r := StoreRepository{DB: db}
-// 	res, err := r.Update(store.Id, update_store)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	assert.Equal(t, res, update_store)
-// }
+	r := StoreRepository{DB: db}
+	res, err := r.Update(store.Id, update_store)
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, res, update_store)
+}
 
-// func TestStoreDeleteOK(t *testing.T) {
-// 	db, mock, err := newMock()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	defer db.Close()
-// 	db.LogMode(true)
+func TestStoreDeleteOK(t *testing.T) {
+	db, mock, err := newMock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	db.LogMode(true)
 
-// 	mock.ExpectBegin()
-// 	mock.ExpectExec(regexp.QuoteMeta(
-// 		"DELETE FROM `stores` WHERE (id = ?)")).
-// 		WithArgs(store.Id).
-// 		WillReturnResult(sqlmock.NewResult(1, 8))
-// 	mock.ExpectCommit()
+	mock.ExpectBegin()
+	mock.ExpectExec(regexp.QuoteMeta(
+		"DELETE FROM `stores` WHERE (id = ?)")).
+		WithArgs(store.Id).
+		WillReturnResult(sqlmock.NewResult(1, 8))
+	mock.ExpectCommit()
 
-// 	var empty Store
-// 	r := StoreRepository{DB: db}
-// 	res, err := r.Delete(store.Id)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	assert.Equal(t, res, empty)
-// }
+	var empty Store
+	r := StoreRepository{DB: db}
+	res, err := r.Delete(store.Id)
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, res, empty)
+}
