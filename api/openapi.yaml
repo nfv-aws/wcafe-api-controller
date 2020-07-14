@@ -654,7 +654,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/supplies'
                 example:
-                  clerks:
+                  supplies:
                     - id: "ed1ed1ad-d066-4d24-9c4d-891b7492c253"
                       name: "dog food"
                       price: 500
@@ -690,6 +690,30 @@ paths:
                 example: 
                   code: 400
                   message: Bad Request
+  /supplies/{supply_id}:
+    delete:
+      summary: ID指定によるペット用品の削除
+      tags:
+        - supplies
+      parameters: 
+        - name: supply_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '204':
+          description: ペット用品の情報削除
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found                  
 
 components:
   schemas:

@@ -21,6 +21,7 @@ import (
 func setup() {
 	// UT共通初期設定
 	db.Init()
+
 }
 
 func tearDown() {
@@ -46,14 +47,18 @@ func TestServer(t *testing.T) {
 	var store []entity.Store
 	var user []entity.User
 	var clerk []entity.Clerk
+	var supply []entity.Supply
+
 	db := db.GetDB()
 	db.Find(&pet)
 	db.Find(&store)
 	db.Find(&user)
 
 	dynamodb := service.Dynamo_Init()
-	table := dynamodb.Table("clerks")
-	table.Scan().All(&clerk)
+	table_supplies := dynamodb.Table("supplies")
+	table_supplies.Scan().All(&supply)
+	table_clerks := dynamodb.Table("clerks")
+	table_clerks.Scan().All(&clerk)
 
 	math_rand.Seed(time.Now().UnixNano())
 	random_num := math_rand.Intn(10000)
@@ -117,6 +122,7 @@ func TestServer(t *testing.T) {
 		testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
 		testDELETEMethod(t, "/api/v1/users/"+user[0].Id)
 		testDELETEMethod(t, "/api/v1/clerks/"+clerk[0].Id)
+		testDELETEMethod(t, "/api/v1/supplies/"+supply[0].Id)
 	})
 
 	tearDown()
