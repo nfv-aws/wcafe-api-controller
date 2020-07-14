@@ -68,14 +68,14 @@ DynamoDBにて、以下のテーブルを用意する
 ```
 テーブル名：clerks
 プライマリキー：id(string)
-キー：name(string)
+属性：name(string)
 ```
 ```
 テーブル名：supplies
 プライマリキー：id (string)
-ソートキー：name (string)
-GSI-プライマリーキー：type (string)
-GSI-プライマリーキー：price (int)
+GSI-プライマリーキー：name (string)
+属性：price (int)
+属性：type (string)
 ```
 ## 動作確認
 
@@ -144,6 +144,11 @@ https://qiita.com/Asuforce/items/0bde8cabb30ac094fcb4
 https://qiita.com/hiroyky/items/4a9be463e752d5c0c41c
 
 ## Tips
+
+### gRPCコードの自動生成
+```
+protoc -I ./protoc ./protoc/supply.proto --go_out=plugins=grpc:./protoc/ 
+```
 
 ### Mockの作り方
 

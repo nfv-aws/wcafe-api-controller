@@ -5,6 +5,7 @@ package protoc;
 service Supplies {
   rpc SupplyList (SupplyListRequest) returns (SupplyResponse) {}
   rpc SupplyCreate (SupplyCreateRequest) returns (SupplyResponse) {}
+  rpc SupplyDelete(SupplyDeleteRequest)returns(SupplyResponse) {}
 }
 
 message SupplyListRequest {
@@ -14,6 +15,11 @@ message SupplyListRequest {
 message SupplyCreateRequest {
   string table = 1;
   string body = 2;
+}
+
+message SupplyDeleteRequest {
+  string table = 1;
+  string id = 2;
 }
 
 message SupplyResponse {

@@ -89,6 +89,7 @@ func router() *gin.Engine {
 		sup_ctrl := controller.SupplyController{Supplyservice: service.NewSupplyService()}
 		p.GET("/supplies", sup_ctrl.List)
 		p.POST("/supplies", sup_ctrl.Create)
+		p.DELETE("/supplies/:id", sup_ctrl.Delete)
 
 		clerk_ctrl := controller.ClerkController{Clerkservice: service.NewClerkService()}
 		p.GET("/clerks", clerk_ctrl.List)
