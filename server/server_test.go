@@ -6,6 +6,7 @@ import (
 	math_rand "math/rand"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -22,6 +23,21 @@ func setup() {
 	// UT共通初期設定
 	db.Init()
 
+	dynamodb := service.Dynamo_Init()
+	table_supplies := dynamodb.Table("supplies")
+	table_supplies.Scan().All(&supply)
+	table_clerks := dynamodb.Table("clerks")
+	table_clerks.Scan().All(&clerk)
+
+	test_db := db.GetDB()
+
+	test_db.Find(&store)
+	test_db.Find(&pet)
+	test_db.Find(&user)
+
+	test_db.Delete(&pet)
+	test_db.Delete(&store)
+	test_db.Delete(&user)
 }
 
 func tearDown() {
@@ -40,29 +56,86 @@ func random_num() string {
 	return strconv.Itoa(random_num)
 }
 
-func TestServer(t *testing.T) {
+var (
+	pet    []entity.Pet
+	store  []entity.Store
+	user   []entity.User
+	clerk  []entity.Clerk
+	supply []entity.Supply
+
+	now = time.Now()
+
+	pt = entity.Pet{
+		Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+		Species:   "TEST",
+		Name:      "SERVER-UT",
+		Age:       5,
+		StoreId:   "sa5bafac-b35c-4852-82ca-b272cd79f2f3",
+		CreatedAt: now,
+		UpdatedAt: now,
+		Status:    "TEST PASS",
+	}
+	st = entity.Store{
+		Id:          "sa5bafac-b35c-4852-82ca-b272cd79f2f3",
+		Name:        "SERVER UT",
+		Tag:         "TEST",
+		Address:     "TEST City",
+		StrongPoint: "TEST",
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+	us = entity.User{
+		Id:        "74684838-a5d9-47d8-91a4-ff63ce802763",
+		Number:    123,
+		Name:      "entity-UT",
+		Address:   "Test City",
+		Email:     "test@example.com",
+		CreatedAt: now,
+		UpdatedAt: now,
+		Status:    "TEST PASS",
+	}
+)
+
+func beforeEach() {
+	// 各テーブルに初期データを登録
+	store_repo := entity.StoreRepository{DB: db.GetDB()}
+	pet_repo := entity.PetRepository{DB: db.GetDB()}
+	user_repo := entity.UserRepository{DB: db.GetDB()}
+
+	store_repo.Create(st)
+	pet_repo.Create(pt)
+	user_repo.Create(us)
+
+	test_db := db.GetDB()
+
+	test_db.Find(&store)
+	test_db.Find(&pet)
+	test_db.Find(&user)
+}
+
+func afterEach() {
+	test_db := db.GetDB()
+
+	test_db.Find(&store)
+	test_db.Find(&pet)
+	test_db.Find(&user)
+
+	test_db.Delete(&pet)
+	test_db.Delete(&store)
+	test_db.Delete(&user)
+}
+
+func TestMain(m *testing.M) {
 	setup()
 
-	var pet []entity.Pet
-	var store []entity.Store
-	var user []entity.User
-	var clerk []entity.Clerk
-	var supply []entity.Supply
+	code := m.Run()
 
-	db := db.GetDB()
-	db.Find(&pet)
-	db.Find(&store)
-	db.Find(&user)
+	tearDown()
+	os.Exit(code)
+}
 
-	dynamodb := service.Dynamo_Init()
-	table_supplies := dynamodb.Table("supplies")
-	table_supplies.Scan().All(&supply)
-	table_clerks := dynamodb.Table("clerks")
-	table_clerks.Scan().All(&clerk)
-
-	math_rand.Seed(time.Now().UnixNano())
-	random_num := math_rand.Intn(10000)
-
+func TestGET(t *testing.T) {
+	beforeEach()
 	t.Run("TEST GET Method", func(t *testing.T) {
 		testGETMethod(t, "/api/v1/pets")
 		testGETMethod(t, "/api/v1/stores")
@@ -71,7 +144,14 @@ func TestServer(t *testing.T) {
 		testGETMethod(t, "/api/v1/clerks")
 		testGETMethod(t, "/api/v1/supplies")
 	})
+	afterEach()
 
+}
+func TestPOST(t *testing.T) {
+	math_rand.Seed(time.Now().UnixNano())
+	random_num := math_rand.Intn(10000)
+
+	beforeEach()
 	t.Run("TEST POST Method", func(t *testing.T) {
 		testPOSTMethod(t, "/api/v1/pets", `{"species": "Canine","name": "Shiba lnu", "age": 1, "store_id":"`+store[0].Id+`"}`)
 		testPOSTNoneStoreId(t, "/api/v1/pets", `{"species": "Canine", "name": "Shiba lnu", "age": 10, "store_id":"teststoreid"}`)
@@ -96,7 +176,11 @@ func TestServer(t *testing.T) {
 		testPOSTBadRequest(t, "/api/v1/clerks", `{"name":""}`)
 		testPOSTBadRequest(t, "/api/v1/clerks", `{"name":1}`)
 	})
+	afterEach()
+}
 
+func TestPATCH(t *testing.T) {
+	beforeEach()
 	t.Run("TEST PATCH Method", func(t *testing.T) {
 		testPATCHMethod(t, "/api/v1/pets/"+pet[0].Id, `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10, "store_id":"`+store[0].Id+`"}`)
 		testPATCHNoneId(t, "/api/v1/pets/testpetid", `{"species":"`+pet[0].Species+`", "name":"`+pet[0].Name+`", "age":10`)
@@ -116,7 +200,11 @@ func TestServer(t *testing.T) {
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"address":9473,"email":"test@test.com"}`)
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
 	})
+	afterEach()
+}
 
+func TestDELETE(t *testing.T) {
+	beforeEach()
 	t.Run("TEST DELETE Method", func(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/pets/"+pet[0].Id)
 		testDELETEStoreMethod(t, "/api/v1/stores/"+store[0].Id)
@@ -124,8 +212,7 @@ func TestServer(t *testing.T) {
 		testDELETEMethod(t, "/api/v1/clerks/"+clerk[0].Id)
 		testDELETEMethod(t, "/api/v1/supplies/"+supply[0].Id)
 	})
-
-	tearDown()
+	afterEach()
 }
 
 func testGETMethod(t *testing.T, endpoint string) {
