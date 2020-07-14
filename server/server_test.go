@@ -3,7 +3,6 @@ package server
 import (
 	"crypto/rand"
 	"encoding/binary"
-	"github.com/stretchr/testify/assert"
 	math_rand "math/rand"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +10,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/nfv-aws/wcafe-api-controller/db"
 	"github.com/nfv-aws/wcafe-api-controller/entity"

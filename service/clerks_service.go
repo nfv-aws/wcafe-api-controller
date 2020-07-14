@@ -118,7 +118,7 @@ func (s clerkService) Delete(id string) (entity.Clerk, error) {
 
 	// 削除
 	if err := table.Delete("id", id).Run(); err != nil {
-		panic(err.Error())
+		return cl, err
 	}
 
 	return cl, nil
