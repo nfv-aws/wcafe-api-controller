@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,25 @@ type StoreController struct {
 func (sc StoreController) List(c *gin.Context) {
 	log.Debug().Caller().Msg("stores list")
 
-	p, err := sc.Storeservice.List()
+	l := c.DefaultQuery("limit", "100")
+	limit, err := strconv.Atoi(l)
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	log.Debug().Caller().Int("limit:", limit).Send()
+
+	o := c.DefaultQuery("offset", "0")
+	offset, err := strconv.Atoi(o)
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	log.Debug().Caller().Int("offset:", offset).Send()
+
+	p, err := sc.Storeservice.List(limit, offset)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()

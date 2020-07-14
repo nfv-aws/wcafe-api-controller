@@ -24,7 +24,7 @@ type Store entity.Store
 
 // Service procides store's behavior
 type StoreService interface {
-	List() ([]entity.Store, error)
+	List(limit int, offset int) ([]entity.Store, error)
 	Create(c *gin.Context) (entity.Store, error)
 	Get(id string) (entity.Store, error)
 	Update(id string, c *gin.Context) (entity.Store, error)
@@ -51,12 +51,12 @@ func StoresInit() *sqs.SQS {
 }
 
 // List is get all Store
-func (s storeService) List() ([]entity.Store, error) {
+func (s storeService) List(limit int, offset int) ([]entity.Store, error) {
 	log.Debug().Caller().Msg("stores list")
 	sr := s.storeRepository
 	var u []entity.Store
 
-	u, err := sr.Find()
+	u, err := sr.Find(limit, offset)
 	if err != nil {
 		return u, err
 	}

@@ -35,18 +35,18 @@ func (m *MockStoreService) EXPECT() *MockStoreServiceMockRecorder {
 }
 
 // List mocks base method.
-func (m *MockStoreService) List() ([]entity.Store, error) {
+func (m *MockStoreService) List(limit, offset int) ([]entity.Store, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List")
+	ret := m.ctrl.Call(m, "List", limit, offset)
 	ret0, _ := ret[0].([]entity.Store)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockStoreServiceMockRecorder) List() *gomock.Call {
+func (mr *MockStoreServiceMockRecorder) List(limit, offset interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStoreService)(nil).List))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStoreService)(nil).List), limit, offset)
 }
 
 // Create mocks base method.

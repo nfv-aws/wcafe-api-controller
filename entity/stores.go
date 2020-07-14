@@ -35,10 +35,13 @@ type StoreRepository struct {
 	DB *gorm.DB
 }
 
-func (sr *StoreRepository) Find() ([]Store, error) {
+func (sr *StoreRepository) Find(limit int, offset int) ([]Store, error) {
 	log.Debug().Caller().Msg("stores Find")
+	log.Debug().Caller().Int("limit:", limit).Msg("stores Find")
+	log.Debug().Caller().Int("offset:", offset).Msg("stores Find")
 	var r []Store
-	if err := sr.DB.Find(&r).Error; err != nil {
+
+	if err := sr.DB.Limit(limit).Offset(offset).Find(&r).Error; err != nil {
 		return r, err
 	}
 
