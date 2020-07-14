@@ -39,6 +39,8 @@ type Clerks entity.Clerks
 type ClerkService interface {
 	List() ([]entity.Clerk, error)
 	Create(c *gin.Context) (entity.Clerk, error)
+	Get(id string) (entity.Clerk, error)
+	Delete(id string) (entity.Clerk, error)
 }
 
 type clerkService struct{}
@@ -88,4 +90,36 @@ func (s clerkService) Create(c *gin.Context) (entity.Clerk, error) {
 	}
 	return cl, nil
 
+}
+
+// Get is get a clerk
+func (s clerkService) Get(id string) (entity.Clerk, error) {
+	log.Debug().Caller().Msg("clerks get")
+	dynamodb := Dynamo_Init()
+	table := dynamodb.Table("clerks")
+	var cl entity.Clerk
+	if err := table.Get("id", id).One(&cl); err != nil {
+		return cl, err
+	}
+	return cl, nil
+}
+
+//  Delete is delete a clerk
+func (s clerkService) Delete(id string) (entity.Clerk, error) {
+	log.Debug().Caller().Msg("clerks delete")
+	dynamodb := Dynamo_Init()
+	table := dynamodb.Table("clerks")
+	var cl entity.Clerk
+
+	// 指定したIDが存在するか確認
+	if err := table.Get("id", id).One(&cl); err != nil {
+		return cl, err
+	}
+
+	// 削除
+	if err := table.Delete("id", id).Run(); err != nil {
+		panic(err.Error())
+	}
+
+	return cl, nil
 }
