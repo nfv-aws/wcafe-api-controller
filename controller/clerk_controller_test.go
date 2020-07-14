@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -45,6 +46,35 @@ func TestClerkList(t *testing.T) {
 	assert.Equal(t, cl, clerks)
 }
 
+func TestClerkGetOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Get(gomock.Any()).Return(cl, nil)
+	controller := ClerkController{Clerkservice: serviceMock}
+	controller.Get(c)
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
+}
+
+func TestClerkGetNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+
+	// TODO error
+	serviceMock.EXPECT().Get(gomock.Any()).Return(entity.Clerk{}, gorm.ErrRecordNotFound)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Get(c)
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
+}
+
 func TestClerkCreateOK(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -77,4 +107,32 @@ func TestClerkCreateBadRequest(t *testing.T) {
 
 	controller.Create(c)
 	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
+}
+
+func TestClerkDelete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Clerk{}, nil)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, http.StatusNoContent, c.Writer.Status())
+}
+
+func TestClerkDeleteNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Delete(gomock.Any()).Return(entity.Clerk{}, gorm.ErrRecordNotFound)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Delete(c)
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
 }

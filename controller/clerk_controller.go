@@ -39,3 +39,31 @@ func (cc ClerkController) Create(c *gin.Context) {
 		c.JSON(http.StatusCreated, u)
 	}
 }
+
+// Get action: GET /clerks/:id
+func (cc ClerkController) Get(c *gin.Context) {
+	log.Debug().Caller().Msg("clerks get")
+	id := c.Params.ByName("id")
+
+	u, err := cc.Clerkservice.Get(id)
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		log.Error().Caller().Err(err).Send()
+	} else {
+		c.JSON(http.StatusOK, u)
+	}
+}
+
+// Delete action: DELETE /clerks/:id
+func (cc ClerkController) Delete(c *gin.Context) {
+	log.Debug().Caller().Msg("clerks delete")
+	id := c.Params.ByName("id")
+	u, err := cc.Clerkservice.Delete(id)
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		log.Error().Caller().Err(err).Send()
+	} else {
+		c.JSON(http.StatusNoContent, u)
+	}
+}
