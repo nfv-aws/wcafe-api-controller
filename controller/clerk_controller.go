@@ -3,6 +3,9 @@ package controller
 import (
 	"net/http"
 
+	"errors"
+	"reflect"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 
@@ -46,9 +49,31 @@ func (cc ClerkController) Get(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	u, err := cc.Clerkservice.Get(id)
+
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()
+	} else {
+		c.JSON(http.StatusOK, u)
+	}
+}
+
+// Update action: PATCH /clerks/:id
+func (cc ClerkController) Update(c *gin.Context) {
+	log.Debug().Caller().Msg("clerks update")
+	id := c.Params.ByName("id")
+
+	u, err := cc.Clerkservice.Update(id, c)
+	var ErrNotFound = errors.New("dynamo: no item found")
+
+	if err != nil {
+		if reflect.DeepEqual(err, ErrNotFound) {
+			c.AbortWithStatus(http.StatusNotFound)
+			log.Error().Caller().Err(err).Send()
+		} else {
+			c.AbortWithStatus(http.StatusBadRequest)
+			log.Error().Caller().Err(err).Send()
+		}
 	} else {
 		c.JSON(http.StatusOK, u)
 	}

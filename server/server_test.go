@@ -115,6 +115,10 @@ func TestServer(t *testing.T) {
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"name":9473,"email":"test@test.com"}`)
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"address":9473,"email":"test@test.com"}`)
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
+		testPATCHMethod(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":"yamada"}`)
+		testPATCHNoneId(t, "/api/v1/clerks/testclerkid", `{"name":"yamada"}`)
+		testPATCHBadRequest(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":3345}`)
+
 	})
 
 	t.Run("TEST DELETE Method", func(t *testing.T) {
