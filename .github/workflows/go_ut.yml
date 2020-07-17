@@ -39,24 +39,24 @@ jobs:
       run: go test -v ./entity/...
       
     - name: Server Test
-      run: go test -v ./entity/...
+      run: go test -v ./server/...
     
-    - name: Check out Conductor code 
-      uses: actions/checkout@v2
-      with:
-        repository:  ../wcafe-conductor
-        path: wcafe-conductor
+    # - name: Check out Conductor code 
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository:  ../wcafe-conductor
+    #     path: wcafe-conductor
         
-    - name: Get dependencies for Conductor
-      run: |
-        go get -v -t -d ../wcafe-conductor/...
-        if [ -f Gopkg.toml ]; then
-            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-            dep ensure
-        fi
+    # - name: Get dependencies for Conductor
+    #   run: |
+    #     go get -v -t -d ../wcafe-conductor/...
+    #     if [ -f Gopkg.toml ]; then
+    #         curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    #         dep ensure
+    #     fi
         
-    - name: Conductor run
-      run: go run main.go
+    # - name: Conductor run
+    #   run: go run main.go
       
     - name: Slack Notification
       # 前Stepの実行結果を判定
