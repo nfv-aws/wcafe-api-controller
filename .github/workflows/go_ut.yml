@@ -1,7 +1,7 @@
 name: Golang_Unit_Test
 
 on:
-  commit:
+  push:
     branches: [ server-ut ]
   pull_request:
     branches: [ master ]
