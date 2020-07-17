@@ -37,6 +37,8 @@ jobs:
     
     - name: Entity Test
       run: go test -v ./entity/...
+    
+    steps:
       
     - name: Check out Conductor code 
       uses: actions/checkout@v2
