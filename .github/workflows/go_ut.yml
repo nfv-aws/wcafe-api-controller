@@ -1,7 +1,7 @@
 name: Golang_Unit_Test
 
 on:
-  push:
+  commit:
     branches: [ server-ut ]
   pull_request:
     branches: [ master ]
@@ -40,6 +40,8 @@ jobs:
       
     - name: Server Test
       run: go test -v ./server/...
+      env:
+        CONFIG_ACCESS: ${{ secrets.CONFIG_ACCESS }}
     
     # - name: Check out Conductor code 
     #   uses: actions/checkout@v2
