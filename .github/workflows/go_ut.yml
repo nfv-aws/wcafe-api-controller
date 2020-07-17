@@ -37,9 +37,10 @@ jobs:
     
     - name: Entity Test
       run: go test -v ./entity/...
-    
-    steps:
       
+    - name: Server Test
+      run: go test -v ./entity/...
+    
     - name: Check out Conductor code 
       uses: actions/checkout@v2
       with:
@@ -57,9 +58,6 @@ jobs:
     - name: Conductor run
       run: go run main.go
       
-    - name: Server Test
-      run: go test -v ./entity/...
-    
     - name: Slack Notification
       # 前Stepの実行結果を判定
       # success() or failure() or always()
