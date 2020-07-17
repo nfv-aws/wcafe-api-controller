@@ -40,6 +40,7 @@ type ClerkService interface {
 	List() ([]entity.Clerk, error)
 	Create(c *gin.Context) (entity.Clerk, error)
 	Get(id string) (entity.Clerk, error)
+	Update(id string, c *gin.Context) (entity.Clerk, error)
 	Delete(id string) (entity.Clerk, error)
 }
 
@@ -99,6 +100,34 @@ func (s clerkService) Get(id string) (entity.Clerk, error) {
 	table := dynamodb.Table("clerks")
 	var cl entity.Clerk
 	if err := table.Get("id", id).One(&cl); err != nil {
+		return cl, err
+	}
+	return cl, nil
+}
+
+// Update is update a Clerk
+func (s clerkService) Update(id string, c *gin.Context) (entity.Clerk, error) {
+	log.Debug().Caller().Msg("clerks update")
+	dynamodb := Dynamo_Init()
+	table := dynamodb.Table("clerks")
+
+	var cl entity.Clerk
+
+	if err := table.Get("id", id).One(&cl); err != nil {
+		return cl, err
+	}
+
+	if err := c.BindJSON(&cl); err != nil {
+		return cl, err
+	}
+
+	//validation Check
+	validate := validator.New()
+	if err := validate.Struct(cl); err != nil {
+		return cl, err
+	}
+
+	if err := table.Update("id", id).Set("name", cl.Name).Run(); err != nil {
 		return cl, err
 	}
 	return cl, nil

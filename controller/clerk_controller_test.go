@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -57,6 +58,13 @@ func TestClerkGetOK(t *testing.T) {
 	controller := ClerkController{Clerkservice: serviceMock}
 	controller.Get(c)
 	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var clerk entity.Clerk
+	err := json.Unmarshal([]byte(w.Body.String()), &clerk)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, cl, clerk)
 }
 
 func TestClerkGetNotFound(t *testing.T) {
@@ -106,6 +114,56 @@ func TestClerkCreateBadRequest(t *testing.T) {
 	controller := ClerkController{Clerkservice: serviceMock}
 
 	controller.Create(c)
+	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
+}
+
+func TestClerkUpdateOK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(cl, nil)
+	controller := ClerkController{Clerkservice: serviceMock}
+	controller.Update(c)
+	assert.Equal(t, http.StatusOK, c.Writer.Status())
+
+	var clerk entity.Clerk
+	err := json.Unmarshal([]byte(w.Body.String()), &clerk)
+	if err != nil {
+		panic(err.Error())
+	}
+	assert.Equal(t, cl, clerk)
+}
+
+func TestClerkUpdateNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	var ErrNotFound = errors.New("dynamo: no item found")
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Clerk{}, ErrNotFound)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Update(c)
+	assert.Equal(t, http.StatusNotFound, c.Writer.Status())
+}
+
+func TestClerkUpdateBadRequest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	serviceMock := mocks.NewMockClerkService(ctrl)
+	serviceMock.EXPECT().Update(gomock.Any(), c).Return(entity.Clerk{}, ErrBadRequest)
+	controller := ClerkController{Clerkservice: serviceMock}
+
+	controller.Update(c)
 	assert.Equal(t, http.StatusBadRequest, c.Writer.Status())
 }
 
