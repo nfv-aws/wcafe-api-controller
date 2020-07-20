@@ -691,6 +691,48 @@ paths:
                   code: 400
                   message: Bad Request
   /supplies/{supply_id}:
+    patch:
+      tags: 
+        - supplies
+      summary: ID指定によるペット用品詳細情報の更新
+      description: ID指定によるペット用品詳細情報の更新
+      parameters:
+        - name: supply_id
+          in: path
+          description: ペット用品識別子
+          required: true
+          schema:
+            type: string
+            format: UUID
+      requestBody:
+        description: ペット用品更新情報
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/supplies'
+      responses:
+        '200':
+          description: ペット用品情報更新
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/supplies'
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
     delete:
       summary: ID指定によるペット用品の削除
       tags:
@@ -698,7 +740,7 @@ paths:
       parameters: 
         - name: supply_id
           in: path
-          description: ユーザーID
+          description: ペット用品識別子
           required: true
           schema: 
             type: string

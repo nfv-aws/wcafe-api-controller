@@ -58,6 +58,21 @@ func (m *MockSupplyService) Create(c *gin.Context) (entity.Supply, error) {
 	return ret0, ret1
 }
 
+// Update mocks base method.
+func (m *MockSupplyService) Update(id string, c *gin.Context) (entity.Supply, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", id, c)
+	ret0, _ := ret[0].(entity.Supply)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockSupplyServiceMockRecorder) Update(id, c interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSupplyService)(nil).Update), id, c)
+}
+
 // Create indicates an expected call of Create.
 func (mr *MockSupplyServiceMockRecorder) Create(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
