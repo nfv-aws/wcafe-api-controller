@@ -54,6 +54,7 @@ func Configure() {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
+	log.Debug().Caller().Msg("koko")
 	// conf読み取り
 	if err := viper.ReadInConfig(); err != nil {
 		log.Error().Caller().Err(err).Send()
