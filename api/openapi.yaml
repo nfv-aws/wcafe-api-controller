@@ -610,6 +610,54 @@ paths:
                 example: 
                   code: 404
                   message: Not Found
+    patch:
+      tags: 
+        - clerks
+      summary: ID指定による店員詳細情報の更新
+      description: ID指定による店員詳細情報の更新
+      parameters:
+        - name: clerk_id
+          in: path
+          description: 店員識別子
+          required: true
+          schema:
+            type: string
+            format: UUID
+      requestBody:
+        description: 店員の更新情報
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clerks'
+            example:
+              name: "yamada"
+      responses:
+        '200':
+          description: 店員情報更新
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/clerks'
+              example:
+                id: "55043cdf-0c06-4c74-99e6-6ae920"
+                name: "yamada"
+        '400':
+          description: 無効なリクエスト
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 400
+                  message: Bad Request
+        '404':
+          description: 無効なパスの指定
+          content:
+            application/json:
+              schema:
+                example: 
+                  code: 404
+                  message: Not Found
+                  
     delete:
       summary: ID指定による店員情報の削除
       tags:

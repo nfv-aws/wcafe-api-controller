@@ -210,6 +210,9 @@ func TestPATCH(t *testing.T) {
 		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name":100, "price":400, "type": "food"}`)
 		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name": "dog food", "price": "400", "type": "food"}`)
 		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name": "dog food", "price": 400, "type": 123}`)
+		testPATCHMethod(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":"yamada"}`)
+		testPATCHNoneId(t, "/api/v1/clerks/testclerkid", `{"name":"yamada"}`)
+		testPATCHBadRequest(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":3345}`)
 	})
 	afterEach()
 }
