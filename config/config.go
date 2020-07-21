@@ -46,7 +46,7 @@ func Configure() {
 	}
 	viper.SetConfigName("config_production")
 	viper.SetConfigType("toml")
-	viper.AddConfigPath("./config")
+	// viper.AddConfigPath("./config")
 	viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
 
 	// 環境変数 export WCAFE_XXXで設定値を上書きできるように設定
@@ -58,11 +58,11 @@ func Configure() {
 	// conf読み取り
 	if err := viper.ReadInConfig(); err != nil {
 		log.Error().Caller().Err(err).Send()
-		// os.Exit(1)
+		os.Exit(1)
 	}
 
 	if err := viper.Unmarshal(&C); err != nil {
 		log.Error().Caller().Err(err).Send()
-		// os.Exit(1)
+		os.Exit(1)
 	}
 }
