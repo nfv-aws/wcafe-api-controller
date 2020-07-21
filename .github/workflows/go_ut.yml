@@ -38,8 +38,8 @@ jobs:
       
     - name: Server Test
       run: go test -v ./server/...
-        env:
-          CONFIG_ACCESS: Production
+      env:
+        CONFIG_ACCESS: Production
     
     # - name: Slack Notification
     #   # 前Stepの実行結果を判定
