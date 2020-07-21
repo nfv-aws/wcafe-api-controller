@@ -1,7 +1,7 @@
 package config
 
 import (
-	// "os"
+	"os"
 	"strings"
 
 	"github.com/rs/zerolog/log"
@@ -37,13 +37,13 @@ var C Config
 
 func Configure() {
 	//configファイルの読み込み設定
-	// if os.Getenv("CONFIG_ACCESS") == "Production" {
-	// 	log.Debug().Caller().Msg("Production Config")
-	// 	viper.SetConfigName("config_production")
-	// } else {
-	// 	log.Debug().Caller().Msg("Local Config")
-	// 	viper.SetConfigName("config")
-	// }
+	if os.Getenv("CONFIG_ACCESS") == "Production" {
+		log.Debug().Caller().Msg("Production Config")
+		viper.SetConfigName("config_production")
+	} else {
+		log.Debug().Caller().Msg("Local Config")
+		viper.SetConfigName("config")
+	}
 	viper.SetConfigName("config_production")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath("./config")
