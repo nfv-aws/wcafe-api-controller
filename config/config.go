@@ -37,13 +37,14 @@ var C Config
 
 func Configure() {
 	//configファイルの読み込み設定
-	if os.Getenv("CONFIG_ACCESS") == "Production" {
-		log.Debug().Caller().Msg("Production Config")
-		viper.SetConfigName("config_production")
-	} else {
-		log.Debug().Caller().Msg("Local Config")
-		viper.SetConfigName("config")
-	}
+	// if os.Getenv("CONFIG_ACCESS") == "Production" {
+	// 	log.Debug().Caller().Msg("Production Config")
+	// 	viper.SetConfigName("config_production")
+	// } else {
+	// 	log.Debug().Caller().Msg("Local Config")
+	// 	viper.SetConfigName("config")
+	// }
+	viper.SetConfigName("config_production")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
@@ -54,15 +55,14 @@ func Configure() {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	log.Debug().Caller().Msg("koko")
 	// conf読み取り
 	if err := viper.ReadInConfig(); err != nil {
 		log.Error().Caller().Err(err).Send()
-		os.Exit(1)
+		// os.Exit(1)
 	}
 
 	if err := viper.Unmarshal(&C); err != nil {
 		log.Error().Caller().Err(err).Send()
-		os.Exit(1)
+		// os.Exit(1)
 	}
 }
