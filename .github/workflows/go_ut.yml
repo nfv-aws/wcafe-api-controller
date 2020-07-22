@@ -39,7 +39,7 @@ jobs:
     - name: Server Test
       run: go test -v ./server/...
       env:
-        CONFIG_ACCESS: Production
+        CONFIG_ACCESS: ${{ secrets.CONFIG_ACCESS }}
         WCAFE_DB_PASSWORD: ${{ secrets.WCAFE_DB_PASSWORD }}
         WCAFE_DB_ENDPOINT: ${{ secrets.WCAFE_DB_ENDPOINT }}
         WCAFE_CONDUCTOR_IP: ${{ secrets.WCAFE_CONDUCTOR_IP }}

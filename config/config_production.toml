@@ -17,5 +17,5 @@ region = "ap-northeast-1"
 file_path = "/home/ec2-user/"
 
 [Conductor]
-ip = "13.231.131.139"
+ip = "localhost"
 port = "50051"
