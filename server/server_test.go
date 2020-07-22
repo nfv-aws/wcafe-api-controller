@@ -97,6 +97,12 @@ var (
 )
 
 func beforeEach() {
+	dynamodb := service.Dynamo_Init()
+	table_supplies := dynamodb.Table("supplies")
+	table_supplies.Scan().All(&supply)
+	table_clerks := dynamodb.Table("clerks")
+	table_clerks.Scan().All(&clerk)
+
 	// 各テーブルに初期データを登録
 	store_repo := entity.StoreRepository{DB: db.GetDB()}
 	pet_repo := entity.PetRepository{DB: db.GetDB()}
@@ -199,10 +205,14 @@ func TestPATCH(t *testing.T) {
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"name":9473,"email":"test@test.com"}`)
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"address":9473,"email":"test@test.com"}`)
 		testPATCHBadRequest(t, "/api/v1/users/"+user[0].Id, `{"number":3345,"email":"test"}`)
+		testPATCHMethod(t, "/api/v1/supplies/"+supply[0].Id, `{"name":"dog food", "price":400, "type": "food"}`)
+		testPATCHNoneId(t, "/api/v1/supplies/testsuppliesid", `{"name":"dog food", "price":400, "type": "food"}`)
+		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name":100, "price":400, "type": "food"}`)
+		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name": "dog food", "price": "400", "type": "food"}`)
+		testPATCHBadRequest(t, "/api/v1/supplies/"+supply[0].Id, `{"name": "dog food", "price": 400, "type": 123}`)
 		testPATCHMethod(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":"yamada"}`)
 		testPATCHNoneId(t, "/api/v1/clerks/testclerkid", `{"name":"yamada"}`)
 		testPATCHBadRequest(t, "/api/v1/clerks/"+clerk[0].Id, `{"name":3345}`)
-
 	})
 	afterEach()
 }

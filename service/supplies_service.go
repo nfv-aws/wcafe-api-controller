@@ -26,6 +26,7 @@ type Supplies entity.Supplies
 type SupplyService interface {
 	List() ([]entity.Supply, error)
 	Create(c *gin.Context) (entity.Supply, error)
+	Update(id string, c *gin.Context) (entity.Supply, error)
 	Delete(id string) (entity.Supply, error)
 }
 
@@ -112,6 +113,54 @@ func (s supplyService) Create(c *gin.Context) (entity.Supply, error) {
 	err = json.Unmarshal([]byte(r.GetMessage()), &supply)
 	if err != nil {
 		log.Error().Caller().Err(err).Send()
+	}
+	return supply, nil
+}
+
+// Update is update supply
+func (s supplyService) Update(id string, c *gin.Context) (entity.Supply, error) {
+	log.Debug().Caller().Msg("supply update")
+	// Set up a connection to the server.
+	config.Configure()
+	var address = config.C.Conductor.Ip + ":" + config.C.Conductor.Port
+	log.Info().Caller().Msg(address)
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+	}
+	defer conn.Close()
+	connect := pb.NewSuppliesClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	var supply entity.Supply
+	if err := c.BindJSON(&supply); err != nil {
+		return supply, err
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(supply); err != nil {
+		return supply, err
+	}
+
+	req, err := json.Marshal(supply)
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+		return supply, err
+	}
+
+	r, err := connect.SupplyUpdate(ctx, &pb.SupplyUpdateRequest{Table: "supplies", Id: id, Body: string(req)})
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+		return supply, err
+	}
+	log.Info().Caller().Msg(r.GetMessage())
+	err = json.Unmarshal([]byte(r.GetMessage()), &supply)
+	if err != nil {
+		log.Error().Caller().Err(err).Send()
+		return supply, err
 	}
 	return supply, nil
 }
