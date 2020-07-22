@@ -44,10 +44,9 @@ func Configure() {
 		log.Debug().Caller().Msg("Local Config")
 		viper.SetConfigName("config")
 	}
-	viper.SetConfigName("config_production")
 	viper.SetConfigType("toml")
-	// viper.AddConfigPath("./config")
-	viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
+	viper.AddConfigPath("./config")
+	// viper.AddConfigPath("$GOPATH/src/github.com/nfv-aws/wcafe-api-controller/config")
 
 	// 環境変数 export WCAFE_XXXで設定値を上書きできるように設定
 	// ex) Database.Password ->  export WCAFE_DB_PASSWORD
