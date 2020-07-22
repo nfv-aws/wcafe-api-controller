@@ -44,17 +44,14 @@ func (s supplyService) List() ([]entity.Supply, error) {
 	log.Info().Caller().Msg(address)
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Debug().Caller().Msg("errrrrrrrrr")
 		log.Error().Caller().Err(err).Send()
 	}
 	defer conn.Close()
 	c := pb.NewSuppliesClient(conn)
-	log.Debug().Caller().Msg("aaaaa")
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	log.Debug().Caller().Msg("errr")
 	r, err := c.SupplyList(ctx, &pb.SupplyListRequest{Table: "supplies"})
 	if err != nil {
 		log.Error().Caller().Err(err).Send()
