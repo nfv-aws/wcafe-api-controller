@@ -20,7 +20,25 @@ type StoreController struct {
 func (sc StoreController) List(c *gin.Context) {
 	log.Debug().Caller().Msg("stores list")
 
+	n, ok := c.GetQuery("name")
+	log.Debug().Caller().Msg("after")
+
+	// nameの指定が有る場合
+	if ok == true {
+		pn, err := sc.Storeservice.GetName(n)
+
+		if err != nil {
+			c.AbortWithStatus(http.StatusNotFound)
+			log.Error().Caller().Err(err).Send()
+			return
+		} else {
+			c.JSON(http.StatusOK, pn)
+			return
+		}
+	}
+
 	p, err := sc.Storeservice.List()
+
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()

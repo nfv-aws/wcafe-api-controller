@@ -79,6 +79,21 @@ func (mr *MockStoreServiceMockRecorder) Get(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockStoreService)(nil).Get), id)
 }
 
+// GetName mocks base method.
+func (m *MockStoreService) GetName(name string) ([]entity.Store, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetName", name)
+	ret0, _ := ret[0].([]entity.Store)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetName indicates an expected call of GetName.
+func (mr *MockStoreServiceMockRecorder) GetName(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetName", reflect.TypeOf((*MockStoreService)(nil).GetName), name)
+}
+
 // Update mocks base method.
 func (m *MockStoreService) Update(id string, c *gin.Context) (entity.Store, error) {
 	m.ctrl.T.Helper()

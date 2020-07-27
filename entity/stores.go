@@ -66,6 +66,16 @@ func (sr *StoreRepository) Get(id string) (Store, error) {
 	return r, nil
 }
 
+func (sr *StoreRepository) GetName(name string) ([]Store, error) {
+	log.Debug().Caller().Msg("stores Get name")
+	var r []Store
+
+	if err := sr.DB.Where("name = ?", name).First(&r).Error; err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
 func (sr *StoreRepository) Update(id string, s Store) (Store, error) {
 	log.Debug().Caller().Msg("stores Update")
 	if err := sr.DB.Table("stores").Where("id = ?", id).Updates(s).Error; err != nil {

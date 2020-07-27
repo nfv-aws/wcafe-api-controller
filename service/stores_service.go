@@ -27,6 +27,7 @@ type StoreService interface {
 	List() ([]entity.Store, error)
 	Create(c *gin.Context) (entity.Store, error)
 	Get(id string) (entity.Store, error)
+	GetName(name string) ([]entity.Store, error)
 	Update(id string, c *gin.Context) (entity.Store, error)
 	Delete(id string) (entity.Store, error)
 	PetsList(id string) ([]entity.Pet, error)
@@ -118,6 +119,19 @@ func (s storeService) Get(id string) (entity.Store, error) {
 	var u entity.Store
 
 	u, err := sr.Get(id)
+	if err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
+func (s storeService) GetName(name string) ([]entity.Store, error) {
+	log.Debug().Caller().Msg("stores get")
+	sr := s.storeRepository
+	var u []entity.Store
+
+	u, err := sr.GetName(name)
 	if err != nil {
 		return u, err
 	}

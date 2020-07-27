@@ -145,6 +145,7 @@ func TestGET(t *testing.T) {
 	t.Run("TEST GET Method", func(t *testing.T) {
 		testGETMethod(t, "/api/v1/pets")
 		testGETMethod(t, "/api/v1/stores")
+		testGETMethod(t, "/api/v1/stores?name="+store[0].Name)
 		testGETMethod(t, "/api/v1/users")
 		testGETStorePetsMethod(t, "/api/v1/stores/"+store[0].Id+"/pets")
 		testGETMethod(t, "/api/v1/clerks")

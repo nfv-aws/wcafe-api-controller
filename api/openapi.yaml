@@ -29,6 +29,11 @@ paths:
           description: 表示する店舗のページ番号の指定
           schema:
             type: integer
+        - name: name
+          in: query
+          description: 店舗名の検索
+          schema:
+            type: string
       responses: #レスポンスを定義
         '200':
           description: 店舗の一覧表示
@@ -226,7 +231,12 @@ paths:
       summary: 商品リスト
       tags:
         - pets
-      parameters: []
+      parameters: 
+        - name: name
+          in: query
+          description: 商品名の検索
+          schema:
+            type: string
       responses:
         '200':
           description: 商品一覧の表示
@@ -381,7 +391,12 @@ paths:
         - users
       summary: ユーザ一覧取得
       description: ユーザ一覧取得
-      parameters: []
+      parameters:
+        - name: name
+          in: query
+          description: ユーザー名の検索
+          schema:
+            type: string
       responses:
         '200':
           description: ユーザ一覧の表示
@@ -534,7 +549,12 @@ paths:
         - clerks
       summary: 店員一覧取得
       description: 店員一覧取得
-      parameters: []
+      parameters: 
+        - name: name
+          in: query
+          description: 店員名の検索
+          schema:
+            type: string
       responses:
         '200':
           description: 店員一覧取得
