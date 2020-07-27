@@ -2,9 +2,10 @@ name: Golang_Unit_Test
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [add_git_hub_actions]
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
 
 jobs:
 
@@ -32,6 +33,9 @@ jobs:
 
     - name: Controller Test
       run: go test -v ./controller/...
+      
+    - name: Service Test
+      run: go test -v ./server/...
     
     - name: Entity Test
       run: go test -v ./entity/...
