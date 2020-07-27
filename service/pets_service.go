@@ -94,7 +94,7 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 		DelaySeconds: aws.Int64(10),
 	})
 	if err != nil {
-		log.Error().Caller().Msg("Pet SendMessage Error")
+		log.Error().Caller().Err(err).Send()
 		return u, err
 	} else {
 		log.Info().Caller().Msg("Pet SendMessage Success:" + string(*result.MessageId))
@@ -105,6 +105,7 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 
 	u, err = pr.Create(u)
 	if err != nil {
+		log.Error().Caller().Err(err).Send()
 		return u, err
 	}
 	return u, nil
