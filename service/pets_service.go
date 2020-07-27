@@ -93,6 +93,8 @@ func (s petService) Create(c *gin.Context) (entity.Pet, error) {
 		QueueUrl:     aws.String(pets_queue_url),
 		DelaySeconds: aws.Int64(10),
 	})
+	log.Debug().Caller().Msg(u.Id)
+	log.Debug().Caller().Msg(pets_queue_url)
 	if err != nil {
 		log.Error().Caller().Err(err).Send()
 		return u, err
