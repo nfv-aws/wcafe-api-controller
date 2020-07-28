@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nfv-aws/wcafe-api-controller/config"
 	"github.com/nfv-aws/wcafe-api-controller/entity"
@@ -23,6 +24,7 @@ func Init() {
 	dbname := config.C.DB.Name
 	db, err = gorm.Open("mysql", user+":"+pass+"@("+endpoint+")/"+dbname+"?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
+		log.Error().Caller().Err(err).Send()
 		panic(err)
 	}
 	autoMigration()

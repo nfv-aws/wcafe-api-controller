@@ -97,6 +97,7 @@ func (s userService) Create(c *gin.Context) (entity.User, error) {
 	})
 	if err != nil {
 		log.Error().Caller().Msg("User SendMessage Error")
+		return u, err
 	} else {
 		log.Info().Caller().Msg("User Success:" + string(*result.MessageId))
 	}

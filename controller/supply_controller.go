@@ -20,7 +20,6 @@ type SupplyController struct {
 func (sc SupplyController) List(c *gin.Context) {
 	log.Debug().Caller().Msg("supplies list")
 	s, err := sc.Supplyservice.List()
-
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		log.Error().Caller().Err(err).Send()
@@ -66,7 +65,6 @@ func (sc SupplyController) Update(c *gin.Context) {
 func (sc SupplyController) Delete(c *gin.Context) {
 	log.Debug().Caller().Msg("supplies delete")
 	id := c.Params.ByName("id")
-
 	s, err := sc.Supplyservice.Delete(id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)

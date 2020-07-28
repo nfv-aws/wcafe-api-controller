@@ -29,12 +29,27 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.IT_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.IT_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1    
+        
     - name: Controller Test
       run: go test -v ./controller/...
     
     - name: Entity Test
       run: go test -v ./entity/...
+      
+    - name: Server Test
+      run: go test -v ./server/...
+      env:
+        CONFIG_ACCESS: Production
+        WCAFE_DB_PASSWORD: ${{ secrets.IT_DB_PASSWORD }}
+        WCAFE_DB_ENDPOINT: ${{ secrets.IT_DB_ENDPOINT }}
+        WCAFE_CONDUCTOR_IP: ${{ secrets.WCAFE_CONDUCTOR_IP }}
     
     - name: Slack Notification
       # 前Stepの実行結果を判定
@@ -49,4 +64,3 @@ jobs:
         SLACK_USERNAME: rtBot
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       
-  
